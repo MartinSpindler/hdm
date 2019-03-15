@@ -1,0 +1,34 @@
+Package: hdm
+Type: Package
+Title: High-Dimensional Metrics
+Version: 0.3.1
+Date: 2018-12-19
+Authors@R: c(person("Martin", "Spindler", email="martin.spindler@gmx.de", role=c("cre", "aut")), person("Victor", "Chernozhukov", role="aut"), person("Christian", "Hansen", role="aut"),  person("Philipp", "Bach", email = "philipp.bach@uni-hamburg.de", role="ctb"))
+Depends:
+    R (>= 3.0.0)
+Description: Implementation of selected high-dimensional statistical and
+    econometric methods for estimation and inference. Efficient estimators and
+    uniformly valid confidence intervals for various low-dimensional causal/
+    structural parameters are provided which appear in high-dimensional
+    approximately sparse models. Including functions for fitting heteroscedastic
+    robust Lasso regressions with non-Gaussian errors and for instrumental variable
+    (IV) and treatment effect estimation in a high-dimensional setting. Moreover,
+    the methods enable valid post-selection inference and rely on a theoretically
+    grounded, data-driven choice of the penalty.
+    Chernozhukov, Hansen, Spindler (2016) <arXiv:1603.01700>.
+License: MIT + file LICENSE
+LazyData: TRUE
+Imports:
+    MASS,
+    glmnet,
+    ggplot2,
+    checkmate,
+    Formula,
+    methods
+Suggests:
+    testthat,
+    knitr,
+    xtable,
+    mvtnorm
+VignetteBuilder: knitr
+RoxygenNote: 6.1.0
