@@ -5,7 +5,7 @@ Implementation of selected high-dimensional statistical and econometric methods 
 
 ## Getting Started with `hdm`
 
-R is an open source software project and can be freely downloaded from the CRAN website along with its associated documentation. There are two options to install the `R` package `hdm` - either installation of the development version or the stable release available at (CRAN)[https://CRAN.R-project.org/package=hdm] . 
+R is an open source software project and can be freely downloaded from the CRAN website along with its associated documentation. There are two options to install the `R` package `hdm` - either installation of the development version or the stable release available at [CRAN](https://CRAN.R-project.org/package=hdm). 
 
 ### Development Version
 
@@ -13,7 +13,7 @@ The current development version of the `hdm` package is maintained in this repos
 
 ## Stable Release
 
-The stable package release is available at (CRAN)[https://CRAN.R-project.org/package=hdm]. The stable release version can be installed by typing `install.packages("hdm")` in `R`.
+The stable package release is available at [CRAN](https://CRAN.R-project.org/package=hdm). The stable release version can be installed by typing `install.packages("hdm")` in `R`.
 
 
 ## References
