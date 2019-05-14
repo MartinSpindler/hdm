@@ -283,7 +283,7 @@ where $g_i$'s are iid $N(0,1)$, conditional on the data. The $(1-\alpha)$-quanti
 
 \subsection*{R implementation}  The function \texttt{rlasso} implements Lasso and post-Lasso, where the prefix ``r" signifies that these are theoretically rigorous versions of Lasso and post-Lasso. The default option is post-Lasso, \code{post=TRUE}.  This function returns an object of S3 class \code{rlasso} for which methods like \code{predict}, \code{print}, \code{summary} are provided.
 
- \code{lassoShooting.fit} is the computational algorithm that underlies the estimation procedure, which implements a version of the Shooting Lasso Algorithm \citep{Fu1998}. The user has several options for choosing the non-default options. Specifically, the user can decide if an unpenalized \code{intercept} should be included (\code{TRUE} by default). The option \code{penalty} of the function \code{rlasso} allows different choices for the penalization parameter and loadings. It allows for homoskedastic or heteroscedastic errors with default \code{homoscedastic = FALSE}. Moreover, the dependence structure of the design matrix might be taken into consideration for calculation of the penalization parameter with \code{X.dependent.lambda = TRUE}. In combination with these options, the option \code{lambda.start} allows the user to set a starting value for $\lambda$ for the different algorithms. Moreover, the user can provide her own fixed value for the penalty level -- instead of the data-driven methods discussed above --  by setting \code{homoscedastic = "none"} and  supplying the value via \code{lambda.start}.
+ \code{lassoShooting.fit} is the computational algorithm that underlies the estimation procedure, which implements a version of the Shooting Lasso Algorithm \citep{Fu1998}. The user has several options for choosing the non-default options. Specifically, the user can decide if an unpenalized \code{intercept} should be included (\code{TRUE} by default). The option \code{penalty} of the function \code{rlasso} allows different choices for the penalization parameter and loadings. It allows for homoscedastic or heteroscedastic errors with default \code{homoscedastic = FALSE}. Moreover, the dependence structure of the design matrix might be taken into consideration for calculation of the penalization parameter with \code{X.dependent.lambda = TRUE}. In combination with these options, the option \code{lambda.start} allows the user to set a starting value for $\lambda$ for the different algorithms. Moreover, the user can provide her own fixed value for the penalty level -- instead of the data-driven methods discussed above --  by setting \code{homoscedastic = "none"} and  supplying the value via \code{lambda.start}.
  
 
 The constants $c$ and $\gamma$ from above can be set in the option \code{penalty}.
@@ -448,7 +448,7 @@ summary(Eff)$coef[,1:2]
 
 \subsection{Inference: Confidence Intervals and Significance Testing}
 The function \code{rlassoEffects} does inference -- namely construction of confidence intervals and significance testing -- for target variables. Those can be specified either by the variable names, an integer valued vector giving their position in \code{x} or by a logical vector indicating the variables for which inference should be conducted. It returns an object of S3 class \code{rlassoEffects} for which the methods \code{summary}, \code{print}, \code{confint}, and \code{plot} are provided. \code{rlassoEffects} is a wrap function for the function \code{rlassoEffect} which does inference for a single target regressor. The theoretical underpinning is given in \citet{BelloniChernozhukovHansen2011} and for a more general class of models in \citet{BCK2014}.
-The function \code{rlassoEffects} might either be used in the form \code{rlassoEffects(x, y, index)} where \code{x} is a matrix, \code{y} denotes the outcome variable and \code{index} specifies the variables of \code{x} for which inference is conducted. This can done by an integer vector (postion of the variables), a logical vector or the name of the variables. An alternative usage is as \code{rlassoEffects(formula, data, I)} where \code{I} is a one-sided formula which specifies the variables for which is inference is conducted. For further details we refer to the help page of the function and the following examples where both methods for usage are shown.
+The function \code{rlassoEffects} might either be used in the form \code{rlassoEffects(x, y, index)} where \code{x} is a matrix, \code{y} denotes the outcome variable and \code{index} specifies the variables of \code{x} for which inference is conducted. This can done by an integer vector (position of the variables), a logical vector or the name of the variables. An alternative usage is as \code{rlassoEffects(formula, data, I)} where \code{I} is a one-sided formula which specifies the variables for which is inference is conducted. For further details we refer to the help page of the function and the following examples where both methods for usage are shown.
 
 
 Here is an example of the use.
@@ -493,7 +493,7 @@ plot(lasso.effect, main="Confidence Intervals")
 For logistic regression we provide the functions \code{rlassologit} and \code{rlassologitEffects}. Further information can be found in the help.
 
 \subsection{Application: the effect of gender on wage}
-In Labour Economics an important question is how the wage is related to the gender of the employed. We use US census data from the year 2012 to analyse the effect of gender and interaction effects of other variables with gender on wage jointly. The dependent variable is the logarithm of the wage, the target variable is \texttt{female} (in combination with other variables). All other variables denote some other socio-economic characteristics, e.g. marital status, education, and experience.  For a detailed description of the variables we refer to the help page.
+In Labor Economics an important question is how the wage is related to the gender of the employed. We use US census data from the year 2012 to analyse the effect of gender and interaction effects of other variables with gender on wage jointly. The dependent variable is the logarithm of the wage, the target variable is \texttt{female} (in combination with other variables). All other variables denote some other socio-economic characteristics, e.g. marital status, education, and experience.  For a detailed description of the variables we refer to the help page.
 
 First, we load and prepare the data.
 <<cps_example>>=
@@ -652,7 +652,7 @@ and high-dimensional $x_i$ the algorithm described in \citet{CHS:ManyIVNote} is 
  uses post-Lasso for partialling out.  By setting \code{post=FALSE}
  we can employ Lasso instead of Post-Lasso. Finally, the package provides the standard function \code{tsls}, which implements the \textquotedblleft classical\textquotedblright\ two-stage least squares estimation.
 
-\textbf{Fucntion usage} Both the family of \code{rlassoIV}-functions and the family of the functions for treatment effects , which are introduced in the next section, allow use with both formula-interface and by handing over the prepard model matrices. Hence the general pattern  for use with formula is \code{function(formula, data, ...)} where formula consists of two-parts and is a member of the class \code{Formula}. These formulas are of the pattern \code{y ~ d + x | x + z} where \code{y} is the outcome variable, \code{x} are exogenous variables, \code{d} endogenous varialbes (if several ones are allowed depends on the concrete function), and \code{z} denote the instrumental variables. A more primitive use of the functions is by simply hand over the required group of variables as matrices: \code{function(x=x, d=d, y=y, z=z)}. In some of the following examples both alternatives are displayed.   
+\textbf{Function usage} Both the family of \code{rlassoIV}-functions and the family of the functions for treatment effects , which are introduced in the next section, allow use with both formula-interface and by handing over the prepared model matrices. Hence the general pattern  for use with formula is \code{function(formula, data, ...)} where formula consists of two-parts and is a member of the class \code{Formula}. These formulas are of the pattern \code{y ~ d + x | x + z} where \code{y} is the outcome variable, \code{x} are exogenous variables, \code{d} endogenous variables (if several ones are allowed depends on the concrete function), and \code{z} denote the instrumental variables. A more primitive use of the functions is by simply hand over the required group of variables as matrices: \code{function(x=x, d=d, y=y, z=z)}. In some of the following examples both alternatives are displayed.   
 
 \subsection{Application: Economic Development and Institutions}
 Estimating the causal effect of institutions on output is complicated by the simultaneity between institutions and output: specifically, better institutions may
@@ -955,7 +955,7 @@ where the number of potential causes $p_1$ could be very large and the number of
 
 Under approximate sparsity of $ \alpha = (\alpha_l)_{l=1}^{p_1}$
 and $\beta = (\beta_l)_{l=1}^{p_2}$, we can use Lasso-based method of \cite{BCK2014} for
-estimating $(\alpha_l)_{l=1}^{p_1}$ and constructing a joint confidence band on  $(\alpha_l)_{l=1}^{p_1}$ and then checking which $\alpha_l$'s are significantly different from zero. The approach is based on buliding orthogonal estimating equations for each of $(\alpha_l)_{l=1}^{p_1}$, and can be interpreted as doing Frisch-Waugh procedure for each coefficient of interest, where we do partialling out via Lasso or OLS-after-Lasso.
+estimating $(\alpha_l)_{l=1}^{p_1}$ and constructing a joint confidence band on  $(\alpha_l)_{l=1}^{p_1}$ and then checking which $\alpha_l$'s are significantly different from zero. The approach is based on building orthogonal estimating equations for each of $(\alpha_l)_{l=1}^{p_1}$, and can be interpreted as doing Frisch-Waugh procedure for each coefficient of interest, where we do partialling out via Lasso or OLS-after-Lasso.
 
 
 This procedure is implemented in the R package \texttt{hdm}. Here is
@@ -1010,7 +1010,7 @@ p.rw = p_adjust(rl, method = "RW", B = 1000)
 sum(p.rw[,2]<0.05)
 @
 
-More methods to adjust for multiple testing as provided by the \texttt{p.adjust()} command from the R base package are available, for instance the Bonferroni adjustment or FDR-controling methods like the Benjamini-Hochberg correction. 
+More methods to adjust for multiple testing as provided by the \texttt{p.adjust()} command from the R base package are available, for instance the Bonferroni adjustment or FDR-controlling methods like the Benjamini-Hochberg correction. 
 <<siminf3>>=
 # Adjust with Bonferroni correction
 p.bonf = p_adjust(rl, method = "bonferroni")
@@ -1100,11 +1100,11 @@ the distribution of characteristics of federal circuit court judges in a given c
 The four data sets differ mainly in the dependent variable, which can be repeat-sales FHFA/OFHEO house price index for metro (FHFA) and non-metro (NM) areas , the Case-Shiller home price index (CS), and state-level GDP from the Bureau of Economic Analysis. 
 
 \subsection{BLP data}
-This data set was analyzed in the seminal contribution of \cite{BLP} and stems from annual issues of the Automotive News Market Data Book. The data set inlcudes information on all models marketed during the the periord beginning 1971 and ending in 1990 cotaining 2217 model/years from 997 distinct models. A detailed description is given in \cite{BLP}, p. 868--871. The function \code{constructIV} constructs instrumental variables along the lines described and used in \cite{BLP}. The data set is loaded by
+This data set was analyzed in the seminal contribution of \cite{BLP} and stems from annual issues of the Automotive News Market Data Book. The data set includes information on all models marketed during the the period beginning 1971 and ending in 1990 containing 2217 model/years from 997 distinct models. A detailed description is given in \cite{BLP}, p. 868--871. The function \code{constructIV} constructs instrumental variables along the lines described and used in \cite{BLP}. The data set is loaded by
 <<results="hide">>=
 data(BLP)
 @
-It contains information on the price (in logartihm), the market share, and car characteristics like miles per gallon, miles per dollar, horse power per weight, space and air conditioning.
+It contains information on the price (in logarithm), the market share, and car characteristics like miles per gallon, miles per dollar, horse power per weight, space and air conditioning.
 
 \subsection{CPS data}
 The CPS is a monthly U.S. household survey conducted jointly by the U.S. Census Bureau and the Bureau of Labor Statistics. The data were collected for the year 2012. The sample comprises white non-Hispanic, ages 25-54, working full time full year (35+ hours per week at least 50 weeks), exclude living in group quarters, self-employed, military, agricultural, and private household sector, allocated earning, inconsistent report on earnings and employment, missing data.
