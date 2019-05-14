@@ -11,19 +11,22 @@ disturbances}
 rlasso(x, ...)
 
 \method{rlasso}{formula}(formula, data = NULL, post = TRUE,
-  intercept = TRUE, model = TRUE, penalty = list(homoscedastic = FALSE,
-  X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma = 0.1/log(n)),
-  control = list(numIter = 15, tol = 10^-5, threshold = NULL), ...)
+  intercept = TRUE, model = TRUE, penalty = list(homoscedastic =
+  FALSE, X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma =
+  0.1/log(n)), control = list(numIter = 15, tol = 10^-5, threshold =
+  NULL), ...)
 
-\method{rlasso}{character}(x, data = NULL, post = TRUE, intercept = TRUE,
-  model = TRUE, penalty = list(homoscedastic = FALSE, X.dependent.lambda =
-  FALSE, lambda.start = NULL, c = 1.1, gamma = 0.1/log(n)),
-  control = list(numIter = 15, tol = 10^-5, threshold = NULL), ...)
+\method{rlasso}{character}(x, data = NULL, post = TRUE,
+  intercept = TRUE, model = TRUE, penalty = list(homoscedastic =
+  FALSE, X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma =
+  0.1/log(n)), control = list(numIter = 15, tol = 10^-5, threshold =
+  NULL), ...)
 
 \method{rlasso}{default}(x, y, post = TRUE, intercept = TRUE,
-  model = TRUE, penalty = list(homoscedastic = FALSE, X.dependent.lambda =
-  FALSE, lambda.start = NULL, c = 1.1, gamma = 0.1/log(n)),
-  control = list(numIter = 15, tol = 10^-5, threshold = NULL), ...)
+  model = TRUE, penalty = list(homoscedastic = FALSE,
+  X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma =
+  0.1/log(n)), control = list(numIter = 15, tol = 10^-5, threshold =
+  NULL), ...)
 }
 \arguments{
 \item{x}{regressors (vector, matrix or object can be coerced to matrix)}

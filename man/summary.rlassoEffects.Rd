@@ -7,8 +7,8 @@
 \usage{
 \method{summary}{rlassoEffects}(object, ...)
 
-\method{print}{summary.rlassoEffects}(x, digits = max(3L, getOption("digits")
-  - 3L), ...)
+\method{print}{summary.rlassoEffects}(x, digits = max(3L,
+  getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{object}{an object of class \code{rlassoEffects}, usually a result of a call to \code{rlassoEffects}}

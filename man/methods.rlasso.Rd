@@ -6,12 +6,10 @@
 \alias{predict.rlasso}
 \alias{model.matrix.rlasso}
 \alias{summary.rlasso}
-\alias{model.matrix.rlasso}
-\alias{predict.rlasso}
 \title{Methods for S3 object \code{rlasso}}
 \usage{
-\method{print}{rlasso}(x, all = TRUE, digits = max(3L, getOption("digits") -
-  3L), ...)
+\method{print}{rlasso}(x, all = TRUE, digits = max(3L,
+  getOption("digits") - 3L), ...)
 
 \method{summary}{rlasso}(object, all = TRUE, digits = max(3L,
   getOption("digits") - 3L), ...)

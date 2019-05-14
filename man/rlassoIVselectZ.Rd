@@ -8,8 +8,8 @@
 \usage{
 rlassoIVselectZ(x, ...)
 
-\method{rlassoIVselectZ}{default}(x, d, y, z, post = TRUE, intercept = TRUE,
-  ...)
+\method{rlassoIVselectZ}{default}(x, d, y, z, post = TRUE,
+  intercept = TRUE, ...)
 
 \method{rlassoIVselectZ}{formula}(formula, data, post = TRUE,
   intercept = TRUE, ...)

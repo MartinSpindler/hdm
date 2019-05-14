@@ -5,18 +5,16 @@
 \alias{methods.rlassoEffects}
 \alias{confint.rlassoEffects}
 \alias{plot.rlassoEffects}
-\alias{confint.rlassoEffects}
-\alias{plot.rlassoEffects}
 \title{Methods for S3 object \code{rlassoEffects}}
 \usage{
-\method{print}{rlassoEffects}(x, digits = max(3L, getOption("digits") - 3L),
-  ...)
+\method{print}{rlassoEffects}(x, digits = max(3L, getOption("digits") -
+  3L), ...)
 
-\method{confint}{rlassoEffects}(object, parm, level = 0.95, joint = FALSE,
-  ...)
+\method{confint}{rlassoEffects}(object, parm, level = 0.95,
+  joint = FALSE, ...)
 
-\method{plot}{rlassoEffects}(x, joint = FALSE, level = 0.95, main = "",
-  xlab = "coef", ylab = "", xlim = NULL, ...)
+\method{plot}{rlassoEffects}(x, joint = FALSE, level = 0.95,
+  main = "", xlab = "coef", ylab = "", xlim = NULL, ...)
 }
 \arguments{
 \item{x}{an object of class \code{rlassoEffects}}

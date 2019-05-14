@@ -37,7 +37,7 @@
 #' set.seed(1)
 #' n = 100 #sample size
 #' p = 100 # number of variables
-#' s = 3 # nubmer of non-zero variables
+#' s = 3 # number of non-zero variables
 #' X = matrix(rnorm(n*p), ncol=p)
 #' colnames(X) <- paste("X", 1:p, sep="")
 #' beta = c(rep(3,s), rep(0,p-s))
@@ -536,8 +536,27 @@ print.summary.rlassoEffects <- function(x, digits = max(3L, getOption("digits") 
 #' the selection matrix will also indicate the selection of the target coefficients that are specified in the  \code{rlassoEffects} call. 
 #' @param complete general option of the function \code{coef}.
 #' @param ... further arguments passed to functions coef or print. 
-#' @rdname coef.rlassoEffects
 #' @export
+#' @rdname coef.rlassoEffects
+#' @examples
+#' library(hdm)
+#' set.seed(1)
+#' n = 100 #sample size
+#' p = 100 # number of variables
+#' s = 7 # number of non-zero variables
+#' X = matrix(rnorm(n*p), ncol=p)
+#' colnames(X) <- paste("X", 1:p, sep="")
+#' beta = c(rep(3,s), rep(0,p-s))
+#' y = 1 + X%*%beta + rnorm(n)
+#' data = data.frame(cbind(y,X))
+#' colnames(data)[1] <- "y"
+#' lasso.effect = rlassoEffects(X, y, index=c(1,2,3,50), 
+#'                              method = "double selection")
+#' coef(lasso.effect) # standard use of coef() - without selection matrix
+#' # with selection matrix
+#' coef(lasso.effect, selection.matrix = TRUE)
+#' # prettier output with print_coef (identical options as coef())
+#' print_coef(lasso.effect, selection.matrix = TRUE) 
 coef.rlassoEffects <- function(object, complete = TRUE, selection.matrix = FALSE, include.targets = FALSE, ...) {
   
   cf <- object$coefficients
@@ -619,6 +638,24 @@ coef.rlassoEffects <- function(object, complete = TRUE, selection.matrix = FALSE
 #' @rdname print_coef
 #' @aliases print_coef.rlassoEffects
 #' @export
+#' @examples
+#' library(hdm)
+#' set.seed(1)
+#' n = 100 #sample size
+#' p = 100 # number of variables
+#' s = 7 # number of non-zero variables
+#' X = matrix(rnorm(n*p), ncol=p)
+#' colnames(X) <- paste("X", 1:p, sep="")
+#' beta = c(rep(3,s), rep(0,p-s))
+#' y = 1 + X%*%beta + rnorm(n)
+#' data = data.frame(cbind(y,X))
+#' colnames(data)[1] <- "y"
+#' lasso.effect = rlassoEffects(X, y, index=c(1,2,3,50), 
+#'                              method = "double selection")
+#' # without target coefficient estimates
+#' print_coef(lasso.effect, selection.matrix = TRUE) 
+#' # with target coefficient estimates
+#' print_coef(lasso.effect, selection.matrix = TRUE, targets = TRUE) 
 print_coef <-  function(x, ...){
   UseMethod("print_coef")
 }
@@ -648,6 +685,6 @@ print_coef.rlassoEffects <- function(x, complete = TRUE, selection.matrix = FALS
     cat("_ _ _ \n")
     print("'-' indicates a target variable; ")
     print("'x' indicates that a variable has been selected with rlassoEffects (coefficient is different from zero);") 
-    print("'o' indicates that a variable has been de-selected with rlassoEffects (coefficient is zero).")
+    print("'.' indicates that a variable has been de-selected with rlassoEffects (coefficient is zero).")
   }
 }

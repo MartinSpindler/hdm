@@ -4,13 +4,12 @@
 \alias{print.tsls}
 \alias{methods.tsls}
 \alias{summary.tsls}
-\alias{summary.tsls}
 \title{Methods for S3 object \code{tsls}}
 \usage{
 \method{print}{tsls}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
-\method{summary}{tsls}(object, digits = max(3L, getOption("digits") - 3L),
-  ...)
+\method{summary}{tsls}(object, digits = max(3L, getOption("digits") -
+  3L), ...)
 }
 \arguments{
 \item{x}{an object of class \code{tsls}}
