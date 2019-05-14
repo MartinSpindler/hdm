@@ -15,7 +15,11 @@ The current development version of the `hdm` package is maintained in this repos
 
 The stable package release is available at [CRAN](https://CRAN.R-project.org/package=hdm). The stable release version can be installed by typing `install.packages("hdm")` in `R`.
 
+## Getting Started: Vignette
 
+After installation, uses can get started by following the vignette that is available via the command `vignette("hdm")`. 
+ 
+ 
 ## References
 
 V. Chernozhukov, C. Hansen and M. Spindler (2016). "hdm: High-dimensional metrics." arXiv preprint arXiv:1608.00354 (2016), [available online](https://arxiv.org/abs/1603.01700).
