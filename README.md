@@ -11,11 +11,11 @@ R is an open source software project and can be freely downloaded from the CRAN 
 
 The current development version of the `hdm` package is maintained in this repository and can be installed by the command `devtools::install_github("MartinSpindler/hdm")`. Note that the `devtools` package is required for this command.
 
-## Stable Release
+### Stable Release
 
 The stable package release is available at [CRAN](https://CRAN.R-project.org/package=hdm). The stable release version can be installed by typing `install.packages("hdm")` in `R`.
 
-## Getting Started: Vignette
+### Getting Started: Vignette
 
 After installation, uses can get started by following the vignette that is available via the command `vignette("hdm")`. 
  
