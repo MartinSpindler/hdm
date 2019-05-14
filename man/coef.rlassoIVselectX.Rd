@@ -17,10 +17,10 @@
 \item{selection.matrix}{if TRUE, a selection matrix is returned that indicates the selected variables from each regression.
 Default is set to FALSE. See section on details for more information.}
 
-\item{...}{further arguments passed to functions coef or print.}
+\item{...}{further arguments passed to functions coef.}
 }
 \description{
-Method to extract coefficients from objects of class \code{rlassoIVselectX}.
+Method to extract coefficients and selection matrix from objects of class \code{rlassoIVselectX}.
 }
 \details{
 Printing coefficients and selection matrix for S3 object \code{rlassoIVselectX}. The first column of the selection matrix reports the selection index for the lasso regression of \code{y} on \code{x} in the specified

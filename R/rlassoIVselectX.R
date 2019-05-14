@@ -182,7 +182,7 @@ confint.rlassoIVselectX <- function(object, parm, level=0.95, ...) {
 
 #' Coefficients from S3 objects \code{rlassoIVselectX}
 #'
-#' Method to extract coefficients from objects of class \code{rlassoIVselectX}.
+#' Method to extract coefficients and selection matrix from objects of class \code{rlassoIVselectX}.
 #' 
 #' Printing coefficients and selection matrix for S3 object \code{rlassoIVselectX}. The first column of the selection matrix reports the selection index for the lasso regression of \code{y} on \code{x} in the specified
 #' \code{rlassoIVselectX} command. \code{"x"} indicates that a variable has been selected, i.e., the corresponding estimated coefficient is different from zero.
@@ -195,7 +195,7 @@ confint.rlassoIVselectX <- function(object, parm, level=0.95, ...) {
 #' @param selection.matrix if TRUE, a selection matrix is returned that indicates the selected variables from each regression.
 #' Default is set to FALSE. See section on details for more information. 
 #' @param complete general option of the function \code{coef}.
-#' @param ... further arguments passed to functions coef or print. 
+#' @param ... further arguments passed to functions coef. 
 #' @export
 #' @rdname coef.rlassoIVselectX
 #' @examples

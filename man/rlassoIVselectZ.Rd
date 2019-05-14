@@ -40,7 +40,7 @@ If not found in data, the variables are taken from environment(formula), typical
 An object of class \code{rlassoIVselectZ} containing at least the following
 components: \item{coefficients}{estimated parameter vector}
 \item{vcov}{variance-covariance matrix} \item{residuals}{
-residuals} \item{samplesize}{sample size} \item{selected}{matrix of selected variables in the first stage for each endogenous variable}
+residuals} \item{samplesize}{sample size} \item{selection.matrix}{matrix of selected variables in the first stage for each endogenous variable}
 }
 \description{
 This function selects the instrumental variables in the first stage by

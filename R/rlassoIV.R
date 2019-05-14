@@ -82,12 +82,21 @@ rlassoIV.default <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE, post 
       message("No variables in the Lasso regression of d on z and x selected")
       return(list(alpha = NA, se = NA))
     }
-    ind.dzx <- lasso.d.zx$index
+    selection.matrixZ <- matrix(NA, ncol = dim(d)[2], nrow = dim(Z)[2])
+    rownames(selection.matrixZ) <- colnames(Z)
+    colnames(selection.matrixZ) <- colnames(d)
+    selection.matrixZ[,1] <- ind.dzx <- lasso.d.zx$index
+    
     #PZ <- Z[, ind.dzx] %*% MASS::ginv(t(Z[, ind.dzx]) %*% Z[, ind.dzx]) %*% 
     #  t(Z[, ind.dzx]) %*% d
     PZ <- as.matrix(predict(lasso.d.zx))
     lasso.PZ.x <- rlasso(x, PZ, post = post, ...)
-    ind.PZx <- lasso.PZ.x$index
+    
+    selection.matrix <- matrix(NA, ncol = (1 + dim(d)[2]), nrow = dim(x)[2])
+    rownames(selection.matrix) <- colnames(x)
+    colnames(selection.matrix) <- c("y", colnames(d))
+    selection.matrix[ , 1] <- lasso.y.x$index
+    selection.matrix[ , 2] <- ind.PZx <- lasso.PZ.x$index
     
     if (sum(ind.PZx) == 0) {
       Dr <- d - mean(d)
@@ -112,7 +121,7 @@ rlassoIV.default <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE, post 
     se <- diag(sqrt(result$vcov))
     names(coef) <- names(se) <- colnames(d)
     res <- list(coefficients = coef, se = se, vcov = vcov, call = match.call(), 
-                samplesize = n)
+                samplesize = n, selection.matrixZ = selection.matrixZ, selection.matrix = selection.matrix)
     class(res) <- "rlassoIV"
     return(res)
   }
@@ -222,6 +231,9 @@ confint.rlassoIV <- function(object, parm, level = 0.95, ...) {
   invisible(ci)
 }
 
+# 
+# coef.rlassoIV <-  function(object, complete = TRUE, selection.matrix = FALSE, ...){
+# }
 ############################################################################################
 
 #' @rdname rlassoIV
