@@ -57,16 +57,27 @@ rlassoIVselectX.default <- function(x,d,y,z, post=TRUE, ...) {
   lasso.y.x <- rlasso(y ~ x, post=post, ...)
   Yr <- y - predict(lasso.y.x)
   Zr <- matrix(NA, nrow=n, ncol=numIV)
+  
+  k <- 1 + dim(d)[2] + numIV 
+  selection.matrix <- matrix(NA, ncol = k, nrow = dim(x)[2])
+  colnames(selection.matrix) <- c("y", colnames(d),  colnames(z))
+  rownames(selection.matrix) <- colnames(x)
+  selection.matrix[,1] <- lasso.y.x$index
+  selection.matrix[,2] <- lasso.d.x$index
+  
   for (i in seq(length.out=numIV)) {
   lasso.z.x <- rlasso(z[,i] ~ x, post=post, ...)
   Zr[,i] <- z[,i] - predict(lasso.z.x)
+  selection.matrix[, i + 2] <- lasso.z.x$index
   }
   result <- tsls(y = Yr,d = Dr,x=NULL, z = Zr, intercept=FALSE)
   coef <- as.vector(result$coefficient)
   se <- diag(sqrt(result$vcov))
   vcov <- result$vcov
+  
   names(coef) <- names(se) <- colnames(d)
-  res <- list(coefficients=coef, se=se, vcov=vcov, call=match.call(), samplesize=n)
+  res <- list(coefficients=coef, se=se, vcov=vcov, call=match.call(), samplesize=n, 
+              selection.matrix = selection.matrix)
   class(res) <- "rlassoIVselectX"
   return(res)
 }
@@ -169,3 +180,70 @@ confint.rlassoIVselectX <- function(object, parm, level=0.95, ...) {
   invisible(ci)
 }
 
+#' Coefficients from S3 objects \code{rlassoIVselectX}
+#'
+#' Method to extract coefficients from objects of class \code{rlassoIVselectX}.
+#' 
+#' Printing coefficients and selection matrix for S3 object \code{rlassoIVselectX}. The first column of the selection matrix reports the selection index for the lasso regression of \code{y} on \code{x} in the specified
+#' \code{rlassoIVselectX} command. \code{"x"} indicates that a variable has been selected, i.e., the corresponding estimated coefficient is different from zero.
+#' The second column contains the selection index for the lasso regression of \code{d} on \code{x} and the remaining columns
+#' the index of selected variables \code{x} for the instruments \code{z}. The very last column collects all variables that have been selected in at least one of the lasso regressions. 
+#' 
+#' @param object an object of class \code{rlassoIVselectX}, usually a result of a call 
+#' \code{rlassoIVselectX} or \code{rlassoIV} with options \code{select.X=TRUE} and
+#' \code{select.Z=FALSE}.
+#' @param selection.matrix if TRUE, a selection matrix is returned that indicates the selected variables from each regression.
+#' Default is set to FALSE. See section on details for more information. 
+#' @param complete general option of the function \code{coef}.
+#' @param ... further arguments passed to functions coef or print. 
+#' @export
+#' @rdname coef.rlassoIVselectX
+#' @examples
+#' library(hdm)
+#' data(AJR); y = AJR$GDP; d = AJR$Exprop; z = AJR$logMort
+#' x = model.matrix(~ -1 + (Latitude + Latitude2 + Africa + 
+#'                            Asia + Namer + Samer)^2, data=AJR)
+#AJR.Xselect = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=FALSE)
+#' AJR.Xselect = rlassoIV(GDP ~ Exprop +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2 |
+#'                          logMort +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2,
+#'                        data=AJR, select.X=TRUE, select.Z=FALSE)
+#' coef(AJR.Xselect) # Default behavior
+#' coef(AJR.Xselect, selection.matrix = TRUE) # print selection matrix
+coef.rlassoIVselectX <-  function(object, complete = TRUE, selection.matrix = FALSE, ...){
+  
+  cf <- object$coefficients
+  
+  if (selection.matrix == TRUE) {
+    
+    mat <- object$selection.matrix
+    
+    dmat2 <- dim(mat)[2]
+    rnames <- rownames(mat)
+    mat <- cbind(mat, as.logical(apply(mat, 1, sum)))
+    colnames(mat)[dim(mat)[2]] <- "global"
+    mat <- rbind(mat, apply(mat, 2, sum, na.rm = TRUE))
+    mat <- apply(mat, 2, function(x) gsub(1, "x", x))
+    mat <- apply(mat, 2, function(x) gsub(0, ".", x))
+    # mat[is.na(mat)] <- "-"
+    rownames(mat) <- c(rnames, "sum")
+    
+    if (complete) {
+      coef <- list(cf = cf, selection.matrix = mat)
+      return(coef)
+    }
+    
+    else {
+      coef <- list(cf = cf[!is.na(cf)], selection.matrix = mat)
+      return(coef)
+    } 
+  }
+  else {
+    if (complete) {
+      return(cf)
+    }
+    
+    else {
+      return(cf[!is.na(cf)])
+    } 
+  }
+}

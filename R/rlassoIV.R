@@ -64,7 +64,6 @@ rlassoIV.default <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE, post 
   
   if (select.Z == TRUE && select.X == FALSE) {
     res <- rlassoIVselectZ(x, d, y, z, post = post, ...)
-    
     return(res)
   }
   
