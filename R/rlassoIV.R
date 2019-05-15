@@ -231,9 +231,80 @@ confint.rlassoIV <- function(object, parm, level = 0.95, ...) {
   invisible(ci)
 }
 
-# 
-# coef.rlassoIV <-  function(object, complete = TRUE, selection.matrix = FALSE, ...){
-# }
+#' Coefficients from S3 objects \code{rlassoIV}
+#'
+#' Method to extract coefficients from objects of class \code{rlassoIV}.
+#' 
+#' Printing coefficients and selection matrix for S3 object \code{rlassoIV}. \code{"x"} indicates that a variable has been selected, i.e., the corresponding estimated coefficient is different from zero.
+#' The very last column collects all variables that have been selected in at least one of the lasso regressions represented in the \code{selection.matrix}. 
+#' \code{rlassoIV} performs three lasso regression steps. A first stage lasso regression of the endogenous treatment variable \code{d} on the instruments \code{z} and exogenous covariates \code{x},
+#' a lasso regression of \code{y} on the exogenous variables \code{x}, and a lasso regression of the instrumented treatment variable, i.e., a regression of the predicted values of \code{d}, on controls \code{x}. 
+#'
+#' @param object an object of class \code{rlassoIV}, usually a result of a call \code{rlassoIV} with options \code{select.X=TRUE} and \code{select.Z=TRUE}.
+#' @param selection.matrix if TRUE, a selection matrix is returned that indicates the selected variables from each first stage regression.
+#' Default is set to FALSE. See section on details for more information.
+#' @param complete general option of the function \code{coef}.
+#' @param ... further arguments passed to function coef.
+#' @return Coefficients obtained from \code{rlassoIV} by default. If option \code{selection.matrix} is \code{TRUE}, a list is returned with final coefficients, a matrix \code{selection.matrix}, and a matrix \code{selection.matrixZ}: 
+#' \code{selection.matrix} contains the selection index for the lasso regression of \code{y} on \code{x} (first column) and the lasso regression of the predicted values of \code{d} on \code{x}
+#' together with the union of these indizes.
+#' \code{selection.matrixZ} contains the selection index from the first-stage lasso regression of \code{d} on \code{z} and \code{x}. 
+
+#' @export
+#' @rdname coef.rlassoIV
+coef.rlassoIV <-  function(object, complete = TRUE, selection.matrix = FALSE, ...) {
+  
+  cf <- object$coefficients
+  
+  if (selection.matrix == TRUE) {
+      
+      mat <- object$selection.matrix
+      dmat2 <- dim(mat)[2]
+      rnames <- rownames(mat)
+      mat <- cbind(mat, as.logical(apply(mat, 1, sum)))
+      colnames(mat)[dim(mat)[2]] <- "global"
+      mat <- rbind(mat, apply(mat, 2, sum, na.rm = TRUE))
+      mat <- apply(mat, 2, function(x) gsub(1, "x", x))
+      mat <- apply(mat, 2, function(x) gsub(0, ".", x))
+      # mat[is.na(mat)] <- "-"
+      rownames(mat) <- c(rnames, "sum")
+    
+      # selection w.r.t. 
+      matZ <- object$selection.matrixZ
+      dmatZ2 <- dim(matZ)[2]
+      Zrnames <- rownames(matZ)
+      matZ <- cbind(matZ, as.logical(apply(matZ, 1, sum)))
+      colnames(matZ)[dim(matZ)[2]] <- "global"
+      matZ <- rbind(matZ, apply(matZ, 2, sum, na.rm = TRUE))
+      matZ <- apply(matZ, 2, function(x) gsub(1, "x", x))
+      matZ <- apply(matZ, 2, function(x) gsub(0, ".", x))
+      # mat[is.na(matZ)] <- "-"
+      rownames(matZ) <- c(Zrnames, "sum")
+      
+      if (complete) {
+        coef <- list(cf = cf, selection.matrix = mat, 
+                     selection.matrixZ = matZ)
+        return(coef)
+      }
+      
+      else {
+        coef <- list(cf = cf[!is.na(cf)], selection.matrix = mat, 
+                     selection.matrixZ = matZ)
+        return(coef)
+      } 
+  }
+  
+ else {
+    if (complete) {
+      return(cf)
+    }
+    
+    else {
+      return(cf[!is.na(cf)])
+    } 
+  }
+}
+
 ############################################################################################
 
 #' @rdname rlassoIV
