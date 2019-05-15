@@ -226,6 +226,18 @@ confint.rlassoIVselectZ <- function(object, parm, level = 0.95, ...) {
 #' @param ... further arguments passed to functions coef. 
 #' @export
 #' @rdname coef.rlassoIVselectZ
+#' @examples
+#' \dontrun{
+#' lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+#' data(EminentDomain)
+#' z <- EminentDomain$logGDP$z # instruments
+#' x <- EminentDomain$logGDP$x # exogenous variables
+#' y <- EminentDomain$logGDP$y # outcome varialbe
+#' d <- EminentDomain$logGDP$d # treatment / endogenous variable
+#' lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+#' coef(lasso.IV.Z) # Default behavior
+#' coef(lasso.IV.Z, selection.matrix = T)
+#' }
 coef.rlassoIVselectZ <-  function(object, complete = TRUE, selection.matrix = FALSE, ...){
   
   cf <- object$coefficients

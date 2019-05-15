@@ -29,6 +29,7 @@ The second column contains the selection index for the lasso regression of \code
 the index of selected variables \code{x} for the instruments \code{z}. The very last column collects all variables that have been selected in at least one of the lasso regressions.
 }
 \examples{
+\dontrun{
 library(hdm)
 data(AJR); y = AJR$GDP; d = AJR$Exprop; z = AJR$logMort
 x = model.matrix(~ -1 + (Latitude + Latitude2 + Africa + 
@@ -38,4 +39,5 @@ AJR.Xselect = rlassoIV(GDP ~ Exprop +  (Latitude + Latitude2 + Africa + Asia + N
                        data=AJR, select.X=TRUE, select.Z=FALSE)
 coef(AJR.Xselect) # Default behavior
 coef(AJR.Xselect, selection.matrix = TRUE) # print selection matrix
+}
 }

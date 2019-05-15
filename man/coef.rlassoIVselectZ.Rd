@@ -27,3 +27,16 @@ Printing coefficients and selection matrix for S3 object \code{rlassoIVselectZ}.
 \code{rlassoIVselectZ} command, i.e., the selected variables for each of the endogenous variables. \code{"x"} indicates that a variable has been selected, i.e., the corresponding estimated coefficient is different from zero.
 The very last column collects all variables that have been selected in at least one of the lasso regressions.
 }
+\examples{
+\dontrun{
+lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+data(EminentDomain)
+z <- EminentDomain$logGDP$z # instruments
+x <- EminentDomain$logGDP$x # exogenous variables
+y <- EminentDomain$logGDP$y # outcome varialbe
+d <- EminentDomain$logGDP$d # treatment / endogenous variable
+lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+coef(lasso.IV.Z) # Default behavior
+coef(lasso.IV.Z, selection.matrix = T)
+}
+}

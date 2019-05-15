@@ -199,16 +199,17 @@ confint.rlassoIVselectX <- function(object, parm, level=0.95, ...) {
 #' @export
 #' @rdname coef.rlassoIVselectX
 #' @examples
+#' \dontrun{
 #' library(hdm)
 #' data(AJR); y = AJR$GDP; d = AJR$Exprop; z = AJR$logMort
 #' x = model.matrix(~ -1 + (Latitude + Latitude2 + Africa + 
 #'                            Asia + Namer + Samer)^2, data=AJR)
-#AJR.Xselect = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=FALSE)
 #' AJR.Xselect = rlassoIV(GDP ~ Exprop +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2 |
 #'                          logMort +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2,
 #'                        data=AJR, select.X=TRUE, select.Z=FALSE)
 #' coef(AJR.Xselect) # Default behavior
 #' coef(AJR.Xselect, selection.matrix = TRUE) # print selection matrix
+#' }
 coef.rlassoIVselectX <-  function(object, complete = TRUE, selection.matrix = FALSE, ...){
   
   cf <- object$coefficients

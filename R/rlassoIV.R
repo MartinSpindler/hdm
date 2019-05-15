@@ -249,9 +249,19 @@ confint.rlassoIV <- function(object, parm, level = 0.95, ...) {
 #' \code{selection.matrix} contains the selection index for the lasso regression of \code{y} on \code{x} (first column) and the lasso regression of the predicted values of \code{d} on \code{x}
 #' together with the union of these indizes.
 #' \code{selection.matrixZ} contains the selection index from the first-stage lasso regression of \code{d} on \code{z} and \code{x}. 
-
 #' @export
 #' @rdname coef.rlassoIV
+#' @examples 
+#' \dontrun{
+#' data(EminentDomain)
+#' z <- EminentDomain$logGDP$z # instruments
+#' x <- EminentDomain$logGDP$x # exogenous variables
+#' y <- EminentDomain$logGDP$y # outcome varialbe
+#' d <- EminentDomain$logGDP$d # treatment / endogenous variable
+#' lasso.IV = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=TRUE) 
+#' coef(lasso.IV) # default behavior
+#' coef(lasso.IV, selection.matrix = T) # print selection matrix
+#' }
 coef.rlassoIV <-  function(object, complete = TRUE, selection.matrix = FALSE, ...) {
   
   cf <- object$coefficients
@@ -274,7 +284,7 @@ coef.rlassoIV <-  function(object, complete = TRUE, selection.matrix = FALSE, ..
       dmatZ2 <- dim(matZ)[2]
       Zrnames <- rownames(matZ)
       matZ <- cbind(matZ, as.logical(apply(matZ, 1, sum)))
-      colnames(matZ)[dim(matZ)[2]] <- "global"
+      colnames(matZ)[dim(matZ)[2]] <- "global.Z"
       matZ <- rbind(matZ, apply(matZ, 2, sum, na.rm = TRUE))
       matZ <- apply(matZ, 2, function(x) gsub(1, "x", x))
       matZ <- apply(matZ, 2, function(x) gsub(0, ".", x))

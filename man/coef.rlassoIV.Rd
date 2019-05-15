@@ -32,3 +32,15 @@ The very last column collects all variables that have been selected in at least 
 \code{rlassoIV} performs three lasso regression steps. A first stage lasso regression of the endogenous treatment variable \code{d} on the instruments \code{z} and exogenous covariates \code{x},
 a lasso regression of \code{y} on the exogenous variables \code{x}, and a lasso regression of the instrumented treatment variable, i.e., a regression of the predicted values of \code{d}, on controls \code{x}.
 }
+\examples{
+\dontrun{
+data(EminentDomain)
+z <- EminentDomain$logGDP$z # instruments
+x <- EminentDomain$logGDP$x # exogenous variables
+y <- EminentDomain$logGDP$y # outcome varialbe
+d <- EminentDomain$logGDP$d # treatment / endogenous variable
+lasso.IV = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=TRUE) 
+coef(lasso.IV) # default behavior
+coef(lasso.IV, selection.matrix = T) # print selection matrix
+}
+}
