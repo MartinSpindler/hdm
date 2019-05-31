@@ -21,7 +21,7 @@
 #' @return An object of class \code{rlassoIVselectZ} containing at least the following
 #' components: \item{coefficients}{estimated parameter vector}
 #' \item{vcov}{variance-covariance matrix} \item{residuals}{
-#' residuals} \item{samplesize}{sample size} \item{selected}{matrix of selected variables in the first stage for each endogenous variable}
+#' residuals} \item{samplesize}{sample size} \item{selection.matrix}{matrix of selected variables in the first stage for each endogenous variable}
 #' @references D. Belloni, D. Chen, V. Chernozhukov and C. Hansen (2012).
 #' Sparse models and methods for optimal instruments with an application to
 #' eminent domain. \emph{Econometrica} 80 (6), 2369--2429.
@@ -38,7 +38,6 @@ rlassoIVselectZ.default <- function(x, d, y, z, post = TRUE, intercept = TRUE, .
   n <- length(y)
   kex <- dim(x)[2]
   ke <- dim(d)[2]
-  
   
   if (is.null(colnames(d))) 
     colnames(d) <- paste("d", 1:ke, sep = "")
@@ -95,7 +94,8 @@ rlassoIVselectZ.default <- function(x, d, y, z, post = TRUE, intercept = TRUE, .
   
   if (is.null(x)){
   res <- list(coefficients = alpha.hat[1:ke, ], se = sqrt(diag(vcov))[1:ke], 
-              vcov = vcov[1:ke, 1:ke, drop = FALSE], residuals = residuals, samplesize = n, selected = select.mat, 
+              vcov = vcov[1:ke, 1:ke, drop = FALSE], residuals = residuals, samplesize = n, selected = select.mat,
+              selection.matrix =  select.mat,
               call = match.call()) 
   }
   else{
@@ -104,7 +104,7 @@ rlassoIVselectZ.default <- function(x, d, y, z, post = TRUE, intercept = TRUE, .
                   vcov = vcov[1:ke, 1:ke, drop = FALSE], 
                   coefficients.controls = alpha.hat[(ke + 1):(ke + kex), ], se.controls = sqrt(diag(vcov))[(ke + 1):(ke + kex)], 
                   vcov.controls = vcov[(ke + 1):(ke + kex), (ke + 1):(ke + kex), drop = FALSE],
-                  residuals = residuals, samplesize = n, selected = select.mat, 
+                  residuals = residuals, samplesize = n, selected = select.mat, selection.matrix =  select.mat,
                   call = match.call())
     }
   }
@@ -206,6 +206,75 @@ confint.rlassoIVselectZ <- function(object, parm, level = 0.95, ...) {
   ci[] <- cf[parm] + ses %o% fac
   print(ci)
   invisible(ci)
+}
+
+
+#' Coefficients from S3 objects \code{rlassoIVselectZ}
+#'
+#' Method to extract coefficients from objects of class \code{rlassoIVselectZ}.
+#' 
+#' Printing coefficients and selection matrix for S3 object \code{rlassoIVselectZ}. The columns of the selection matrix report the selection index for the first stage lasso regressions as specified
+#' \code{rlassoIVselectZ} command, i.e., the selected variables for each of the endogenous variables. \code{"x"} indicates that a variable has been selected, i.e., the corresponding estimated coefficient is different from zero.
+#' The very last column collects all variables that have been selected in at least one of the lasso regressions. 
+#' 
+#' @param object an object of class \code{rlassoIVselectZ}, usually a result of a call 
+#' \code{rlassoIVselectZ} or \code{rlassoIV} with options \code{select.X=FALSE} and
+#' \code{select.Z=TRUE}.
+#' @param selection.matrix if TRUE, a selection matrix is returned that indicates the selected variables from each first stage regression.
+#' Default is set to FALSE. See section on details for more information. 
+#' @param complete general option of the function \code{coef}.
+#' @param ... further arguments passed to functions coef. 
+#' @export
+#' @rdname coef.rlassoIVselectZ
+#' @examples
+#' \dontrun{
+#' lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+#' data(EminentDomain)
+#' z <- EminentDomain$logGDP$z # instruments
+#' x <- EminentDomain$logGDP$x # exogenous variables
+#' y <- EminentDomain$logGDP$y # outcome varialbe
+#' d <- EminentDomain$logGDP$d # treatment / endogenous variable
+#' lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+#' coef(lasso.IV.Z) # Default behavior
+#' coef(lasso.IV.Z, selection.matrix = T)
+#' }
+coef.rlassoIVselectZ <-  function(object, complete = TRUE, selection.matrix = FALSE, ...){
+  
+  cf <- object$coefficients
+  
+  if (selection.matrix == TRUE) {
+    
+    mat <- object$selection.matrix
+    
+    dmat2 <- dim(mat)[2]
+    rnames <- rownames(mat)
+    mat <- cbind(mat, as.logical(apply(mat, 1, sum)))
+    colnames(mat)[dim(mat)[2]] <- "global"
+    mat <- rbind(mat, apply(mat, 2, sum, na.rm = TRUE))
+    mat <- apply(mat, 2, function(x) gsub(1, "x", x))
+    mat <- apply(mat, 2, function(x) gsub(0, ".", x))
+    # mat[is.na(mat)] <- "-"
+    rownames(mat) <- c(rnames, "sum")
+    
+    if (complete) {
+      coef <- list(cf = cf, selection.matrix = mat)
+      return(coef)
+    }
+    
+    else {
+      coef <- list(cf = cf[!is.na(cf)], selection.matrix = mat)
+      return(coef)
+    } 
+  }
+  else {
+    if (complete) {
+      return(cf)
+    }
+    
+    else {
+      return(cf[!is.na(cf)])
+    } 
+  }
 }
 
 

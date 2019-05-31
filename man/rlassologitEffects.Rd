@@ -9,8 +9,8 @@
 \usage{
 rlassologitEffects(x, ...)
 
-\method{rlassologitEffects}{default}(x, y, index = c(1:ncol(x)), I3 = NULL,
-  post = TRUE, ...)
+\method{rlassologitEffects}{default}(x, y, index = c(1:ncol(x)),
+  I3 = NULL, post = TRUE, ...)
 
 \method{rlassologitEffects}{formula}(formula, data, I, included = NULL,
   post = TRUE, ...)

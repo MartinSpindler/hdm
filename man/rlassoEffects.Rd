@@ -12,11 +12,11 @@ rlassoEffects(x, ...)
 \method{rlassoEffects}{default}(x, y, index = c(1:ncol(x)),
   method = "partialling out", I3 = NULL, post = TRUE, ...)
 
-\method{rlassoEffects}{formula}(formula, data, I, method = "partialling out",
-  included = NULL, post = TRUE, ...)
+\method{rlassoEffects}{formula}(formula, data, I,
+  method = "partialling out", included = NULL, post = TRUE, ...)
 
-rlassoEffect(x, y, d, method = "double selection", I3 = NULL, post = TRUE,
-  ...)
+rlassoEffect(x, y, d, method = "double selection", I3 = NULL,
+  post = TRUE, ...)
 }
 \arguments{
 \item{x}{matrix of regressor variables serving as controls and potential
@@ -73,7 +73,7 @@ library(hdm); library(ggplot2)
 set.seed(1)
 n = 100 #sample size
 p = 100 # number of variables
-s = 3 # nubmer of non-zero variables
+s = 3 # number of non-zero variables
 X = matrix(rnorm(n*p), ncol=p)
 colnames(X) <- paste("X", 1:p, sep="")
 beta = c(rep(3,s), rep(0,p-s))

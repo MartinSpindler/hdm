@@ -4,8 +4,6 @@
 \alias{p_adjust}
 \alias{p_adjust.rlassoEffects}
 \alias{p_adjust.lm}
-\alias{p_adjust.rlassoEffects}
-\alias{p_adjust.lm}
 \title{Multiple Testing Adjustment of p-values for S3 objects \code{rlassoEffects}
 and \code{lm}}
 \usage{
@@ -13,7 +11,8 @@ p_adjust(x, ...)
 
 \method{p_adjust}{rlassoEffects}(x, method = "RW", B = 1000, ...)
 
-\method{p_adjust}{lm}(x, method = "RW", B = 1000, test.index = NULL, ...)
+\method{p_adjust}{lm}(x, method = "RW", B = 1000, test.index = NULL,
+  ...)
 }
 \arguments{
 \item{x}{an object of S3 class \code{rlassoEffects} or \code{lm}.}

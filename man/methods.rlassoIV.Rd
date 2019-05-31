@@ -4,14 +4,14 @@
 \alias{print.rlassoIV}
 \alias{methods.rlassoIV}
 \alias{summary.rlassoIV}
-\alias{summary.rlassoIV}
 \alias{confint.rlassoIV}
 \title{Methods for S3 object \code{rlassoIV}}
 \usage{
-\method{print}{rlassoIV}(x, digits = max(3L, getOption("digits") - 3L), ...)
-
-\method{summary}{rlassoIV}(object, digits = max(3L, getOption("digits") - 3L),
+\method{print}{rlassoIV}(x, digits = max(3L, getOption("digits") - 3L),
   ...)
+
+\method{summary}{rlassoIV}(object, digits = max(3L, getOption("digits") -
+  3L), ...)
 
 \method{confint}{rlassoIV}(object, parm, level = 0.95, ...)
 }

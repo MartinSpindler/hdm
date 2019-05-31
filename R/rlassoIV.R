@@ -64,7 +64,6 @@ rlassoIV.default <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE, post 
   
   if (select.Z == TRUE && select.X == FALSE) {
     res <- rlassoIVselectZ(x, d, y, z, post = post, ...)
-    
     return(res)
   }
   
@@ -83,12 +82,21 @@ rlassoIV.default <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE, post 
       message("No variables in the Lasso regression of d on z and x selected")
       return(list(alpha = NA, se = NA))
     }
-    ind.dzx <- lasso.d.zx$index
+    selection.matrixZ <- matrix(NA, ncol = dim(d)[2], nrow = dim(Z)[2])
+    rownames(selection.matrixZ) <- colnames(Z)
+    colnames(selection.matrixZ) <- colnames(d)
+    selection.matrixZ[,1] <- ind.dzx <- lasso.d.zx$index
+    
     #PZ <- Z[, ind.dzx] %*% MASS::ginv(t(Z[, ind.dzx]) %*% Z[, ind.dzx]) %*% 
     #  t(Z[, ind.dzx]) %*% d
     PZ <- as.matrix(predict(lasso.d.zx))
     lasso.PZ.x <- rlasso(x, PZ, post = post, ...)
-    ind.PZx <- lasso.PZ.x$index
+    
+    selection.matrix <- matrix(NA, ncol = (1 + dim(d)[2]), nrow = dim(x)[2])
+    rownames(selection.matrix) <- colnames(x)
+    colnames(selection.matrix) <- c("y", colnames(d))
+    selection.matrix[ , 1] <- lasso.y.x$index
+    selection.matrix[ , 2] <- ind.PZx <- lasso.PZ.x$index
     
     if (sum(ind.PZx) == 0) {
       Dr <- d - mean(d)
@@ -113,7 +121,7 @@ rlassoIV.default <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE, post 
     se <- diag(sqrt(result$vcov))
     names(coef) <- names(se) <- colnames(d)
     res <- list(coefficients = coef, se = se, vcov = vcov, call = match.call(), 
-                samplesize = n)
+                samplesize = n, selection.matrixZ = selection.matrixZ, selection.matrix = selection.matrix)
     class(res) <- "rlassoIV"
     return(res)
   }
@@ -223,6 +231,90 @@ confint.rlassoIV <- function(object, parm, level = 0.95, ...) {
   invisible(ci)
 }
 
+#' Coefficients from S3 objects \code{rlassoIV}
+#'
+#' Method to extract coefficients from objects of class \code{rlassoIV}.
+#' 
+#' Printing coefficients and selection matrix for S3 object \code{rlassoIV}. \code{"x"} indicates that a variable has been selected, i.e., the corresponding estimated coefficient is different from zero.
+#' The very last column collects all variables that have been selected in at least one of the lasso regressions represented in the \code{selection.matrix}. 
+#' \code{rlassoIV} performs three lasso regression steps. A first stage lasso regression of the endogenous treatment variable \code{d} on the instruments \code{z} and exogenous covariates \code{x},
+#' a lasso regression of \code{y} on the exogenous variables \code{x}, and a lasso regression of the instrumented treatment variable, i.e., a regression of the predicted values of \code{d}, on controls \code{x}. 
+#'
+#' @param object an object of class \code{rlassoIV}, usually a result of a call \code{rlassoIV} with options \code{select.X=TRUE} and \code{select.Z=TRUE}.
+#' @param selection.matrix if TRUE, a selection matrix is returned that indicates the selected variables from each first stage regression.
+#' Default is set to FALSE. See section on details for more information.
+#' @param complete general option of the function \code{coef}.
+#' @param ... further arguments passed to function coef.
+#' @return Coefficients obtained from \code{rlassoIV} by default. If option \code{selection.matrix} is \code{TRUE}, a list is returned with final coefficients, a matrix \code{selection.matrix}, and a matrix \code{selection.matrixZ}: 
+#' \code{selection.matrix} contains the selection index for the lasso regression of \code{y} on \code{x} (first column) and the lasso regression of the predicted values of \code{d} on \code{x}
+#' together with the union of these indizes.
+#' \code{selection.matrixZ} contains the selection index from the first-stage lasso regression of \code{d} on \code{z} and \code{x}. 
+#' @export
+#' @rdname coef.rlassoIV
+#' @examples 
+#' \dontrun{
+#' data(EminentDomain)
+#' z <- EminentDomain$logGDP$z # instruments
+#' x <- EminentDomain$logGDP$x # exogenous variables
+#' y <- EminentDomain$logGDP$y # outcome varialbe
+#' d <- EminentDomain$logGDP$d # treatment / endogenous variable
+#' lasso.IV = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=TRUE) 
+#' coef(lasso.IV) # default behavior
+#' coef(lasso.IV, selection.matrix = T) # print selection matrix
+#' }
+coef.rlassoIV <-  function(object, complete = TRUE, selection.matrix = FALSE, ...) {
+  
+  cf <- object$coefficients
+  
+  if (selection.matrix == TRUE) {
+      
+      mat <- object$selection.matrix
+      dmat2 <- dim(mat)[2]
+      rnames <- rownames(mat)
+      mat <- cbind(mat, as.logical(apply(mat, 1, sum)))
+      colnames(mat)[dim(mat)[2]] <- "global"
+      mat <- rbind(mat, apply(mat, 2, sum, na.rm = TRUE))
+      mat <- apply(mat, 2, function(x) gsub(1, "x", x))
+      mat <- apply(mat, 2, function(x) gsub(0, ".", x))
+      # mat[is.na(mat)] <- "-"
+      rownames(mat) <- c(rnames, "sum")
+    
+      # selection w.r.t. 
+      matZ <- object$selection.matrixZ
+      dmatZ2 <- dim(matZ)[2]
+      Zrnames <- rownames(matZ)
+      matZ <- cbind(matZ, as.logical(apply(matZ, 1, sum)))
+      colnames(matZ)[dim(matZ)[2]] <- "global.Z"
+      matZ <- rbind(matZ, apply(matZ, 2, sum, na.rm = TRUE))
+      matZ <- apply(matZ, 2, function(x) gsub(1, "x", x))
+      matZ <- apply(matZ, 2, function(x) gsub(0, ".", x))
+      # mat[is.na(matZ)] <- "-"
+      rownames(matZ) <- c(Zrnames, "sum")
+      
+      if (complete) {
+        coef <- list(cf = cf, selection.matrix = mat, 
+                     selection.matrixZ = matZ)
+        return(coef)
+      }
+      
+      else {
+        coef <- list(cf = cf[!is.na(cf)], selection.matrix = mat, 
+                     selection.matrixZ = matZ)
+        return(coef)
+      } 
+  }
+  
+ else {
+    if (complete) {
+      return(cf)
+    }
+    
+    else {
+      return(cf[!is.na(cf)])
+    } 
+  }
+}
+
 ############################################################################################
 
 #' @rdname rlassoIV
@@ -265,22 +357,34 @@ rlassoIVmult <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE,
     
     lasso.y.x <- rlasso(x, y, ...)
     Yr <- lasso.y.x$residuals
+    
     Drhat <- NULL
     Zrhat <- NULL
+    selection.matrix <- matrix(NA, ncol = (1 + dim(d)[2]), nrow = dim(x)[2])
+    rownames(selection.matrix) <- colnames(x)
+    colnames(selection.matrix) <- c("y", colnames(d))
+    selection.matrixZ <- matrix(NA, ncol = dim(d)[2], nrow = dim(Z)[2])
+    rownames(selection.matrixZ) <- colnames(Z)
+    colnames(selection.matrixZ) <- colnames(d)
+    
+    selection.matrix[,1] <- lasso.y.x$index
+    
     for (i in 1:kd) {
       lasso.d.x <- rlasso(d[, i] ~ x, ...)
       lasso.d.zx <- rlasso(d[, i] ~ Z, ...)
       if (sum(lasso.d.zx$index) == 0) {
         Drhat <- cbind(Drhat, d[, i] - mean(d[, i]))
         Zrhat <- cbind(Zrhat, d[, i] - mean(d[, i]))
+        colnames(Drhat)[i] <- colnames(d)[i]
+        selection.matrix[,i+1] <- selection.matrixZ[, i] <- FALSE
         next
       }
-      ind.dzx <- lasso.d.zx$index
+      selection.matrixZ[, i] <- ind.dzx <- lasso.d.zx$index
       PZ <- Z[, ind.dzx, drop = FALSE] %*% MASS::ginv(t(Z[, ind.dzx, 
                                                           drop = FALSE]) %*% Z[, ind.dzx, drop = FALSE]) %*% t(Z[, 
                                                                                                                  ind.dzx, drop = FALSE]) %*% d[, i, drop = FALSE]
       lasso.PZ.x <- rlasso(PZ ~ x, ...)
-      ind.PZx <- lasso.PZ.x$index
+      selection.matrix[, i+1] <- ind.PZx <- lasso.PZ.x$index
       Dr <- d[, i] - x[, ind.PZx, drop = FALSE] %*% MASS::ginv(t(x[, 
                                                                    ind.PZx, drop = FALSE]) %*% x[, ind.PZx, drop = FALSE]) %*% 
         t(x[, ind.PZx, drop = FALSE]) %*% PZ
@@ -293,7 +397,7 @@ rlassoIVmult <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE,
     se <- sqrt(diag(result$vcov))
     names(coef) <- names(se) <- colnames(d)
     res <- list(coefficients = coef, se = se, vcov = result$vcov, call = match.call(), 
-                samplesize = n)
+                samplesize = n, selection.matrixZ = selection.matrixZ, selection.matrix = selection.matrix)
     class(res) <- "rlassoIV"
     return(res)
   }
