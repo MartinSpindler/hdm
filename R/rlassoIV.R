@@ -357,22 +357,34 @@ rlassoIVmult <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE,
     
     lasso.y.x <- rlasso(x, y, ...)
     Yr <- lasso.y.x$residuals
+    
     Drhat <- NULL
     Zrhat <- NULL
+    selection.matrix <- matrix(NA, ncol = (1 + dim(d)[2]), nrow = dim(x)[2])
+    rownames(selection.matrix) <- colnames(x)
+    colnames(selection.matrix) <- c("y", colnames(d))
+    selection.matrixZ <- matrix(NA, ncol = dim(d)[2], nrow = dim(Z)[2])
+    rownames(selection.matrixZ) <- colnames(Z)
+    colnames(selection.matrixZ) <- colnames(d)
+    
+    selection.matrix[,1] <- lasso.y.x$index
+    
     for (i in 1:kd) {
       lasso.d.x <- rlasso(d[, i] ~ x, ...)
       lasso.d.zx <- rlasso(d[, i] ~ Z, ...)
       if (sum(lasso.d.zx$index) == 0) {
         Drhat <- cbind(Drhat, d[, i] - mean(d[, i]))
         Zrhat <- cbind(Zrhat, d[, i] - mean(d[, i]))
+        colnames(Drhat)[i] <- colnames(d)[i]
+        selection.matrix[,i+1] <- selection.matrixZ[, i] <- FALSE
         next
       }
-      ind.dzx <- lasso.d.zx$index
+      selection.matrixZ[, i] <- ind.dzx <- lasso.d.zx$index
       PZ <- Z[, ind.dzx, drop = FALSE] %*% MASS::ginv(t(Z[, ind.dzx, 
                                                           drop = FALSE]) %*% Z[, ind.dzx, drop = FALSE]) %*% t(Z[, 
                                                                                                                  ind.dzx, drop = FALSE]) %*% d[, i, drop = FALSE]
       lasso.PZ.x <- rlasso(PZ ~ x, ...)
-      ind.PZx <- lasso.PZ.x$index
+      selection.matrix[, i+1] <- ind.PZx <- lasso.PZ.x$index
       Dr <- d[, i] - x[, ind.PZx, drop = FALSE] %*% MASS::ginv(t(x[, 
                                                                    ind.PZx, drop = FALSE]) %*% x[, ind.PZx, drop = FALSE]) %*% 
         t(x[, ind.PZx, drop = FALSE]) %*% PZ
@@ -385,7 +397,7 @@ rlassoIVmult <- function(x, d, y, z, select.Z = TRUE, select.X = TRUE,
     se <- sqrt(diag(result$vcov))
     names(coef) <- names(se) <- colnames(d)
     res <- list(coefficients = coef, se = se, vcov = result$vcov, call = match.call(), 
-                samplesize = n)
+                samplesize = n, selection.matrixZ = selection.matrixZ, selection.matrix = selection.matrix)
     class(res) <- "rlassoIV"
     return(res)
   }
