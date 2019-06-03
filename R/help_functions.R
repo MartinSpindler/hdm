@@ -4,9 +4,8 @@ format.perc <- function(probs, digits) paste(format(100 * probs, trim = TRUE,
 # function for calculation of the errors after choosing the five
 # variables with the highest correlation
 
-init_values <- function(X, y, number = 5, intercept = TRUE, corr = NULL) {
-  if (is.null(corr)) 
-    (suppressWarnings(corr <- abs(cor(y, X))))
+init_values <- function(X, y, number = 5, intercept = TRUE) {
+  suppressWarnings(corr <- abs(cor(y, X)))
   kx <- dim(X)[2]
   index <- order(corr, decreasing = T)[1:min(number, kx)]
   coefficients <- rep(0, kx)

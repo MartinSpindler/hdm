@@ -28,7 +28,7 @@
 
 
 LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000, 
-                                                           optTol = 10^(-5), zeroThreshold = 10^(-6)), XX = NULL, Xy = NULL, beta.start = NULL, corr = NULL) {
+                                                           optTol = 10^(-5), zeroThreshold = 10^(-6)), XX = NULL, Xy = NULL, beta.start = NULL) {
   n <- dim(x)[1]
   p <- dim(x)[2]
   if (is.null(XX)) 
