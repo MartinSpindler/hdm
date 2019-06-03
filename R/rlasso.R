@@ -221,7 +221,9 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
   XX <- crossprod(x)
   Xy <- crossprod(x, y)
   
-  startingval <- init_values(x,y)$residuals
+  suppressWarnings(corr <- abs(cor(y, x)))
+  
+  startingval <- init_values(x,y, corr=corr)$residuals
   pen <- lambdaCalculation(penalty = penalty, y = startingval, x = x)
   lambda <- pen$lambda
   Ups0 <- Ups1 <- pen$Ups0
@@ -235,13 +237,13 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
     #coefTemp <- LassoShooting.fit(x, y, lambda, XX = XX, Xy = Xy)$coefficients
     #xn <- t(t(x)/as.vector(Ups1))
     if (mm==1 && post) {
-      coefTemp <- LassoShooting.fit(x, y, lambda/2, XX = XX, Xy = Xy)$coefficients
+      coefTemp <- LassoShooting.fit(x, y, lambda/2, XX = XX, Xy = Xy, corr=corr)$coefficients
       #lasso.reg <- glmnet::glmnet(xn, y, family = c("gaussian"), alpha = 1,
       #                            lambda = lambda0/(2*n)/2, standardize = FALSE, intercept = FALSE)
       #lasso.reg <- glmnet::glmnet(x, y, family = c("gaussian"), alpha = 1,
       #                           lambda = lambda0/(2*n)/2, standardize = FALSE, intercept = FALSE,  penalty.factor = Ups1)
     } else {
-      coefTemp <- LassoShooting.fit(x, y, lambda, XX = XX, Xy = Xy)$coefficients
+      coefTemp <- LassoShooting.fit(x, y, lambda, XX = XX, Xy = Xy, corr=corr)$coefficients
       #lasso.reg <- glmnet::glmnet(xn, y, family = c("gaussian"), alpha = 1,
       #                           lambda = lambda0/(2*n), standardize = FALSE, intercept = FALSE)
       #lasso.reg <- glmnet::glmnet(x, y, family = c("gaussian"), alpha = 1,

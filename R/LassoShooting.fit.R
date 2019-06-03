@@ -28,7 +28,7 @@
 
 
 LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000, 
-                                                           optTol = 10^(-5), zeroThreshold = 10^(-6)), XX = NULL, Xy = NULL, beta.start = NULL) {
+                                                           optTol = 10^(-5), zeroThreshold = 10^(-6)), XX = NULL, Xy = NULL, beta.start = NULL, corr = NULL) {
   n <- dim(x)[1]
   p <- dim(x)[2]
   if (is.null(XX)) 
@@ -41,7 +41,7 @@ LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000,
     # diag(1, p)) %*% Xy #
     # solve(XX+diag(as.vector(lambda))%*%diag(1,p))%*%Xy beta[is.nan(beta)]
     # <- 0 Zero-start beta <- rep(0,p) highest correlation start
-    beta <- init_values(x, y, intercept = FALSE)$coef
+    beta <- init_values(x, y, intercept = FALSE, corr=corr)$coef
   } else {
     beta <- beta.start
   }
