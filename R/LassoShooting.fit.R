@@ -50,31 +50,34 @@ LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000,
   XX2 <- XX * 2
   Xy2 <- Xy * 2
   
-  while (m < control$maxIter) {
-    beta_old <- beta
-    for (j in 1:p) {
-      # Compute the Shoot and Update the variable
-      S0 <- sum(XX2[j, ] * beta) - XX2[j, j] * beta[j] - Xy2[j]
-      if (sum(is.na(S0)) >= 1) {
-        beta[j] <- 0
-        next
-      }
-      
-      if (S0 > lambda[j]) 
-        beta[j] <- (lambda[j] - S0)/XX2[j, j]
-      if (S0 < -1 * lambda[j]) 
-        beta[j] <- (-1 * lambda[j] - S0)/XX2[j, j]
-      if (abs(S0) <= lambda[j]) 
-        beta[j] <- 0
-    }
-    # Update
-    wp <- cbind(wp, beta)
-    # Check termination
-    if (sum(abs(beta - beta_old), na.rm = TRUE) < control$optTol) {
-      break
-    }
-    m <- m + 1
-  }
+  beta = fastLassoShooting(XX2, Xy2, beta, lambda, control$maxIter, control$optTol)$beta
+  wp <- cbind(wp, beta)
+  
+  # while (m < control$maxIter) {
+  #   beta_old <- beta
+  #   for (j in 1:p) {
+  #     # Compute the Shoot and Update the variable
+  #     S0 <- sum(XX2[j, ] * beta) - XX2[j, j] * beta[j] - Xy2[j]
+  #     if (sum(is.na(S0)) >= 1) {
+  #       beta[j] <- 0
+  #       next
+  #     }
+  # 
+  #     if (S0 > lambda[j])
+  #       beta[j] <- (lambda[j] - S0)/XX2[j, j]
+  #     if (S0 < -1 * lambda[j])
+  #       beta[j] <- (-1 * lambda[j] - S0)/XX2[j, j]
+  #     if (abs(S0) <= lambda[j])
+  #       beta[j] <- 0
+  #   }
+  #   # Update
+  #   wp <- cbind(wp, beta)
+  #   # Check termination
+  #   if (sum(abs(beta - beta_old), na.rm = TRUE) < control$optTol) {
+  #     break
+  #   }
+  #   m <- m + 1
+  # }
   w <- beta
   w[abs(w) < control$zeroThreshold] <- 0
   return(list(coefficients = w, coef.list = wp, num.it = m))

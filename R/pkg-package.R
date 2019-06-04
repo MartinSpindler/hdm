@@ -53,6 +53,9 @@
 #' @importFrom stats update
 #' @importFrom Formula model.part
 #' @importFrom methods is
+#' @import Rcpp
+#' @importFrom Rcpp evalCpp
+#' @useDynLib hdm
 NULL
 
 #' Growth data set

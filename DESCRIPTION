@@ -24,11 +24,15 @@ Imports:
     ggplot2,
     checkmate,
     Formula,
-    methods
+    methods,
+    Rcpp (>= 1.0.1)
 Suggests:
     testthat,
     knitr,
     xtable,
     mvtnorm
+LinkingTo:
+    Rcpp,
+    RcppArmadillo
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
