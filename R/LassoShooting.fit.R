@@ -41,7 +41,7 @@ LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000,
     # diag(1, p)) %*% Xy #
     # solve(XX+diag(as.vector(lambda))%*%diag(1,p))%*%Xy beta[is.nan(beta)]
     # <- 0 Zero-start beta <- rep(0,p) highest correlation start
-    beta <- init_values(x, y, intercept = FALSE, corr=corr)$coef
+    beta <- init_values(x, y, intercept = FALSE)$coef
   } else {
     beta <- beta.start
   }
