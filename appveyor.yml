@@ -20,8 +20,6 @@ branches:
   only:
     - m-introduce-automated-testing
 
-build: off
-
 build_script:
   - travis-tool.sh install_deps
 
