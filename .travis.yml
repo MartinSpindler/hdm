@@ -5,6 +5,7 @@ sudo: false
 env:
   global:
     - NOT_CRAN=true
+    - DO_CODECOV=true
 
 os:
   - linux
