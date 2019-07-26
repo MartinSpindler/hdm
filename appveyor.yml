@@ -20,6 +20,8 @@ branches:
   only:
     - master
 
+build: off
+
 build_script:
   - travis-tool.sh install_deps
 
