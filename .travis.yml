@@ -35,7 +35,7 @@ matrix:
 
 branches:
   only: 
-    - m-introduce-automated-testing
+    - master
 
 after_success:
   - if [[ "$DO_CODECOV" == "true" ]]; then travis_wait 30 Rscript -e 'covr::codecov()'; fi
