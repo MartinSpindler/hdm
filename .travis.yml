@@ -15,6 +15,7 @@ os:
 
 before_install:
   - sudo tlmgr install framed
+  - sudo tlmgr install soul
 
 r:
   - release
