@@ -14,7 +14,7 @@ os:
   - osx
 
 before_install:
-  - tlmgr install framed
+  - sudo tlmgr install framed
 
 r:
   - release
