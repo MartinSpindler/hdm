@@ -5,13 +5,32 @@ sudo: false
 env:
   global:
     - NOT_CRAN=true
+  matrix:
     - DO_CODECOV=true
+    - DO_CODECOV=false
 
 os:
   - linux
+  - osx
 
 r:
   - release
+  - devel
+
+matrix:
+  exclude:
+    - os: linux
+      r: release
+      env: DO_CODECOV=false
+    - os: osx
+      env: DO_CODECOV=true
+    - r: devel
+      env: DO_CODECOV=true
+  allow_failures:
+    - os: osx
+      r: devel
+    - os: osx
+      r: release
 
 branches:
   only: 
