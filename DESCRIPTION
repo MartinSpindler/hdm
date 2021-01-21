@@ -27,6 +27,7 @@ Imports:
     methods
 Suggests:
     testthat,
+    covr,
     knitr,
     xtable,
     mvtnorm
