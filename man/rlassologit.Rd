@@ -9,17 +9,38 @@
 \usage{
 rlassologit(x, ...)
 
-\method{rlassologit}{formula}(formula, data = NULL, post = TRUE,
-  intercept = TRUE, model = TRUE, penalty = list(lambda = NULL, c =
-  1.1, gamma = 0.1/log(n)), control = list(threshold = NULL), ...)
+\method{rlassologit}{formula}(
+  formula,
+  data = NULL,
+  post = TRUE,
+  intercept = TRUE,
+  model = TRUE,
+  penalty = list(lambda = NULL, c = 1.1, gamma = 0.1/log(n)),
+  control = list(threshold = NULL),
+  ...
+)
 
-\method{rlassologit}{character}(x, data = NULL, post = TRUE,
-  intercept = TRUE, model = TRUE, penalty = list(lambda = NULL, c =
-  1.1, gamma = 0.1/log(n)), control = list(threshold = NULL), ...)
+\method{rlassologit}{character}(
+  x,
+  data = NULL,
+  post = TRUE,
+  intercept = TRUE,
+  model = TRUE,
+  penalty = list(lambda = NULL, c = 1.1, gamma = 0.1/log(n)),
+  control = list(threshold = NULL),
+  ...
+)
 
-\method{rlassologit}{default}(x, y, post = TRUE, intercept = TRUE,
-  model = TRUE, penalty = list(lambda = NULL, c = 1.1, gamma =
-  0.1/log(n)), control = list(threshold = NULL), ...)
+\method{rlassologit}{default}(
+  x,
+  y,
+  post = TRUE,
+  intercept = TRUE,
+  model = TRUE,
+  penalty = list(lambda = NULL, c = 1.1, gamma = 0.1/log(n)),
+  control = list(threshold = NULL),
+  ...
+)
 }
 \arguments{
 \item{x}{regressors (matrix)}

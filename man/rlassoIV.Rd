@@ -10,11 +10,9 @@ Controls and Instruments}
 \usage{
 rlassoIV(x, ...)
 
-\method{rlassoIV}{default}(x, d, y, z, select.Z = TRUE,
-  select.X = TRUE, post = TRUE, ...)
+\method{rlassoIV}{default}(x, d, y, z, select.Z = TRUE, select.X = TRUE, post = TRUE, ...)
 
-\method{rlassoIV}{formula}(formula, data, select.Z = TRUE,
-  select.X = TRUE, post = TRUE, ...)
+\method{rlassoIV}{formula}(formula, data, select.Z = TRUE, select.X = TRUE, post = TRUE, ...)
 
 rlassoIVmult(x, d, y, z, select.Z = TRUE, select.X = TRUE, ...)
 }

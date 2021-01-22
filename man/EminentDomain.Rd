@@ -4,12 +4,14 @@
 \name{EminentDomain}
 \alias{EminentDomain}
 \title{Eminent Domain data set}
-\format{\describe{ 
+\format{
+\describe{ 
 \item{y}{economic outcome variable}
 \item{x}{set of exogenous variables}
 \item{d}{eminent domain decisions}
 \item{z}{set of potential instruments}
-}}
+}
+}
 \description{
 Dataset on judicial eminent domain decisions.
 }
@@ -21,7 +23,7 @@ The data set contains four "sub-data sets" which differ mainly in the dependent 
 and state-level GDP from the Bureau of Economic Analysis - all transformed with the logarithm. The structure of each subdata set is given above.
 In the data set the following variables and name conventions are used:
 "numpanelskx_..." is the number of panels with at least k members with the characteristic following the "_". 
-The probability controls (names start with "F_prob_") follow a similar naming convention and give the probability of observing a panel with characteristic given following second "_" given the characteristics of the pool of judges available to be assigned to the case.
+The probability controls (names start with "F_prob_") follow a similar naming convention and give the probability of observing a panel with characteristic given following second "_" given the characteristics of the pool of judges available to be assigned to the case. 
 
 Characteristics in the data for the control variables or instruments:
 \describe{
