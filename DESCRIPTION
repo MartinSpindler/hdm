@@ -29,6 +29,7 @@ Suggests:
     testthat,
     covr,
     knitr,
+    formatR,
     xtable,
     mvtnorm
 VignetteBuilder: knitr
