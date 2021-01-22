@@ -8,8 +8,7 @@
 \usage{
 \method{print}{tsls}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
-\method{summary}{tsls}(object, digits = max(3L, getOption("digits") -
-  3L), ...)
+\method{summary}{tsls}(object, digits = max(3L, getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{x}{an object of class \code{tsls}}

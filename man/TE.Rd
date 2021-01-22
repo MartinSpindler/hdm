@@ -25,39 +25,69 @@
 \usage{
 rlassoATE(x, ...)
 
-\method{rlassoATE}{default}(x, d, y, bootstrap = "none", nRep = 500,
-  ...)
+\method{rlassoATE}{default}(x, d, y, bootstrap = "none", nRep = 500, ...)
 
-\method{rlassoATE}{formula}(formula, data, bootstrap = "none",
-  nRep = 500, ...)
+\method{rlassoATE}{formula}(formula, data, bootstrap = "none", nRep = 500, ...)
 
 rlassoATET(x, ...)
 
-\method{rlassoATET}{default}(x, d, y, bootstrap = "none", nRep = 500,
-  ...)
+\method{rlassoATET}{default}(x, d, y, bootstrap = "none", nRep = 500, ...)
 
-\method{rlassoATET}{formula}(formula, data, bootstrap = "none",
-  nRep = 500, ...)
+\method{rlassoATET}{formula}(formula, data, bootstrap = "none", nRep = 500, ...)
 
 rlassoLATE(x, ...)
 
-\method{rlassoLATE}{default}(x, d, y, z, bootstrap = "none",
-  nRep = 500, post = TRUE, intercept = TRUE, always_takers = TRUE,
-  never_takers = TRUE, ...)
+\method{rlassoLATE}{default}(
+  x,
+  d,
+  y,
+  z,
+  bootstrap = "none",
+  nRep = 500,
+  post = TRUE,
+  intercept = TRUE,
+  always_takers = TRUE,
+  never_takers = TRUE,
+  ...
+)
 
-\method{rlassoLATE}{formula}(formula, data, bootstrap = "none",
-  nRep = 500, post = TRUE, intercept = TRUE, always_takers = TRUE,
-  never_takers = TRUE, ...)
+\method{rlassoLATE}{formula}(
+  formula,
+  data,
+  bootstrap = "none",
+  nRep = 500,
+  post = TRUE,
+  intercept = TRUE,
+  always_takers = TRUE,
+  never_takers = TRUE,
+  ...
+)
 
 rlassoLATET(x, ...)
 
-\method{rlassoLATET}{default}(x, d, y, z, bootstrap = "none",
-  nRep = 500, post = TRUE, intercept = TRUE, always_takers = TRUE,
-  ...)
+\method{rlassoLATET}{default}(
+  x,
+  d,
+  y,
+  z,
+  bootstrap = "none",
+  nRep = 500,
+  post = TRUE,
+  intercept = TRUE,
+  always_takers = TRUE,
+  ...
+)
 
-\method{rlassoLATET}{formula}(formula, data, bootstrap = "none",
-  nRep = 500, post = TRUE, intercept = TRUE, always_takers = TRUE,
-  ...)
+\method{rlassoLATET}{formula}(
+  formula,
+  data,
+  bootstrap = "none",
+  nRep = 500,
+  post = TRUE,
+  intercept = TRUE,
+  always_takers = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{exogenous variables}

@@ -9,14 +9,27 @@
 \usage{
 rlassoEffects(x, ...)
 
-\method{rlassoEffects}{default}(x, y, index = c(1:ncol(x)),
-  method = "partialling out", I3 = NULL, post = TRUE, ...)
+\method{rlassoEffects}{default}(
+  x,
+  y,
+  index = c(1:ncol(x)),
+  method = "partialling out",
+  I3 = NULL,
+  post = TRUE,
+  ...
+)
 
-\method{rlassoEffects}{formula}(formula, data, I,
-  method = "partialling out", included = NULL, post = TRUE, ...)
+\method{rlassoEffects}{formula}(
+  formula,
+  data,
+  I,
+  method = "partialling out",
+  included = NULL,
+  post = TRUE,
+  ...
+)
 
-rlassoEffect(x, y, d, method = "double selection", I3 = NULL,
-  post = TRUE, ...)
+rlassoEffect(x, y, d, method = "double selection", I3 = NULL, post = TRUE, ...)
 }
 \arguments{
 \item{x}{matrix of regressor variables serving as controls and potential

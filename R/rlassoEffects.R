@@ -527,7 +527,12 @@ print.summary.rlassoEffects <- function(x, digits = max(3L, getOption("digits") 
 #'
 #' Method to extract coefficients from objects of class \code{rlassoEffects}
 #' 
-#' Printing coefficients and selection matrix for S3 object \code{rlassoEffects}
+#' Printing coefficients and selection matrix for S3 object \code{rlassoEffects}. Interpretation of entries in the selection matrix
+#' \itemize{
+#'  \item \code{"-"} indicates a target variable,
+#'  \item \code{"x"} indicates that a variable has been selected with rlassoEffects (coefficient is different from zero),
+#'  \item \code{"."} indicates that a variable has been de-selected with rlassoEffects (coefficient is zero).
+#' }
 #' 
 #' @param object an object of class \code{rlassoEffects}, usually a result of a call \code{rlassoEffect} or \code{rlassoEffects}.
 #' @param selection.matrix if TRUE, a selection matrix is returned that indicates the selected variables from each auxiliary regression. 

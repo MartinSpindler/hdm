@@ -7,8 +7,13 @@
 \usage{
 print_coef(x, ...)
 
-\method{print_coef}{rlassoEffects}(x, complete = TRUE,
-  selection.matrix = FALSE, include.targets = TRUE, ...)
+\method{print_coef}{rlassoEffects}(
+  x,
+  complete = TRUE,
+  selection.matrix = FALSE,
+  include.targets = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of class \code{rlassoEffects}, usually a result of a call \code{rlassoEffect} or \code{rlassoEffects}.}
