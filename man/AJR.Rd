@@ -4,7 +4,8 @@
 \name{AJR}
 \alias{AJR}
 \title{AJR data set}
-\format{\describe{ 
+\format{
+\describe{ 
 \item{Mort}{Settler mortality}
 \item{logMort}{logarithm of Mort}
 \item{Latitude}{Latitude}
@@ -16,7 +17,8 @@
 \item{Neo}{Neo-Europes}
 \item{GDP}{GDP}
 \item{Exprop}{Average protection against expropriation risk} 
-}}
+}
+}
 \description{
 Dataset on settler mortality.
 }

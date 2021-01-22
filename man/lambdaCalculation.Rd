@@ -4,9 +4,12 @@
 \alias{lambdaCalculation}
 \title{Function for Calculation of the penalty parameter}
 \usage{
-lambdaCalculation(penalty = list(homoscedastic = FALSE,
-  X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma = 0.1),
-  y = NULL, x = NULL)
+lambdaCalculation(
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
+    NULL, c = 1.1, gamma = 0.1),
+  y = NULL,
+  x = NULL
+)
 }
 \arguments{
 \item{penalty}{list with options for the calculation of the penalty. 

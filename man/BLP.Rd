@@ -4,7 +4,8 @@
 \name{BLP}
 \alias{BLP}
 \title{BLP data set}
-\format{\describe{ 
+\format{
+\describe{ 
 \item{model.name}{model name}
 \item{model.id}{model id}
 \item{firm.id}{firm id}
@@ -20,7 +21,8 @@
 \item{outshr}{share s0}
 \item{y}{outcome variable defined as log(share) - log(outshr) }
 \item{trend}{time trend}
-}}
+}
+}
 \description{
 Automobile data set from the US.
 }
