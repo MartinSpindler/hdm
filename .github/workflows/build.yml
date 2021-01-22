@@ -43,6 +43,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
       
       - uses: r-lib/actions/setup-tinytex@master
+      - run: tlmgr install amscls
 
       - name: Query dependencies
         run: |
