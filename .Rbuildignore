@@ -5,3 +5,4 @@ news.md
 bugs.md
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github$
