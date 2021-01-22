@@ -33,6 +33,7 @@
 #' @importFrom stats cor
 #' @importFrom stats glm
 #' @importFrom stats lm
+#' @importFrom stats .lm.fit
 #' @importFrom stats model.frame
 #' @importFrom stats model.matrix
 #' @importFrom stats model.response
