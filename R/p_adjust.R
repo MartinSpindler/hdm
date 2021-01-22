@@ -112,6 +112,7 @@ p_adjust.rlassoEffects <- function(x, method = "RW", B = 1000, ...) {
         sim <- apply(Beta_i[, -stepdown.index[1:(s - 1)], drop = F], 1, function(z) max(abs(z)/se[-stepdown.index[1:(s - 1)]]))
         pinit[s] <- pmin(1, (sum(sim >= abs(tstats[stepdown.index][s])))/B)
       }
+    }
 
       for (j in 1:k) {
         if (j == 1) {
@@ -123,8 +124,6 @@ p_adjust.rlassoEffects <- function(x, method = "RW", B = 1000, ...) {
         }
       }
       pval <- corr.padj[ro]
-
-    }
   }
 
   res <- as.matrix(cbind(cf, pval))
