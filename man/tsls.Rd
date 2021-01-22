@@ -8,11 +8,9 @@
 \usage{
 tsls(x, ...)
 
-\method{tsls}{default}(x, d, y, z, intercept = TRUE,
-  homoscedastic = TRUE, ...)
+\method{tsls}{default}(x, d, y, z, intercept = TRUE, homoscedastic = TRUE, ...)
 
-\method{tsls}{formula}(formula, data, intercept = TRUE,
-  homoscedastic = TRUE, ...)
+\method{tsls}{formula}(formula, data, intercept = TRUE, homoscedastic = TRUE, ...)
 }
 \arguments{
 \item{x}{exogenous variables}

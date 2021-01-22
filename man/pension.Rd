@@ -8,7 +8,8 @@
 \alias{wealth}
 \alias{data}
 \title{Pension 401(k) data set}
-\format{Dataframe with the following variables (amongst others): \describe{
+\format{
+Dataframe with the following variables (amongst others): \describe{
 \item{p401}{participation in 401(k)}
 \item{e401}{eligibility for 401(k)}
 \item{a401}{401(k) assets}
@@ -28,7 +29,8 @@
 \item{twoearn}{two earners} %\item{i1-i7}{} %\item{a1-a5}{}
 \item{nohs, hs, smcol, col}{dummies for education: no high-school, high-school, some college, college}
 \item{hmort}{home mortage (in US $)}
-\item{hequity}{home equity (in US $)} \item{hval}{home value (in US $)}}}
+\item{hequity}{home equity (in US $)} \item{hval}{home value (in US $)}}
+}
 \description{
 Data set on financial wealth and 401(k) plan participation
 }

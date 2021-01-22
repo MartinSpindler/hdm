@@ -10,23 +10,41 @@ disturbances}
 \usage{
 rlasso(x, ...)
 
-\method{rlasso}{formula}(formula, data = NULL, post = TRUE,
-  intercept = TRUE, model = TRUE, penalty = list(homoscedastic =
-  FALSE, X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma =
-  0.1/log(n)), control = list(numIter = 15, tol = 10^-5, threshold =
-  NULL), ...)
+\method{rlasso}{formula}(
+  formula,
+  data = NULL,
+  post = TRUE,
+  intercept = TRUE,
+  model = TRUE,
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
+    NULL, c = 1.1, gamma = 0.1/log(n)),
+  control = list(numIter = 15, tol = 10^-5, threshold = NULL),
+  ...
+)
 
-\method{rlasso}{character}(x, data = NULL, post = TRUE,
-  intercept = TRUE, model = TRUE, penalty = list(homoscedastic =
-  FALSE, X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma =
-  0.1/log(n)), control = list(numIter = 15, tol = 10^-5, threshold =
-  NULL), ...)
+\method{rlasso}{character}(
+  x,
+  data = NULL,
+  post = TRUE,
+  intercept = TRUE,
+  model = TRUE,
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
+    NULL, c = 1.1, gamma = 0.1/log(n)),
+  control = list(numIter = 15, tol = 10^-5, threshold = NULL),
+  ...
+)
 
-\method{rlasso}{default}(x, y, post = TRUE, intercept = TRUE,
-  model = TRUE, penalty = list(homoscedastic = FALSE,
-  X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma =
-  0.1/log(n)), control = list(numIter = 15, tol = 10^-5, threshold =
-  NULL), ...)
+\method{rlasso}{default}(
+  x,
+  y,
+  post = TRUE,
+  intercept = TRUE,
+  model = TRUE,
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
+    NULL, c = 1.1, gamma = 0.1/log(n)),
+  control = list(numIter = 15, tol = 10^-5, threshold = NULL),
+  ...
+)
 }
 \arguments{
 \item{x}{regressors (vector, matrix or object can be coerced to matrix)}
@@ -100,7 +118,7 @@ in particular the regressor-independent loadings, we refer to Appendix A in
 Belloni et al. (2012). When the option "none" is chosen for \code{homoscedastic} (together with
 \code{lambda.start}), lambda is set to \code{lambda.start} and the
 regressor-independent loadings und heteroscedasticity are used. The options "X-dependent" and
-"X-independent" under homoscedasticity are described in Belloni et al. (2013).
+"X-independent" under homoscedasticity are described in Belloni et al. (2013). 
 
 The option \code{post=TRUE} conducts post-lasso estimation, i.e. a refit of
 the model with the selected variables.

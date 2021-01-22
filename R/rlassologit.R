@@ -56,10 +56,9 @@
 #' X3 <- matrix(rnorm(n*p), ncol=p)
 #' predict(rlassologit.reg, newdata=X3)
 #' }
-#' @export
-#' @rdname rlassologit
-rlassologit <- function(x, ...)
-  UseMethod("rlassologit") # definition generic function
+rlassologit <- function(x, ...) {
+  UseMethod("rlassologit")
+  }# definition generic function
 
 #' @param formula an object of class 'formula' (or one that can be coerced to
 #' that class): a symbolic description of the model to be fitted in the form

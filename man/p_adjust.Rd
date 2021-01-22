@@ -11,8 +11,7 @@ p_adjust(x, ...)
 
 \method{p_adjust}{rlassoEffects}(x, method = "RW", B = 1000, ...)
 
-\method{p_adjust}{lm}(x, method = "RW", B = 1000, test.index = NULL,
-  ...)
+\method{p_adjust}{lm}(x, method = "RW", B = 1000, test.index = NULL, ...)
 }
 \arguments{
 \item{x}{an object of S3 class \code{rlassoEffects} or \code{lm}.}
