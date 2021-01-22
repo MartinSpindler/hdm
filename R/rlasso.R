@@ -282,8 +282,10 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
     
     # refinement variance estimation
     if (post) {
-      reg <- lm(y ~ -1 + x1)
-      coefT <- coef(reg)
+      #reg <- lm(y ~ -1 + x1)
+      #coefT <- coef(reg)
+      reg <- .lm.fit(x1, y)
+      coefT <- reg$coefficients
       coefT[is.na(coefT)] <- 0
       e1 <- y - x1 %*% coefT
       coefTemp[ind1] <- coefT
@@ -494,14 +496,22 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
     # }
     xehat <- x*ehat
     psi <- apply(xehat, 2, function(x) mean(x^2))
-    tXehattpsi <- t(t(xehat)/sqrt(psi))
+    #tXehattpsi <- t(t(xehat)/sqrt(psi))
+    #
+    #  for (l in 1:R) {
+    #    g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
+    #    #sim[l] <- n * max(2 * colMeans(x * ehat* g))
+    #    sim[l] <- n * max(2 * abs(colMeans(tXehattpsi * g)))
+    #  }
     
-      for (l in 1:R) {
-        g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
-        #sim[l] <- n * max(2 * colMeans(x * ehat* g))
-        sim[l] <- n * max(2 * abs(colMeans(tXehattpsi * g)))
-      }
+    Xehattpsi <- t(xehat)/sqrt(psi)
+    for (l in 1:R) {
+      g <- rnorm(n)
+      sim[l] <- max(2* abs(Xehattpsi %*% g))
+    }
     
+    #g <- matrix(rnorm(n*R), ncol = R, byrow=FALSE)
+    #sim <- apply(2 * abs(Xehattpsi %*% g), 2, max) 
     
     lambda0 <- penalty$c * quantile(sim, probs = 1 - penalty$gamma)
     Ups0 <- 1/sqrt(n) * sqrt(t(t(y^2) %*% (x^2)))
