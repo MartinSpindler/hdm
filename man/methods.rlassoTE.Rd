@@ -7,11 +7,9 @@
 \alias{confint.rlassoTE}
 \title{Methods for S3 object \code{rlassoTE}}
 \usage{
-\method{print}{rlassoTE}(x, digits = max(3L, getOption("digits") - 3L),
-  ...)
+\method{print}{rlassoTE}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
-\method{summary}{rlassoTE}(object, digits = max(3L, getOption("digits") -
-  3L), ...)
+\method{summary}{rlassoTE}(object, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{confint}{rlassoTE}(object, parm, level = 0.95, ...)
 }

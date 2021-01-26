@@ -7,11 +7,9 @@
 \alias{confint.rlassoIVselectZ}
 \title{Methods for S3 object \code{rlassoIVselectZ}}
 \usage{
-\method{print}{rlassoIVselectZ}(x, digits = max(3L, getOption("digits") -
-  3L), ...)
+\method{print}{rlassoIVselectZ}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
-\method{summary}{rlassoIVselectZ}(object, digits = max(3L,
-  getOption("digits") - 3L), ...)
+\method{summary}{rlassoIVselectZ}(object, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{confint}{rlassoIVselectZ}(object, parm, level = 0.95, ...)
 }

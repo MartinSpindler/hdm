@@ -4,9 +4,15 @@
 \alias{LassoShooting.fit}
 \title{Shooting Lasso}
 \usage{
-LassoShooting.fit(x, y, lambda, control = list(maxIter = 1000, optTol =
-  10^(-5), zeroThreshold = 10^(-6)), XX = NULL, Xy = NULL,
-  beta.start = NULL)
+LassoShooting.fit(
+  x,
+  y,
+  lambda,
+  control = list(maxIter = 1000, optTol = 10^(-5), zeroThreshold = 10^(-6)),
+  XX = NULL,
+  Xy = NULL,
+  beta.start = NULL
+)
 }
 \arguments{
 \item{x}{matrix of regressor variables (\code{n} times \code{p} where

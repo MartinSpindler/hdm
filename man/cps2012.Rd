@@ -4,7 +4,8 @@
 \name{cps2012}
 \alias{cps2012}
 \title{cps2012 data set}
-\format{\describe{ 
+\format{
+\describe{ 
 \item{lnw}{log of hourly wage (annual earnings / annual hours)}
 \item{female}{female indicator}
 \item{married status}{ six indicators: widowed, divorced, separated, nevermarried, and married (omitted)}
@@ -13,7 +14,8 @@
 \item{potential experience}{(max[0, age - years of education - 7]): exp1, exp2 (divided by 100), exp3 (divided by 1000), exp4 (divided by 10000)}
 \item{weight}{March Supplement sampling weight}
 \item{year}{CPS year}
-}}
+}
+}
 \description{
 Census data from the US for the year 2012.
 }

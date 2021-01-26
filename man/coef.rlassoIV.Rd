@@ -4,8 +4,7 @@
 \alias{coef.rlassoIV}
 \title{Coefficients from S3 objects \code{rlassoIV}}
 \usage{
-\method{coef}{rlassoIV}(object, complete = TRUE,
-  selection.matrix = FALSE, ...)
+\method{coef}{rlassoIV}(object, complete = TRUE, selection.matrix = FALSE, ...)
 }
 \arguments{
 \item{object}{an object of class \code{rlassoIV}, usually a result of a call \code{rlassoIV} with options \code{select.X=TRUE} and \code{select.Z=TRUE}.}
