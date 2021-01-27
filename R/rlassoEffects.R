@@ -490,7 +490,7 @@ summary.rlassoEffects <- function(object, ...) {
   k <- length(object$coefficients)
   table <- matrix(NA, ncol = 4, nrow = k)
   rownames(table) <- names(object$coefficient)
-  colnames(table) <- c("Estimate.", "Std. Error", "t value", "Pr(>|t|)")
+  colnames(table) <- c("Estimate", "Std. Error", "t value", "Pr(>|t|)")
   table[, 1] <- object$coefficients
   table[, 2] <- object$se
   table[, 3] <- object$t
