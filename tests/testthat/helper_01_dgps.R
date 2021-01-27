@@ -19,3 +19,14 @@ DPG_lassoShooting <- function(n, p, px, lambda0 = 110, min = 0.85, max = 1.15){
   list(X = ret$X, y = ret$y, beta = ret$beta, lambda = lambda, lambda0 = lambda0, loadings = loadings)
 }
 
+
+DGP_rlasso_hdm_paper_sec4 <- function(n, p){
+  X <- matrix(rnorm(n*p),ncol= p)
+  colnames(X) <- c("d",paste("x",1:19,sep=""))
+  xnames <- colnames(X)[-1]
+  beta <- rep(1,20)
+  y <- X%*%beta+rnorm(n)
+  dat <- data.frame(y= y, X)
+  return(dat)
+}
+
