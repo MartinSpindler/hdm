@@ -2,19 +2,6 @@ library(testthat)
 context("Test rlasso")
 library(hdm)
 
-
-DGP_rlasso <- function(n, p, px){
-  
-  X <- matrix(rnorm(n*p), ncol=p)
-  colnames(X) <- paste("x", 1:p, sep="")
-  beta <- c(rep(2,px), rep(0,p-px))
-  intercept <- 1
-  y <- intercept + X %*% beta + rnorm(n)
-  
-  list(X = X, y = y, beta = beta)
-}
-
-
 set.seed(2)
 ret <- DGP_rlasso(200, 100, 10)
 X <- ret$X

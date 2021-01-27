@@ -2,18 +2,6 @@ context("Test LassoShooting.fit")
 library(hdm)
 library(testthat)
 
-DPG_lassoShooting <- function(n, p, px, lambda0 = 110, min = 0.85, max = 1.15){
-  
-X <- matrix(rnorm(n*p), ncol=p)
-beta <- c(rep(2,px), rep(0,p-px))
-y <- X %*% beta + rnorm(n)
-loadings <- runif(p, min = min, max = max)
-lambda <- lambda0 * loadings
-
-list(X = X, y = y, beta = beta, lambda = lambda, lambda0 = lambda0, loadings = loadings)
-}
-
-
 set.seed(2)
 ret <- DPG_lassoShooting(200, 100, 10, 110)
 X <- ret$X

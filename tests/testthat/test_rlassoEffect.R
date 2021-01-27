@@ -2,17 +2,6 @@ context("Test rlassoEffect")
 library(hdm)
 library(testthat)
 
-DGP_rlasso <- function(n, p, px){
-  
-  X <- matrix(rnorm(n*p), ncol=p)
-  beta <- c(rep(2,px), rep(0,p-px))
-  intercept <- 1
-  y <- intercept + X %*% beta + rnorm(n)
-  
-  list(X = X, y = y, beta = beta)
-}
-
-
 set.seed(2)
 ret <- DGP_rlasso(200, 100, 10)
 X <- ret$X
