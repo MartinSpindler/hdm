@@ -22,9 +22,9 @@ DPG_lassoShooting <- function(n, p, px, lambda0 = 110, min = 0.85, max = 1.15){
 
 DGP_rlasso_hdm_paper_sec4 <- function(n, p){
   X <- matrix(rnorm(n*p),ncol= p)
-  colnames(X) <- c("d",paste("x",1:19,sep=""))
+  colnames(X) <- c("d",paste("x",1:(p-1),sep=""))
   xnames <- colnames(X)[-1]
-  beta <- rep(1,20)
+  beta <- rep(1, p)
   y <- X%*%beta+rnorm(n)
   dat <- data.frame(y= y, X)
   return(dat)
