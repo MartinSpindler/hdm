@@ -426,8 +426,7 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
     n <- dim(x)[1]
     lambda0 <- 2 * penalty$c * sqrt(n) * qnorm(1 - penalty$gamma/(2 *
                                                                     p))
-    psi <- sqrt(apply(x, 2, function(x) mean(x^2)))
-    Ups0 <- sqrt(var(y))*psi
+    Ups0 <- sqrt(var(y))
     lambda <- rep(lambda0 * Ups0, p)
   }
 
@@ -456,7 +455,7 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
       }
    
     lambda0 <- penalty$c * quantile(sim, probs = 1 - penalty$gamma)
-    Ups0 <- sqrt(var(y))*psi
+    Ups0 <- sqrt(var(y))
     lambda <- rep(lambda0 * Ups0, p)
   }
 
