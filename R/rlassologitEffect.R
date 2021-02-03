@@ -110,6 +110,7 @@ rlassologitEffects.default <- function(x, y, index = c(1:ncol(x)), I3 = NULL, po
       selection.matrix[-index[i],i] <- col$selection.index
     }
   }
+  names(coef.mat) <- colnames(x)[index]
   residuals <- list(e = reside, v = residv)
   res <- list(coefficients = coefficients, se = se, t = t, pval = pval, 
               lasso.regs = lasso.regs, index = I, call = match.call(), samplesize = n, 

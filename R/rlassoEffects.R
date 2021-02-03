@@ -141,7 +141,7 @@ rlassoEffects.default <- function(x, y, index = c(1:ncol(x)), method = "partiall
       selection.matrix[-index[i],i] <- col$selection.index
     }
   }
-  #colnames(coef.mat) <- colnames(x)[index]
+  names(coef.mat) <- colnames(x)[index]
   residuals <- list(e = reside, v = residv)
   res <- list(coefficients = coefficients, se = se, t = t, pval = pval, 
               lasso.regs = lasso.regs, index = index, call = match.call(), samplesize = n, 
