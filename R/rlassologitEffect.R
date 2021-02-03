@@ -187,12 +187,12 @@ rlassologitEffect <- function(x, y, d, I3 = NULL, post = TRUE) {
     I <- I1 + I2
     I <- as.logical(I)
   }
-  xselect <- x[, I]
-  p3 <- dim(xselect)[2]
+  dxselect <-  cbind(d, x[, I])
+  p3 <- dim(dxselect)[2]-1
   #la3 <- 1.1/2 * sqrt(n) * qnorm(1 - 0.05/(max(n, (p3 + 1) * log(n))))
   #l3 <- rlassologit(cbind(d, xselect), y, post = TRUE, normalize = TRUE, 
   #                  intercept = TRUE, penalty = list(lambda.start = la3))
-  l3 <- glm(y ~ cbind(d, xselect),family=binomial(link='logit'))
+  l3 <- glm(y ~ dxselect, family = binomial(link = 'logit'))
   alpha <- l3$coef[2]
   names(alpha) <- colnames(d)
   t3 <- predict(l3, type = "link")
@@ -223,7 +223,8 @@ rlassologitEffect <- function(x, y, d, I3 = NULL, post = TRUE) {
   se <- drop(se)
   names(se) <- colnames(d)
   results <- list(alpha = alpha, se = se, t = tval, pval = pval, 
-                  no.selected = no.selected, coefficients = alpha, coefficient = alpha, 
+                  no.selected = no.selected, coefficients = alpha, coefficient = alpha,
+                  coefficients.reg = coef(l3), selection.index = I,
                   residuals = res, call = match.call(), samplesize = n, post = post)
   class(results) <- c("rlassologitEffects")
   return(results)
