@@ -199,8 +199,8 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
     mu <- 0
   }
   
-  normx <- sqrt(apply(x, 2, var))
-  Psi <- apply(x, 2, function(x) mean(x^2)) 
+  # normx <- sqrt(apply(x, 2, var))
+  Psi <- sqrt(apply(x, 2, function(x) mean(x^2)))
   ind <- rep(FALSE, p) #
   
   # variables with low variation are taken out, because normalization is not reliable
@@ -446,8 +446,8 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
     #   sim[l] <- n * max(2 * abs(colMeans(t(t(x)/sqrt(psi)) * g)))
     # }
     
-    psi <- apply(x, 2, function(x) mean(x^2))
-    tXtpsi <- t(t(x)/sqrt(psi))
+    psi <- sqrt(apply(x, 2, function(x) mean(x^2)))
+    tXtpsi <- t(t(x)/psi)
     
       for (l in 1:R) {
         g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
@@ -491,8 +491,8 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
     #   sim[l] <- n * max(2 * abs(colMeans(t(t(xehat)/sqrt(psi)) * g)))
     # }
     xehat <- x*ehat
-    psi <- apply(xehat, 2, function(x) mean(x^2))
-    tXehattpsi <- t(t(xehat)/sqrt(psi))
+    psi <- sqrt(apply(xehat, 2, function(x) mean(x^2)))
+    tXehattpsi <- t(t(xehat)/psi)
     
       for (l in 1:R) {
         g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
