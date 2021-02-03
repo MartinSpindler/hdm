@@ -103,7 +103,7 @@ X <- matrix(rnorm(n*p), ncol=p)
 beta <- c(rep(2,px), rep(0,p-px))
 intercept <- 1
 P <- exp(intercept + X \%*\% beta)/(1+exp(intercept + X \%*\% beta))
-y <- rbinom(length(y), size=1, prob=P)
+y <- rbinom(n, size=1, prob=P)
 ## fit rlassologit object
 rlassologit.reg <- rlassologit(y~X)
 ## methods
