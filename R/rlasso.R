@@ -418,6 +418,9 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
   if (!exists("gamma", where = penalty) & penalty$homoscedastic!="none") {
     penalty$gamma = 0.1
   }
+  if (penalty$X.dependent.lambda & !exists("numSim", where = penalty)) {
+    penalty$numSim = 5000
+  }
 
 
   # homoscedastic and X-independent
@@ -432,9 +435,6 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
 
   # homoscedastic and X-dependent
   if (penalty$homoscedastic==TRUE && penalty$X.dependent.lambda == TRUE) {
-    if (!exists("numSim", where = penalty)) {
-      penalty$numSim = 5000
-    }
     p <- dim(x)[2]
     n <- dim(x)[1]
     R <- penalty$numSim
@@ -472,9 +472,6 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
   
   # heteroscedastic and X-dependent
   if (penalty$homoscedastic==FALSE && penalty$X.dependent.lambda == TRUE) {
-    if (!exists("numSim", where = penalty)) {
-      penalty$numSim = 5000
-    }
     p <- dim(x)[2]
     n <- dim(x)[1]
     R <- penalty$numSim
