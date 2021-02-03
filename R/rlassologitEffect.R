@@ -87,7 +87,10 @@ rlassologitEffects.default <- function(x, y, index = c(1:ncol(x)), I3 = NULL, po
   lasso.regs <- vector("list", k)
   reside <- matrix(NA, nrow = n, ncol = p1)
   residv <- matrix(NA, nrow = n, ncol = p1)
-  names(coefficients) <- names(se) <- names(t) <- names(pval) <- names(lasso.regs) <- colnames(reside) <- colnames(residv) <- colnames(x)[index]
+  coef.mat <- list()
+  selection.matrix <- matrix(NA, ncol = k, nrow = dim(x)[2])
+  names(coefficients) <- names(se) <- names(t) <- names(pval) <- names(lasso.regs) <- colnames(reside) <- colnames(residv) <-  colnames(selection.matrix)  <- colnames(x)[index]
+  rownames(selection.matrix) <- colnames(x)
   
   for (i in 1:k) {
     d <- x[, index[i], drop = FALSE]
@@ -103,12 +106,14 @@ rlassologitEffects.default <- function(x, y, index = c(1:ncol(x)), I3 = NULL, po
       pval[i] <- col$pval
       reside[,i] <- col$residuals$epsilon
       residv[,i] <- col$residuals$v
+      coef.mat[[i]] <- col$coefficients.reg
+      selection.matrix[-index[i],i] <- col$selection.index
     }
   }
   residuals <- list(e = reside, v = residv)
   res <- list(coefficients = coefficients, se = se, t = t, pval = pval, 
               lasso.regs = lasso.regs, index = I, call = match.call(), samplesize = n, 
-              residuals = residuals)
+              residuals = residuals, coef.mat = coef.mat, selection.matrix = selection.matrix)
   class(res) <- c("rlassologitEffects")
   return(res)
 }
