@@ -221,8 +221,16 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
   XX <- crossprod(x)
   Xy <- crossprod(x, y)
   
+  if (!is.null(penalty$lambda.start)) {
+    p <- dim(x)[2]
+    if (length(penalty$lambda.start) == 1) {
+      penalty$lambda.start <- rep(penalty$lambda.start, p)
+    }
+  }
+  
   startingval <- init_values(x,y)$residuals
-  pen <- lambdaCalculation(penalty = penalty, y = startingval, x = x)
+  pen <- lambdaCalculation(penalty = penalty)
+  pen <- init_lambda(pen, y = startingval, x = x)
   lambda <- pen$lambda
   Ups0 <- Ups1 <- pen$Ups0
   lambda0 <- pen$lambda0
@@ -291,39 +299,7 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
     }
     s1 <- sqrt(var(e1))
     
-    # homoscedatic and X-independent
-    if (penalty$homoscedastic == TRUE && penalty$X.dependent.lambda == FALSE) {
-      Ups1 <- c(s1)*Psi
-      #lambda <- rep(pen$lambda0 * s1, p)
-      lambda <- pen$lambda0*Ups1
-    }
-    # homoscedatic and X-dependent
-    if (penalty$homoscedastic == TRUE && penalty$X.dependent.lambda == TRUE) {
-      Ups1 <- c(s1)*Psi
-      #lambda <- rep(pen$lambda0 * s1, p)
-      lambda <- pen$lambda0 * Ups1
-    }
-    # heteroscedastic and X-independent
-    if (penalty$homoscedastic == FALSE && penalty$X.dependent.lambda == FALSE) {
-      Ups1 <- 1/sqrt(n) * sqrt(t(t(e1^2) %*% (x^2)))
-      lambda <- pen$lambda0 * Ups1
-    }
     
-    # heteroscedastic and X-dependent
-    if (penalty$homoscedastic == FALSE && penalty$X.dependent.lambda == TRUE) {
-      lc <- lambdaCalculation(penalty, y=e1, x=x)
-      Ups1 <- lc$Ups0
-      lambda <- lc$lambda
-    }
-    
-    
-    
-    # none
-    if (penalty$homoscedastic == "none") {
-      if (is.null(penalty$lambda.start)) stop("Argument lambda.start required!")
-      Ups1 <- 1/sqrt(n) * sqrt(t(t(e1^2) %*% (x^2)))
-      lambda <- pen$lambda0 * Ups1
-    }
     
     mm <- mm + 1
     if (abs(s0 - s1) < control$tol) {
@@ -406,8 +382,7 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
 #' @export
 
 
-lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma = 0.1),
-                              y = NULL, x = NULL) {
+lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma = 0.1)) {
   checkmate::checkChoice(penalty$X.dependent.lambda, c(TRUE, FALSE, NULL))
   checkmate::checkChoice(penalty$homoscedastic, c(TRUE, FALSE, "none"))
   if (!exists("homoscedastic", where = penalty))  penalty$homoscedastic = "FALSE"
@@ -421,23 +396,64 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
   if (penalty$X.dependent.lambda & !exists("numSim", where = penalty)) {
     penalty$numSim = 5000
   }
-
-
+  
+  
   # homoscedastic and X-independent
   if (penalty$homoscedastic==TRUE && penalty$X.dependent.lambda == FALSE) {
-    p <- dim(x)[2]
-    n <- dim(x)[1]
-    lambda0 <- 2 * penalty$c * sqrt(n) * qnorm(1 - penalty$gamma/(2 *
-                                                                    p))
-    Ups0 <- sqrt(var(y))
-    lambda <- rep(lambda0 * Ups0, p)
+    class(penalty) <- append(class(x), "lambdaCalcHomoscXindep")
   }
-
+  
   # homoscedastic and X-dependent
   if (penalty$homoscedastic==TRUE && penalty$X.dependent.lambda == TRUE) {
+    class(penalty) <- append(class(x), "lambdaCalcHomoscXdep")
+  }
+  
+  # heteroscedastic and X-independent (was "standard")
+  if (penalty$homoscedastic==FALSE && penalty$X.dependent.lambda == FALSE) {
+    class(penalty) <- append(class(x), "lambdaCalcHeteroscXindep")
+  }
+  
+  # heteroscedastic and X-dependent
+  if (penalty$homoscedastic==FALSE && penalty$X.dependent.lambda == TRUE) {
+    class(penalty) <- append(class(x), "lambdaCalcHeteroscXdep")
+  }
+  
+  if (penalty$homoscedastic == "none") {
+    class(penalty) <- append(class(x), "lambdaCalcFixed")
+  }
+  
+  return(penalty)
+}
+
+# homoscedastic and X-independent
+init_lambda.lambdaCalcHomoscXindep(pen, y, x) {
+  p <- dim(x)[2]
+  n <- dim(x)[1]
+  pen$lambda0 <- 2 * pen$c * sqrt(n) * qnorm(1 - pen$gamma/(2 *
+                                                                             p))
+  pen$Ups0 <- sqrt(var(y))
+  pen$lambda <- rep(pen$lambda0 * Ups0, p)
+  
+  if (!is.null(pen$lambda.start)) {
+    pen$lambda <- as.matrix(pen$lambda.start)
+  }
+  return(pen)
+}
+
+update_lambda.lambdaCalcHomoscXindep(pen, e1, x) {
+  s1 <- sqrt(var(e1))
+  Psi <- apply(x, 2, function(x) mean(x^2))
+  
+  pen$Ups1 <- c(s1) * Psi
+  pen$lambda <- pen$lambda0 * pen$Ups1
+  return(pen)
+}
+
+# homoscedastic and X-dependent
+init_lambda.lambdaCalcHomoscXdep(pen, y, x) {
     p <- dim(x)[2]
     n <- dim(x)[1]
-    R <- penalty$numSim
+    R <- pen$numSim
     sim <- vector("numeric", length = R)
     # for (l in 1:R) {
     #   g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
@@ -454,78 +470,123 @@ lambdaCalculation <- function(penalty = list(homoscedastic = FALSE, X.dependent.
         sim[l] <- n * max(2 * abs(colMeans(tXtpsi * g)))
       }
    
-    lambda0 <- penalty$c * quantile(sim, probs = 1 - penalty$gamma)
-    Ups0 <- sqrt(var(y))
-    lambda <- rep(lambda0 * Ups0, p)
+    pen$lambda0 <- pen$c * quantile(sim, probs = 1 - pen$gamma)
+    pen$Ups0 <- sqrt(var(y))
+    pen$lambda <- rep(pen$lambda0 * pen$Ups0, p)
+    
+    if (!is.null(pen$lambda.start)) {
+      pen$lambda <- as.matrix(pen$lambda.start)
+    }
+    return(pen)
   }
 
-  # heteroscedastic and X-independent (was "standard")
-  if (penalty$homoscedastic==FALSE && penalty$X.dependent.lambda == FALSE) {
+update_lambda.lambdaCalcHomoscXdep(pen, e1, x) {
+}
+  
+# heteroscedastic and X-independent (was "standard")
+init_lambda.lambdaCalcHeteroscXindep(pen, y, x) {
     p <- dim(x)[2]
     n <- dim(x)[1]
-    #lambda0 <- 2*penalty$c*sqrt(n)*sqrt(2*log(2*p*log(n)/penalty$gamma))
-    lambda0 <- 2 * penalty$c * sqrt(n) * qnorm(1 - penalty$gamma/(2 *
+    #lambda0 <- 2*pen$c*sqrt(n)*sqrt(2*log(2*p*log(n)/pen$gamma))
+    lambda0 <- 2 * pen$c * sqrt(n) * qnorm(1 - pen$gamma/(2 *
                                                                     p * 1))  # 1=num endogenous variables
     Ups0 <- 1/sqrt(n) * sqrt(t(t(y^2) %*% (x^2)))
     lambda <- lambda0 * Ups0
-  }
-  
-  # heteroscedastic and X-dependent
-  if (penalty$homoscedastic==FALSE && penalty$X.dependent.lambda == TRUE) {
-    p <- dim(x)[2]
-    n <- dim(x)[1]
-    R <- penalty$numSim
-    sim <- vector("numeric", length = R)
-    #lasso.x.y <- rlasso(y ~ x)
-    #eh <- lasso.x.y$residuals
-    eh <- y
-    ehat <- matrix(rep(eh, each = p), ncol = p, byrow = TRUE) # might be improved by initial estimator or passed through
-    # for (l in 1:R) {
-    #   g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
-    #   #sim[l] <- n * max(2 * colMeans(x * ehat* g))
-    #   xehat <- x*ehat
-    #   psi <- apply(xehat, 2, function(x) mean(x^2))
-    #   sim[l] <- n * max(2 * abs(colMeans(t(t(xehat)/sqrt(psi)) * g)))
-    # }
-    xehat <- x*ehat
-    psi <- apply(xehat, 2, function(x) mean(x^2))
-    tXehattpsi <- t(t(xehat)/sqrt(psi))
     
-      for (l in 1:R) {
-        g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
-        #sim[l] <- n * max(2 * colMeans(x * ehat* g))
-        sim[l] <- n * max(2 * abs(colMeans(tXehattpsi * g)))
-      }
-    
-    
-    lambda0 <- penalty$c * quantile(sim, probs = 1 - penalty$gamma)
-    Ups0 <- 1/sqrt(n) * sqrt(t(t(y^2) %*% (x^2)))
-    lambda <- lambda0 * Ups0
-  }
-  
-  
-  if (!is.null(penalty$lambda.start)) {
-    p <- dim(x)[2]
-    if (length(penalty$lambda.start) == 1) {
-      lambda.start <- rep(penalty$lambda.start, p)
+    if (!is.null(pen$lambda.start)) {
+      pen$lambda <- as.matrix(pen$lambda.start)
     }
-    lambda <- as.matrix(penalty$lambda.start)
-  }
+    return(pen)
+}
 
-  if (penalty$homoscedastic == "none") {
-    if (is.null(penalty$lambda.start) | !exists("lambda.start", where = penalty))
+update_lambda.lambdaCalcHeteroscXindep(pen, e1, x) {
+}
+
+# heteroscedastic and X-dependent
+init_lambda.lambdaCalcHeteroscXdep(pen, y, x) {
+  p <- dim(x)[2]
+  n <- dim(x)[1]
+  R <- pen$numSim
+  sim <- vector("numeric", length = R)
+  #lasso.x.y <- rlasso(y ~ x)
+  #eh <- lasso.x.y$residuals
+  eh <- y
+  ehat <- matrix(rep(eh, each = p), ncol = p, byrow = TRUE) # might be improved by initial estimator or passed through
+  # for (l in 1:R) {
+  #   g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
+  #   #sim[l] <- n * max(2 * colMeans(x * ehat* g))
+  #   xehat <- x*ehat
+  #   psi <- apply(xehat, 2, function(x) mean(x^2))
+  #   sim[l] <- n * max(2 * abs(colMeans(t(t(xehat)/sqrt(psi)) * g)))
+  # }
+  xehat <- x*ehat
+  psi <- apply(xehat, 2, function(x) mean(x^2))
+  tXehattpsi <- t(t(xehat)/sqrt(psi))
+  
+  for (l in 1:R) {
+    g <- matrix(rep(rnorm(n), each = p), ncol = p, byrow = TRUE)
+    #sim[l] <- n * max(2 * colMeans(x * ehat* g))
+    sim[l] <- n * max(2 * abs(colMeans(tXehattpsi * g)))
+  }
+  
+  
+  pen$lambda0 <- pen$c * quantile(sim, probs = 1 - pen$gamma)
+  pen$Ups0 <- 1/sqrt(n) * sqrt(t(t(y^2) %*% (x^2)))
+  pen$lambda <- pen$lambda0 * pen$Ups0
+  
+  if (!is.null(pen$lambda.start)) {
+    pen$lambda <- as.matrix(pen$lambda.start)
+  }
+  return(pen)
+}
+
+update_lambda.lambdaCalcHeteroscXdep(pen, e1, x) {
+  Ups0 = pen$Ups0
+  pen <- init_lambda(pen, y=e1, x=x)
+  pen$Ups0 <- Ups0
+}
+  
+
+init_lambda.lambdaCalcFixed(pen, y, x) {
+  if (is.null(pen$lambda.start) | !exists("lambda.start", where = pen))
       stop("For method \"none\" lambda.start must be provided")
     n <- dim(x)[1]
-    lambda0 <- penalty$lambda.start
-    Ups0 <- 1/sqrt(n) * sqrt(t(t(y^2) %*% (x^2)))
-    lambda <- lambda0 * Ups0
-  }
+    pen$lambda0 <- pen$lambda.start
+    pen$Ups0 <- 1/sqrt(n) * sqrt(t(t(y^2) %*% (x^2)))
+    pen$lambda <- pen$lambda0 * pen$Ups0
+    
+    return(pen)
+}
 
-  return(list(lambda0 = lambda0, lambda = lambda, Ups0 = Ups0, method = penalty))
+update_lambda.lambdaCalcFixed(pen, e1, x) {
+  pen$Ups1 <- 1/sqrt(n) * sqrt(t(t(e1^2) %*% (x^2)))
+  pen$lambda <- pen$lambda0 * Ups1
+  
+  return(pen)
+}
+
+# homoscedatic and X-dependent
+if (penalty$homoscedastic == TRUE && penalty$X.dependent.lambda == TRUE) {
+  Ups1 <- c(s1)*Psi
+  #lambda <- rep(pen$lambda0 * s1, p)
+  lambda <- pen$lambda0 * Ups1
+}
+# heteroscedastic and X-independent
+if (penalty$homoscedastic == FALSE && penalty$X.dependent.lambda == FALSE) {
+  Ups1 <- 1/sqrt(n) * sqrt(t(t(e1^2) %*% (x^2)))
+  lambda <- pen$lambda0 * Ups1
+}
+
+# heteroscedastic and X-dependent
+if (penalty$homoscedastic == FALSE && penalty$X.dependent.lambda == TRUE) {
 }
 
 
 
+# none
+if (penalty$homoscedastic == "none") {
+  if (is.null(penalty$lambda.start)) stop("Argument lambda.start required!")
+}
 
 
 ################# Methods for Lasso
