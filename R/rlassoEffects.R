@@ -27,6 +27,8 @@
 #' @return The function returns an object of class \code{rlassoEffects} with the following entries: \item{coefficients}{vector with estimated
 #' values of the coefficients for each selected variable} \item{se}{standard error (vector)}
 #' \item{t}{t-statistic} \item{pval}{p-value} \item{samplesize}{sample size of the data set} \item{index}{index of the variables for which inference is performed}
+#' \item{selection.matrix}{A matrix indicating if a variable has been selected (TRUE) during the internal lasso estimation steps. Each column illustrates the variable selection for the inference procedure that corresponds to a specific treatment/target variable.}
+#' \item{coefficients.reg}{Coefficient estimates from internal lasso regressions. Note that traditional inference on these coefficients is not valid in general.}
 #' @references A. Belloni, V. Chernozhukov, C. Hansen (2014). Inference on
 #' treatment effects after selection among high-dimensional controls. The
 #' Review of Economic Studies 81(2), 608-650.
@@ -138,14 +140,14 @@ rlassoEffects.default <- function(x, y, index = c(1:ncol(x)), method = "partiall
       reside[, i] <- col$residuals$epsilon
       residv[, i] <- col$residuals$v
       coef.mat[[i]] <- col$coefficients.reg
-      selection.matrix[-index[i],i] <- col$selection.index
+      selection.matrix[-index[i],i] <- col$selection.matrix
     }
   }
-  #colnames(coef.mat) <- colnames(x)[index]
+  names(coef.mat) <- colnames(x)[index]
   residuals <- list(e = reside, v = residv)
   res <- list(coefficients = coefficients, se = se, t = t, pval = pval, 
               lasso.regs = lasso.regs, index = index, call = match.call(), samplesize = n, 
-              residuals = residuals, coef.mat = coef.mat, selection.matrix = selection.matrix)
+              residuals = residuals, coefficients.reg = coef.mat, selection.matrix = selection.matrix)
   class(res) <- "rlassoEffects"
   return(res)
 }
@@ -247,9 +249,11 @@ rlassoEffect <- function(x, y, d, method = "double selection", I3 = NULL,
     # samplesize=n)
     se <- drop(se)
     names(se) <- colnames(d)
+    selection.matrix = as.matrix(I)
+    colnames(selection.matrix) = colnames(d)
     results <- list(alpha = alpha, se = se, t = tval, pval = pval, 
                     no.selected = no.selected, coefficients = alpha, coefficient = alpha, 
-                    coefficients.reg = coef(reg1), selection.index = I, residuals = res, call = match.call(), 
+                    coefficients.reg = coef(reg1), selection.matrix = selection.matrix, residuals = res, call = match.call(), 
                     samplesize = n)
   }
   
@@ -269,9 +273,11 @@ rlassoEffect <- function(x, y, d, method = "double selection", I3 = NULL,
     I2 <- reg2$index
     I <- as.logical(I1 + I2)
     names(I) <- union(names(I1),names(I2))
+    selection.matrix = as.matrix(I)
+    colnames(selection.matrix) = colnames(d)
     results <- list(alpha = unname(alpha), se = drop(se), t = unname(tval), 
                     pval = unname(pval), coefficients = unname(alpha), coefficient = unname(alpha), 
-                    coefficients.reg = coef(reg1), selection.index = I, residuals = res, call = match.call(), 
+                    coefficients.reg = coef(reg1), selection.matrix = selection.matrix, residuals = res, call = match.call(), 
                     samplesize = n)
   }
   class(results) <- "rlassoEffects"
@@ -570,21 +576,12 @@ coef.rlassoEffects <- function(object, complete = TRUE, selection.matrix = FALSE
     
     mat <- object$selection.matrix
     
-    if (is.null(mat)) {
-      mat <- cbind(object$selection.index)
-      dmat2 <- dim(mat)[2]
-      rnames <- rownames(mat)
-      targetindx <- stats::complete.cases(mat)
-    }
-    
-    else {
-      dmat2 <- dim(mat)[2]
-      rnames <- rownames(mat)
-      targetindx <- stats::complete.cases(mat)
-      mat <- cbind(mat, as.logical(apply(mat, 1, sum)))
-      colnames(mat)[dim(mat)[2]] <- "global"
-    }
-    
+    dmat2 <- dim(mat)[2]
+    rnames <- rownames(mat)
+    targetindx <- stats::complete.cases(mat)
+    mat <- cbind(mat, as.logical(apply(mat, 1, sum)))
+    colnames(mat)[dim(mat)[2]] <- "global"
+
     if (include.targets == FALSE) {
       mat <- mat[targetindx, , drop = FALSE]
       rnames <- rownames(mat)

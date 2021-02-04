@@ -17,7 +17,9 @@
 #' @param \dots additional parameters
 #' @return The function returns an object of class \code{rlassologitEffects} with the following entries: \item{coefficients}{estimated
 #' value of the coefficients} \item{se}{standard errors}
-#' \item{t}{t-statistics} \item{pval}{p-values} \item{samplesize}{sample size of the data set} \item{I}{index of variables of the union of the lasso regressions}
+#' \item{t}{t-statistics} \item{pval}{p-values} \item{samplesize}{sample size of the data set} 
+#' \item{selection.matrix}{A matrix indicating if a variable has been selected (TRUE) during the internal lasso/logistic lasso estimation steps. Each column illustrates the variable selection for the inference procedure that corresponds to a specific treatment/target variable.} 
+#' \item{coefficients.reg}{Coefficient estimates from final glm estimation step after internal selection with lasso/logistic lasso regressions. Note that traditional inference on these coefficients is not valid in general.}
 #' @references A. Belloni, V. Chernozhukov, Y. Wei (2013). Honest confidence regions for a regression parameter in logistic regression with a loarge number of controls.
 #' cemmap working paper CWP67/13.
 #' @export
@@ -87,7 +89,10 @@ rlassologitEffects.default <- function(x, y, index = c(1:ncol(x)), I3 = NULL, po
   lasso.regs <- vector("list", k)
   reside <- matrix(NA, nrow = n, ncol = p1)
   residv <- matrix(NA, nrow = n, ncol = p1)
-  names(coefficients) <- names(se) <- names(t) <- names(pval) <- names(lasso.regs) <- colnames(reside) <- colnames(residv) <- colnames(x)[index]
+  coef.mat <- list()
+  selection.matrix <- matrix(NA, ncol = k, nrow = dim(x)[2])
+  names(coefficients) <- names(se) <- names(t) <- names(pval) <- names(lasso.regs) <- colnames(reside) <- colnames(residv) <-  colnames(selection.matrix)  <- colnames(x)[index]
+  rownames(selection.matrix) <- colnames(x)
   
   for (i in 1:k) {
     d <- x[, index[i], drop = FALSE]
@@ -103,12 +108,15 @@ rlassologitEffects.default <- function(x, y, index = c(1:ncol(x)), I3 = NULL, po
       pval[i] <- col$pval
       reside[,i] <- col$residuals$epsilon
       residv[,i] <- col$residuals$v
+      coef.mat[[i]] <- col$coefficients.reg
+      selection.matrix[-index[i],i] <- col$selection.matrix
     }
   }
+  names(coef.mat) <- colnames(x)[index]
   residuals <- list(e = reside, v = residv)
   res <- list(coefficients = coefficients, se = se, t = t, pval = pval, 
               lasso.regs = lasso.regs, index = I, call = match.call(), samplesize = n, 
-              residuals = residuals)
+              residuals = residuals, coefficients.reg = coef.mat, selection.matrix = selection.matrix)
   class(res) <- c("rlassologitEffects")
   return(res)
 }
@@ -187,12 +195,12 @@ rlassologitEffect <- function(x, y, d, I3 = NULL, post = TRUE) {
     I <- I1 + I2
     I <- as.logical(I)
   }
-  xselect <- x[, I]
-  p3 <- dim(xselect)[2]
+  dxselect <-  cbind(d, x[, I])
+  p3 <- dim(dxselect)[2]-1
   #la3 <- 1.1/2 * sqrt(n) * qnorm(1 - 0.05/(max(n, (p3 + 1) * log(n))))
   #l3 <- rlassologit(cbind(d, xselect), y, post = TRUE, normalize = TRUE, 
   #                  intercept = TRUE, penalty = list(lambda.start = la3))
-  l3 <- glm(y ~ cbind(d, xselect),family=binomial(link='logit'))
+  l3 <- glm(y ~ dxselect, family = binomial(link = 'logit'))
   alpha <- l3$coef[2]
   names(alpha) <- colnames(d)
   t3 <- predict(l3, type = "link")
@@ -222,8 +230,11 @@ rlassologitEffect <- function(x, y, d, I3 = NULL, post = TRUE) {
   res <- list(epsilon= l3$residuals, v= z)
   se <- drop(se)
   names(se) <- colnames(d)
+  selection.matrix = as.matrix(I)
+  colnames(selection.matrix) = colnames(d)
   results <- list(alpha = alpha, se = se, t = tval, pval = pval, 
-                  no.selected = no.selected, coefficients = alpha, coefficient = alpha, 
+                  no.selected = no.selected, coefficients = alpha, coefficient = alpha,
+                  coefficients.reg = coef(l3), selection.matrix = selection.matrix,
                   residuals = res, call = match.call(), samplesize = n, post = post)
   class(results) <- c("rlassologitEffects")
   return(results)

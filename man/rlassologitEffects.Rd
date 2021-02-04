@@ -45,7 +45,9 @@ If not found in data, the variables are taken from environment(formula), typical
 \value{
 The function returns an object of class \code{rlassologitEffects} with the following entries: \item{coefficients}{estimated
 value of the coefficients} \item{se}{standard errors}
-\item{t}{t-statistics} \item{pval}{p-values} \item{samplesize}{sample size of the data set} \item{I}{index of variables of the union of the lasso regressions}
+\item{t}{t-statistics} \item{pval}{p-values} \item{samplesize}{sample size of the data set} 
+\item{selection.matrix}{A matrix indicating if a variable has been selected (TRUE) during the internal lasso/logistic lasso estimation steps. Each column illustrates the variable selection for the inference procedure that corresponds to a specific treatment/target variable.} 
+\item{coefficients.reg}{Coefficient estimates from final glm estimation step after internal selection with lasso/logistic lasso regressions. Note that traditional inference on these coefficients is not valid in general.}
 }
 \description{
 The function estimates (low-dimensional) target coefficients in a high-dimensional logistic model.
