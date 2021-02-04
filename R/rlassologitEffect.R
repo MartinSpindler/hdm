@@ -17,7 +17,9 @@
 #' @param \dots additional parameters
 #' @return The function returns an object of class \code{rlassologitEffects} with the following entries: \item{coefficients}{estimated
 #' value of the coefficients} \item{se}{standard errors}
-#' \item{t}{t-statistics} \item{pval}{p-values} \item{samplesize}{sample size of the data set} \item{I}{index of variables of the union of the lasso regressions}
+#' \item{t}{t-statistics} \item{pval}{p-values} \item{samplesize}{sample size of the data set} 
+#' \item{selection.matrix}{A matrix indicating if a variable has been selected (TRUE) during the internal lasso/logistic lasso estimation steps. Each column illustrates the variable selection for the inference procedure that corresponds to a specific treatment/target variable.} 
+#' \item{coefficients.reg}{Coefficient estimates from final glm estimation step after internal selection with lasso/logistic lasso regressions. Note that traditional inference on these coefficients is not valid in general.}
 #' @references A. Belloni, V. Chernozhukov, Y. Wei (2013). Honest confidence regions for a regression parameter in logistic regression with a loarge number of controls.
 #' cemmap working paper CWP67/13.
 #' @export
@@ -107,14 +109,14 @@ rlassologitEffects.default <- function(x, y, index = c(1:ncol(x)), I3 = NULL, po
       reside[,i] <- col$residuals$epsilon
       residv[,i] <- col$residuals$v
       coef.mat[[i]] <- col$coefficients.reg
-      selection.matrix[-index[i],i] <- col$selection.index
+      selection.matrix[-index[i],i] <- col$selection.matrix
     }
   }
   names(coef.mat) <- colnames(x)[index]
   residuals <- list(e = reside, v = residv)
   res <- list(coefficients = coefficients, se = se, t = t, pval = pval, 
               lasso.regs = lasso.regs, index = I, call = match.call(), samplesize = n, 
-              residuals = residuals, coef.mat = coef.mat, selection.matrix = selection.matrix)
+              residuals = residuals, coefficients.reg = coef.mat, selection.matrix = selection.matrix)
   class(res) <- c("rlassologitEffects")
   return(res)
 }
@@ -228,9 +230,11 @@ rlassologitEffect <- function(x, y, d, I3 = NULL, post = TRUE) {
   res <- list(epsilon= l3$residuals, v= z)
   se <- drop(se)
   names(se) <- colnames(d)
+  selection.matrix = as.matrix(I)
+  colnames(selection.matrix) = colnames(d)
   results <- list(alpha = alpha, se = se, t = tval, pval = pval, 
                   no.selected = no.selected, coefficients = alpha, coefficient = alpha,
-                  coefficients.reg = coef(l3), selection.index = I,
+                  coefficients.reg = coef(l3), selection.matrix = selection.matrix,
                   residuals = res, call = match.call(), samplesize = n, post = post)
   class(results) <- c("rlassologitEffects")
   return(results)

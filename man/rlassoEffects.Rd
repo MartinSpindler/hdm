@@ -65,6 +65,8 @@ If not found in data, the variables are taken from environment(formula), typical
 The function returns an object of class \code{rlassoEffects} with the following entries: \item{coefficients}{vector with estimated
 values of the coefficients for each selected variable} \item{se}{standard error (vector)}
 \item{t}{t-statistic} \item{pval}{p-value} \item{samplesize}{sample size of the data set} \item{index}{index of the variables for which inference is performed}
+\item{selection.matrix}{A matrix indicating if a variable has been selected (TRUE) during the internal lasso estimation steps. Each column illustrates the variable selection for the inference procedure that corresponds to a specific treatment/target variable.}
+\item{coefficients.reg}{Coefficient estimates from internal lasso regressions. Note that traditional inference on these coefficients is not valid in general.}
 }
 \description{
 Estimation and inference of (low-dimensional) target coefficients in a high-dimensional linear model.
