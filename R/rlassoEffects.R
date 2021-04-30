@@ -254,8 +254,8 @@ rlassoEffect <- function(x, y, d, method = "double selection", I3 = NULL,
   }
   
   if (method == "partialling out") {
-    reg1 <- rlasso(y ~ x, post = post, ...)
-    yr <- reg1$residuals
+    reg1 <- rlasso(y ~ cbind(x, d), post = post, ...)
+    yr <- reg1$residuals + reg1$coefficients[colnames(d)]*d
     reg2 <- rlasso(d ~ x, post = post, ...)
     dr <- reg2$residuals
     reg3 <- lm(yr ~ dr)
@@ -265,13 +265,15 @@ rlassoEffect <- function(x, y, d, method = "double selection", I3 = NULL,
     tval <- alpha/sqrt(var)
     pval <- 2 * pnorm(-abs(tval))
     res <- list(epsilon = reg3$residuals, v = dr)
-    I1 <- reg1$index
+    I1 <- reg1$index[-length(reg1$index)]
+    #I1 <- reg1$index
     I2 <- reg2$index
     I <- as.logical(I1 + I2)
-    names(I) <- union(names(I1),names(I2))
-    results <- list(alpha = unname(alpha), se = drop(se), t = unname(tval), 
-                    pval = unname(pval), coefficients = unname(alpha), coefficient = unname(alpha), 
-                    coefficients.reg = coef(reg1), selection.index = I, residuals = res, call = match.call(), 
+    names(I) <- union(names(I1), names(I2))
+    results <- list(alpha = unname(alpha), se = drop(se),
+                    t = unname(tval), pval = unname(pval), coefficients = unname(alpha),
+                    coefficient = unname(alpha), coefficients.reg = coef(reg1)[-length(coef(reg1))],
+                    selection.index = I, residuals = res, call = match.call(),
                     samplesize = n)
   }
   class(results) <- "rlassoEffects"
