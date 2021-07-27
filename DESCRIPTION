@@ -24,7 +24,8 @@ Imports:
     ggplot2,
     checkmate,
     Formula,
-    methods
+    methods,
+    mvtnorm
 Suggests:
     testthat,
     knitr,

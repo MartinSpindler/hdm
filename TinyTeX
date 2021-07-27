@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>404 Page not found - Yihui Xie | 谢益辉</title>
+    <meta property="og:title" content="404 Page not found - Yihui Xie | 谢益辉">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+    
+
+    
+    
+    
+    <meta name="twitter:image" content="https://yihui.org/images/logo.png">
+    
+    
+
+    
+
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Yihui Xie | 谢益辉" />
+    
+    
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+<link rel="stylesheet" href="/css/custom.css" />
+
+  </head>
+
+  
+  <body class="">
+    <header class="masthead">
+      
+
+<h1><a href="/"><img src="/images/logo.png" alt="Yihui Xie" /></a></h1>
+
+
+
+      <nav class="menu">
+  <ul>
+  
+  
+  <li><a href="/en/about/">About</a></li>
+  
+  <li><a href="/en/">Blog</a></li>
+  
+  <li><a href="/cn/about/">关于</a></li>
+  
+  <li><a href="/cn/">日志</a></li>
+  
+  
+
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>404 Page not found</h1>
+
+
+<hr>
+
+
+      </header>
+
+
+<p>The page at <code>
+<script>
+document.write(location.href);
+</script>
+</code> was not found. Feel confused? Please go ahead and leave a message below to notify me. It will be great if you could tell me the URL of the page and where/how you got this URL. Thanks!</p>
+
+<p><img src="https://slides.yihui.org/gif/elevator.gif" alt="404 not found" /></p>
+
+  <footer>
+  
+
+
+<section class="comments">
+  <div class="tabs" style="display: none;">
+  <input name="tabs" type="radio" id="tab-1" checked class="input"/>
+  <label for="tab-1" class="label">Disqus</label>
+  <div class="panel">
+    <div id="disqus_thread"></div>
+    <script data-src="//yihui.disqus.com/embed.js" async></script>
+    <script>
+    var disqus_config = (function() {
+      var disqusURL
+      
+        = "https:\/\/yihui.org" + "/404.html" 
+      
+      ;
+      var cfg = function() {
+        this.page.url = disqusURL;
+      };
+      cfg.DisqusJSInit = function() {
+        var dsqjs = new DisqusJS({
+          shortname: "yihui",
+          siteName: "Yihui Xie | 谢益辉",
+          identifier: undefined,
+          url: disqusURL,
+          api: "https://yihui.org/disqus/",
+          apikey: [
+            '7KUjj8dWYWdg36SwnKhiZmfiBcRrwlCDudkFZHAkfFJKBerk9IAPnnuo45Kkm22W',
+            'XrSwjw0Vm57x9oStOytHMBVpXkGBivU2ohEV1loqEEFmJ8Ulefxuz1lw9zDeYFN8',
+            'Hqkwx8JsVo5YOtkx0Oqc75oWIUG0n1PR9AgsrSJID4sEpkUKDgEyIhoObeoF1miW'
+          ],
+          admin: 'yihui',
+          adminLabel: 'Yihui Xie'
+        });
+      };
+      return cfg;
+    })();
+    </script>
+  </div>
+  <input name="tabs" type="radio" id="tab-2" class="input"/>
+  <label for="tab-2" class="label">Utterances</label>
+  <div class="panel">
+    <script data-src="https://utteranc.es/client.js" repo="rbind/yihui" issue-term="pathname"
+      label="comment" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  <input name="tabs" type="radio" id="tab-3" class="input"/>
+  <label for="tab-3" class="label">Preferences</label>
+  <div class="panel">
+    <p class="title">Layout of comment panels</p>
+    <input name="layout" type="radio" id="layout-1" checked />
+    <label for="layout-1">Tabbed (wide screen) / Stacked (small screen)</label>
+    <br/>
+    <input name="layout" type="radio" id="layout-2" />
+    <label for="layout-2">Full display</label>
+  </div>
+  </div>
+  <script>
+  (function(d) {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var t = d.getElementById('disqus_thread'), s = t.nextElementSibling,
+        a = d.querySelector('section.comments'),
+        rads = a.querySelectorAll('input[type="radio"]');
+    s.setAttribute('data-timestamp', +new Date());
+    var inputValues = function() {
+      var v = {};
+      rads.forEach(function(el) { v[el.id] = el.checked; });
+      return v;
+    }, selectTab2 = function() {
+      a.querySelector('#tab-2').checked = true;
+      return 'add';
+    }, showFullComment = function(el) {
+      if (el.name !== 'layout') return;
+      a.classList[el.id === 'layout-2' ? selectTab2() : 'remove']('comment-full');
+    }, inputRestore = function() {
+      var v = localStorage.getItem('comment-prefs');
+      if (!v) return;
+      v = JSON.parse(v);
+      rads.forEach(function(el) {
+        if (v[el.id]) {
+          el.checked = true;
+          showFullComment(el);
+        }
+      });
+    }, inputSave = function() {
+      showFullComment(this);
+      loadScript();
+      var v = JSON.stringify(inputValues());
+      try { localStorage.setItem('comment-prefs', v); } catch (e) {}
+    }, loadScript = function() {
+      var full = a.classList.contains('comment-full');
+      a.querySelectorAll('input[name="tabs"]').forEach(function(el, i) {
+        if (!full && !el.checked) return;
+        var p = a.querySelector('.panel:nth-of-type(' + (i + 1) + ') > script[data-src]');
+        if (!p || !p.dataset.src) return;
+        p.src = p.dataset.src;
+        p.removeAttribute('data-src');
+      });
+    };
+    
+    inputRestore();
+    
+    rads.forEach(function(el) { el.addEventListener('change', inputSave); });
+    var b = false, l = function(scroll) {
+      if (b) return;
+      a.querySelector('.tabs').style.display = '';
+      loadScript();
+      b = true;
+      if (scroll) t.scrollIntoView();
+    }
+    s.onerror = function(e) {
+      
+      var s2 = d.createElement('script');
+      s2.src = "//cdn.jsdelivr.net/gh/yihui/DisqusJS@1.3.3/src/disqus.min.js";
+      t.appendChild(s2);
+      try { localStorage.setItem('dsqjs_mode', 'dsqjs'); } catch (e) {}
+      s2.onload = function(e) {
+        var s3 = d.createElement('link');
+        s3.rel = 'stylesheet';
+        s3.href = '//cdn.jsdelivr.net/gh/yihui/DisqusJS@1.3.3/src/disqusjs.min.css';
+        d.head.appendChild(s3);
+        disqus_config.DisqusJSInit();
+      };
+      s2.onerror = function(e) {
+        t.innerText = 'Sorry, but you cannot make comments because Disqus failed to load for some reason. It is known to be blocked in certain regions. If you are sure it is not blocked in your region, please refresh the page. Alternatively, you can comment with Utterances. 您可能需要翻墙发表 Disqus 评论；若没有梯子，不妨尝试使用 Github 登录 Utterances 评论。';
+        t.style.border = '1px dashed';
+        t.style.padding = '.5em';
+        t.style.background = 'lightyellow';
+        selectTab2();
+      };
+    };
+    
+    if (location.hash.match(/^#comment-[0-9]+$/)) return l(true);
+    var c = function() {
+      if (b) return;
+      var rect = a.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) l();
+    };
+    window.addEventListener('load', c);
+    d.addEventListener('scroll', c);
+  })(document);
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<script async src="/js/fix-toc.js"></script>
+
+<script async src="/js/center-img.js"></script>
+
+<script async src="/js/right-quote.js"></script>
+
+<script async src="/js/no-highlight.js"></script>
+
+<script async src="/js/fix-footnote.js"></script>
+
+<script async src="/js/math-code.js"></script>
+
+<script async src="/js/external-link.js"></script>
+
+<script async src="/js/alt-title.js"></script>
+
+<script async src="/js/header-link.js"></script>
+
+
+
+
+  
+
+  
+  <hr>
+  <div class="copyright">&copy; <a href="/">Yihui Xie</a> 2005 - 2021</div>
+  
+  </footer>
+  </article>
+  
+  </body>
+</html>
+
