@@ -20,7 +20,7 @@
 #' DML functional
 #'
 #' @param Y A vector of outputs
-#' @param T A vector of treatment values
+#' @param D A vector of treatment values
 #' @param X A matrix of covariates
 #' @param dict A dictionary
 #' @return DML results
@@ -28,7 +28,7 @@
 #' rlassoDML(Y,T,X,dict)
 #' @export
 #' @rdname rlassoDML
-rlassoDML<-function(Y,T,X,dict,D_LB = 0,D_add = 0.2,bias = FALSE,L = 5){
+rlassoDML<-function(Y,D,X,dict,D_LB = 0,D_add = 0.2,bias = FALSE,L = 5){
   #Inputs
   #Y: output variable
   #T: treatment variable
@@ -39,7 +39,7 @@ rlassoDML<-function(Y,T,X,dict,D_LB = 0,D_add = 0.2,bias = FALSE,L = 5){
   #Output
   #list with average treatment effect and standard error
   
-  p=length(dict(T[1],X[1,]))
+  p=length(dict(D[1],X[1,]))
   
   #p0=dim(X0) used in low-dim dictionary in the stage 1 tuning procedure
   p0=ceiling(p/4) 
@@ -63,8 +63,8 @@ rlassoDML<-function(Y,T,X,dict,D_LB = 0,D_add = 0.2,bias = FALSE,L = 5){
     Y.l=Y[folds[[l]]]
     Y.nl=Y[-folds[[l]]]
     
-    T.l=T[folds[[l]]]
-    T.nl=T[-folds[[l]]]
+    T.l=D[folds[[l]]]
+    T.nl=D[-folds[[l]]]
     
     X.l=X[folds[[l]],]
     X.nl=X[-folds[[l]],]
@@ -124,7 +124,7 @@ rlassoDML<-function(Y,T,X,dict,D_LB = 0,D_add = 0.2,bias = FALSE,L = 5){
   var=mean(Psi^2)
   se=sqrt(var/n)
   
-  out<-c(table(T)[[2]],table(T)[[1]],ate,se)
+  out<-c(table(D)[[2]],table(D)[[1]],ate,se)
   
   return(out)
 }
