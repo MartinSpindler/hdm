@@ -4,12 +4,12 @@
 \alias{rlassoDML}
 \title{DML functional}
 \usage{
-rlassoDML(Y, T, X, dict, D_LB = 0, D_add = 0.2, bias = FALSE, L = 5)
+rlassoDML(Y, D, X, dict, D_LB = 0, D_add = 0.2, bias = FALSE, L = 5)
 }
 \arguments{
 \item{Y}{A vector of outputs}
 
-\item{T}{A vector of treatment values}
+\item{D}{A vector of treatment values}
 
 \item{X}{A matrix of covariates}
 
