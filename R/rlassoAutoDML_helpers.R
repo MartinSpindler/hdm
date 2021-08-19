@@ -11,7 +11,6 @@ m2 <- function(y, d, z, gamma) {
 }
 
 psi_tilde <- function(y, d, z, m, alpha, gamma) {
-
   return(m(y, d, z, gamma) + alpha(d, z) * (y - gamma(d, z)))
 }
 
@@ -20,7 +19,6 @@ psi_tilde_bias <- function(y, d, z, m, alpha, gamma) {
 }
 
 get_MNG <- function(Y, D, X, b) {
-
   p <- length(b(D[1], X[1, ]))
   n.nl <- length(D)
 
@@ -95,8 +93,8 @@ RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso
   # alpha_hat
   ###########
   diff_rho <- 1
+  
   while (diff_rho > tol & k <= max_iter) {
-
     # previous values
     rho_hat_old <- rho_hat + 0
 
@@ -104,9 +102,6 @@ RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso
     D_hat_rho <- get_D(Y, D, X, m, rho_hat_old, b)
     D_hat_rho <- pmax(D_LB, D_hat_rho)
     D_hat_rho <- D_hat_rho + D_add
-
-    # RMD estimate
-    # rho_hat=RMD_lasso(M_hat, G_hat, D_hat_rho, lambda)$coefficients
 
     L <- c(l, rep(1, p - 1)) # dictionary is ordered (constant,...)
     lambda_vec <- lambda * L * D_hat_rho # v3: insert D here
@@ -119,7 +114,6 @@ RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso
 
   return(rho_hat)
 }
-
 
 
 printer <- function(spec1) {
