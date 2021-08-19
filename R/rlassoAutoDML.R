@@ -21,6 +21,7 @@
 #' TODO: documentation for this parameter (including default)
 #' @return list with average treatment effect and standard error
 #' @examples
+#' TODO include a quick and independent example (including data loading/generation)
 #' rlassoDML(Y, T, X, dict)
 #' @export
 #' @rdname rlassoDML
