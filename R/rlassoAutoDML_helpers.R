@@ -57,7 +57,7 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 
 #' RMD_stable
 #' 
-#' TODO: inset description on what this function does and document all
+#' TODO: insert description on what this function does and document all
 #' parameters
 #' 
 #' TODO: set defaults for arguments

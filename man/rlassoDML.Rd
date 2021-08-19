@@ -46,6 +46,6 @@ TODO:
 insert a meaningful description and include references from the literature.
 }
 \examples{
-TODO include a quick and independent example (including data loading/generation)
-rlassoDML(Y, T, X, dict)
+# TODO include a quick and independent example (including data loading/generation)
+# rlassoAutoDML(Y, T, X, dict)
 }

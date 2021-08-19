@@ -21,8 +21,8 @@
 #' TODO: documentation for this parameter (including default)
 #' @return list with average treatment effect and standard error
 #' @examples
-#' TODO include a quick and independent example (including data loading/generation)
-#' rlassoDML(Y, T, X, dict)
+#' # TODO include a quick and independent example (including data loading/generation)
+#' # rlassoAutoDML(Y, T, X, dict)
 #' @export
 #' @rdname rlassoDML
 rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,

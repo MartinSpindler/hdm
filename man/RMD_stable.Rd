@@ -44,7 +44,7 @@ RMD_stable(
 \item{tol}{}
 }
 \description{
-TODO: inset description on what this function does and document all
+TODO: insert description on what this function does and document all
 parameters
 }
 \details{
