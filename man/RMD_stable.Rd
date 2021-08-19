@@ -4,7 +4,21 @@
 \alias{RMD_stable}
 \title{RMD_stable}
 \usage{
-RMD_stable(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso)
+RMD_stable(
+  Y,
+  D,
+  X,
+  p0,
+  D_LB,
+  D_add,
+  max_iter,
+  b,
+  is_alpha,
+  is_lasso,
+  c = 0.5,
+  alpha = 0.1,
+  tol = 1e-06
+)
 }
 \arguments{
 \item{Y}{}
@@ -26,6 +40,8 @@ RMD_stable(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso)
 \item{is_alpha}{}
 
 \item{is_lasso}{}
+
+\item{tol}{}
 }
 \description{
 TODO: inset description on what this function does and document all
