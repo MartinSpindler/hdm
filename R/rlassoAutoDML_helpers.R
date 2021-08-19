@@ -71,9 +71,12 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 #' @param b 
 #' @param is_alpha 
 #' @param is_lasso 
+#' @param c
+#' @param alpha
+#' @param tol
 #'
 #' @export
-RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso) {
+RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso, c = 0.5, alpha = 0.1, tol = 1e-6) {
 
   k <- 1
   l <- 0.1
@@ -99,10 +102,6 @@ RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso
   M_hat <- MNG[[1]]
   N_hat <- MNG[[2]]
   G_hat <- MNG[[3]]
-
-  c <- 0.5
-  alpha <- 0.1
-  tol <- 1e-6
 
   # penalty
   lambda <- c * qnorm(1 - alpha / (2 * p)) / sqrt(n) # snippet
