@@ -1,56 +1,48 @@
-# library(hdm)
-# library(mvtnorm)
-
-
-# functional only uses lasso in hdm framework/ keep within hdm framework
-# object oriented is more flexible/can use more learners
-# cross check functional/object oriented
-# prepare data example on object oriented
-# check whether standard errors/scores match expectation
-
-
-# For functional Docs, examples, testing
-# code insert Roxygen skeleton
-# user passes by hand modern matrix / build wrapper later
-# supports different interfaces
-
-
-
-
-#' DML functional
+#' Auto DML based on rlasso
+#' 
+#' TODO:
+#' insert a meaningful description and include references from the literature.
 #'
 #' @param Y A vector of outputs
 #' @param D A vector of treatment values
 #' @param X A matrix of covariates
 #' @param dict A dictionary
-#' @return DML results
+#' TODO: explain what the dictionary does
+#' @param bias debiased vs. biased results
+#' TODO: do users really need the biased results or are they just used for
+#' illustration purposes
+#' @param D_LB 
+#' TODO: documentation for this parameter
+#' @param D_add 
+#' TODO: documentation for this parameter
+#' @param L
+#' TODO: documentation for this parameter
+#' @param max_iter
+#' TODO: documentation for this parameter
+#' @return list with average treatment effect and standard error
 #' @examples
 #' rlassoDML(Y, T, X, dict)
 #' @export
 #' @rdname rlassoDML
-rlassoAutoDML <- function(Y, D, X, dict, D_LB = 0, D_add = 0.2, bias = FALSE, L = 5) {
-  # Inputs
-  # Y: output variable
-  # T: treatment variable
-  # X: covariates
-  # bias: debiased vs. biased results
-  # L: number of folds
-  #
-  # Output
-  # list with average treatment effect and standard error
-
+rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
+                          bias = FALSE, L = 5, max_iter = 10) {
+  
+  if (is.null(dict)) {
+    # TODO: insert default behavior if no dictionary is provided by the user
+    dict = function(x, y) {
+      return(x)
+    }
+    
+  }
   p <- length(dict(D[1], X[1, ]))
 
   # p0=dim(X0) used in low-dim dictionary in the stage 1 tuning procedure
+  # TODO: is this comment true or is p0 = dim(X0)/4 used?
   p0 <- ceiling(p / 4)
   if (p > 60) {
     p0 <- ceiling(p / 40)
 
   }
-
-  max_iter <- 10 # max number iterations in Dantzig selector iteration over estimation and weights
-
-
   n <- nrow(X)
   folds <- split(sample(n, n, replace = FALSE), as.factor(1:L))
 
