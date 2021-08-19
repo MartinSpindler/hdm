@@ -2,9 +2,19 @@
 % Please edit documentation in R/rlassoAutoDML.R
 \name{rlassoAutoDML}
 \alias{rlassoAutoDML}
-\title{DML functional}
+\title{Auto DML based on rlasso}
 \usage{
-rlassoAutoDML(Y, D, X, dict, D_LB = 0, D_add = 0.2, bias = FALSE, L = 5)
+rlassoAutoDML(
+  Y,
+  D,
+  X,
+  dict = NULL,
+  D_LB = 0,
+  D_add = 0.2,
+  bias = FALSE,
+  L = 5,
+  max_iter = 10
+)
 }
 \arguments{
 \item{Y}{A vector of outputs}
@@ -13,14 +23,29 @@ rlassoAutoDML(Y, D, X, dict, D_LB = 0, D_add = 0.2, bias = FALSE, L = 5)
 
 \item{X}{A matrix of covariates}
 
-\item{dict}{A dictionary}
+\item{dict}{A dictionary
+TODO: explain what the dictionary does and state what default does}
+
+\item{D_LB}{TODO: documentation for this parameter (including default)}
+
+\item{D_add}{TODO: documentation for this parameter (including default)}
+
+\item{bias}{debiased vs. biased results
+TODO: do users really need the biased results or are they just used for
+illustration purposes}
+
+\item{L}{TODO: documentation for this parameter (including default)}
+
+\item{max_iter}{TODO: documentation for this parameter (including default)}
 }
 \value{
-DML results
+list with average treatment effect and standard error
 }
 \description{
-DML functional
+TODO:
+insert a meaningful description and include references from the literature.
 }
 \examples{
+TODO include a quick and independent example (including data loading/generation)
 rlassoDML(Y, T, X, dict)
 }

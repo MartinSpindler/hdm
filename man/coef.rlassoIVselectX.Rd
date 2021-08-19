@@ -7,7 +7,7 @@
 \method{coef}{rlassoIVselectX}(object, complete = TRUE, selection.matrix = FALSE, ...)
 }
 \arguments{
-\item{object}{an object of class \code{rlassoIVselectX}, usually a result of a call 
+\item{object}{an object of class \code{rlassoIVselectX}, usually a result of a call
 \code{rlassoIVselectX} or \code{rlassoIV} with options \code{select.X=TRUE} and
 \code{select.Z=FALSE}.}
 
@@ -30,12 +30,16 @@ the index of selected variables \code{x} for the instruments \code{z}. The very 
 \examples{
 \dontrun{
 library(hdm)
-data(AJR); y = AJR$GDP; d = AJR$Exprop; z = AJR$logMort
-x = model.matrix(~ -1 + (Latitude + Latitude2 + Africa + 
-                           Asia + Namer + Samer)^2, data=AJR)
-AJR.Xselect = rlassoIV(GDP ~ Exprop +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2 |
-                         logMort +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2,
-                       data=AJR, select.X=TRUE, select.Z=FALSE)
+data(AJR)
+y <- AJR$GDP
+d <- AJR$Exprop
+z <- AJR$logMort
+x <- model.matrix(~ -1 + (Latitude + Latitude2 + Africa +
+  Asia + Namer + Samer)^2, data = AJR)
+AJR.Xselect <- rlassoIV(GDP ~ Exprop + (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2 |
+  logMort + (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2,
+data = AJR, select.X = TRUE, select.Z = FALSE
+)
 coef(AJR.Xselect) # Default behavior
 coef(AJR.Xselect, selection.matrix = TRUE) # print selection matrix
 }

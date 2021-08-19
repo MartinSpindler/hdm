@@ -52,7 +52,7 @@ In the case of partialling out it is ignored.}
 
 \item{formula}{An element of class \code{formula} specifying the linear model.}
 
-\item{data}{an optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model. 
+\item{data}{an optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
 If not found in data, the variables are taken from environment(formula), typically the environment from which the function is called.}
 
 \item{I}{An one-sided formula specifying the variables for which inference is conducted.}
@@ -78,29 +78,44 @@ the outcome variable on the control variables and the treatment variable on
 the control variables. The final estimation is done by a regression of the
 outcome on the treatment effect and the union of the selected variables in
 the first two steps. In partialling-out first the effect of the regressors on the outcome and the treatment variable is taken out by Lasso and then a regression of the residuals is conducted. The resulting estimator for \eqn{\alpha_0} is normal
-distributed which allows inference on the treatment effect. It presents a wrap function for \code{rlassoEffect} 
+distributed which allows inference on the treatment effect. It presents a wrap function for \code{rlassoEffect}
 which does inference for a single variable.
 }
 \examples{
-library(hdm); library(ggplot2)
+library(hdm)
+library(ggplot2)
 set.seed(1)
-n = 100 #sample size
-p = 100 # number of variables
-s = 3 # number of non-zero variables
-X = matrix(rnorm(n*p), ncol=p)
-colnames(X) <- paste("X", 1:p, sep="")
-beta = c(rep(3,s), rep(0,p-s))
-y = 1 + X\%*\%beta + rnorm(n)
-data = data.frame(cbind(y,X))
+n <- 100 # sample size
+p <- 100 # number of variables
+s <- 3 # number of non-zero variables
+X <- matrix(rnorm(n * p), ncol = p)
+colnames(X) <- paste("X", 1:p, sep = "")
+beta <- c(rep(3, s), rep(0, p - s))
+y <- 1 + X \%*\% beta + rnorm(n)
+data <- data.frame(cbind(y, X))
 colnames(data)[1] <- "y"
-fm = paste("y ~", paste(colnames(X), collapse="+"))
-fm = as.formula(fm)                 
-lasso.effect = rlassoEffects(X, y, index=c(1,2,3,50))
-lasso.effect = rlassoEffects(fm, I = ~ X1 + X2 + X3 + X50, data=data)
+fm <- paste("y ~", paste(colnames(X), collapse = "+"))
+fm <- as.formula(fm)
+lasso.effect <- rlassoEffects(X, y, index = c(1, 2, 3, 50))
+lasso.effect <- rlassoEffects(fm, I = ~ X1 + X2 + X3 + X50, data = data)
 print(lasso.effect)
 summary(lasso.effect)
 confint(lasso.effect)
 plot(lasso.effect)
+# library(hdm)
+# ## DGP
+# n <- 250
+# p <- 100
+# px <- 10
+# X <- matrix(rnorm(n*p), ncol=p)
+# beta <- c(rep(2,px), rep(0,p-px))
+# intercept <- 1
+# y <- intercept + X \%*\% beta + rnorm(n)
+# ## fit rlassoEffects object with inference on three variables
+# rlassoEffects.reg <- rlassoEffects(x=X, y=y, index=c(1,7,20))
+# ## methods
+# summary(rlassoEffects.reg)
+# confint(rlassoEffects.reg, level=0.9)
 }
 \references{
 A. Belloni, V. Chernozhukov, C. Hansen (2014). Inference on

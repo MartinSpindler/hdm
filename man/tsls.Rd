@@ -30,7 +30,7 @@ tsls(x, ...)
 \item{formula}{An object of class \code{Formula} of the form " y ~ x + d | x + z" with y the outcome variable,
 d endogenous variable, z instrumental variables, and x exogenous variables.}
 
-\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model. 
+\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
 If not found in data, the variables are taken from environment(formula), typically the environment from which \code{tsls} is called.}
 }
 \value{
@@ -44,6 +44,6 @@ The function does Two-Stage Least Squares Estimation (TSLS).
 \details{
 The function computes tsls estimate (coefficients) and variance-covariance-matrix assuming homoskedasticity
 for outcome variable \code{y} where \code{d} are endogenous variables in structural equation, \code{x} are exogensous variables in
-structural equation and z are instruments. It returns an object of class \code{tsls} for which the methods \code{print} and \code{summary} 
+structural equation and z are instruments. It returns an object of class \code{tsls} for which the methods \code{print} and \code{summary}
 are provided.
 }

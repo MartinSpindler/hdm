@@ -36,7 +36,7 @@ rlassoIVmult(x, d, y, z, select.Z = TRUE, select.X = TRUE, ...)
 \item{formula}{An object of class \code{Formula} of the form " y ~ x + d | x + z" with y the outcome variable,
 d endogenous variable, z instrumental variables, and x exogenous variables.}
 
-\item{data}{an optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model. 
+\item{data}{an optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
 If not found in data, the variables are taken from environment(formula), typically the environment from which \code{rlassoIV} is called.}
 }
 \value{
@@ -52,8 +52,8 @@ controls and very many instruments (even larger than the sample size).
 The implementation for selection on x and z follows the procedure described in Chernozhukov et al.
 (2015) and is built on 'triple selection' to achieve an orthogonal moment
 function. The function returns an object of S3 class \code{rlassoIV}.
-Moreover, it is wrap function for the case that selection should be done only with the instruments Z (\code{rlassoIVselectZ}) or with 
-the control variables X (\code{rlassoIVselectX}) or without selection (\code{tsls}). Exogenous variables 
+Moreover, it is wrap function for the case that selection should be done only with the instruments Z (\code{rlassoIVselectZ}) or with
+the control variables X (\code{rlassoIVselectX}) or without selection (\code{tsls}). Exogenous variables
 \code{x} are automatically used as instruments and added to the
 instrument set \code{z}.
 }
@@ -64,7 +64,7 @@ z <- EminentDomain$logGDP$z # instruments
 x <- EminentDomain$logGDP$x # exogenous variables
 y <- EminentDomain$logGDP$y # outcome varialbe
 d <- EminentDomain$logGDP$d # treatment / endogenous variable
-lasso.IV.Z = rlassoIV(x=x, d=d, y=y, z=z, select.X=FALSE, select.Z=TRUE) 
+lasso.IV.Z <- rlassoIV(x = x, d = d, y = y, z = z, select.X = FALSE, select.Z = TRUE)
 summary(lasso.IV.Z)
 confint(lasso.IV.Z)
 }

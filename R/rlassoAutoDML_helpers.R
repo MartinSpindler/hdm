@@ -55,6 +55,24 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
   return(D) # pass around D as vector
 }
 
+#' RMD_stable
+#' 
+#' TODO: inset description on what this function does and document all
+#' parameters
+#' 
+#' TODO: set defaults for arguments
+#' @param Y 
+#' @param D 
+#' @param X 
+#' @param p0 
+#' @param D_LB 
+#' @param D_add 
+#' @param max_iter 
+#' @param b 
+#' @param is_alpha 
+#' @param is_lasso 
+#'
+#' @export
 RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso) {
 
   k <- 1
@@ -115,11 +133,12 @@ RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso
   return(rho_hat)
 }
 
-
+# TODO: do we want to export this function / might it be helpful to users?
 printer <- function(spec1) {
   print(paste(" treated: ", spec1[1], " untreated: ", spec1[2], "   ATE:    ", round(spec1[3], 2), "   SE:   ", round(spec1[4], 2), sep = ""))
 }
 
+# TODO: do we want to export this function / might it be helpful to users?
 for_tex <- function(spec1) {
   print(paste(" & ", spec1[1], " & ", spec1[2], "   &    ", round(spec1[3], 2), "   &   ", round(spec1[4], 2), sep = ""))
 }
