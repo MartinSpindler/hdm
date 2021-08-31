@@ -1,3 +1,5 @@
+library("mvtnorm")
+
 two.norm <- function(x) {
   return(sqrt(x %*% x))
 }
@@ -61,23 +63,30 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 #' parameters
 #' 
 #' TODO: set defaults for arguments
-#' @param Y 
-#' @param D 
-#' @param X 
-#' @param p0 
-#' @param D_LB 
-#' @param D_add 
-#' @param max_iter 
-#' @param b 
-#' @param is_alpha 
-#' @param is_lasso 
-#' @param c
-#' @param alpha
-#' @param tol
+#' @param Y A vector of outputs
+#' @param D A vector of treatment values
+#' @param X A matrix of covariates 
+#' @param p0 initial value of p
+#' @param D_LB Lower bound on D (default 0)
+#' @param D_add value added to D (default 0.2)
+#' @param max_iter maximum iterations of Lasso (default 10)
+#' @param b A dictionary
+#' function of (d,z) that maps to a vector
+#' default is (1,d,z)
+#' @param c parameter to tune lambda (default 0.5)
+#' @param alpha parameter to tune lambda (default 0.1)
+#' @param tol minimum improvement to continue looping (default 1e-6)
 #'
 #' @export
-RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso, c = 0.5, alpha = 0.1, tol = 1e-6) {
-
+RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add 0,2, max_iter = 10, b = NULL, c = 0.5, alpha = 0.1, tol = 1e-6) {
+  
+  
+  if (is.null(b)) {
+    b = function(d,z){
+      return(c(1,d,z))
+    }
+    
+  }
   k <- 1
   l <- 0.1
 
@@ -132,12 +141,68 @@ RMD_stable <- function(Y, D, X, p0, D_LB, D_add, max_iter, b, is_alpha, is_lasso
   return(rho_hat)
 }
 
-# TODO: do we want to export this function / might it be helpful to users?
+#' prints output of rlassoAutoDML in an easy to read format
+#' @param spec1 output of rlassoAutoDML
+#' 
+#' @export
+#' @rdname printer
 printer <- function(spec1) {
   print(paste(" treated: ", spec1[1], " untreated: ", spec1[2], "   ATE:    ", round(spec1[3], 2), "   SE:   ", round(spec1[4], 2), sep = ""))
 }
 
-# TODO: do we want to export this function / might it be helpful to users?
+#' prints output of rlassoAutoDML in latex table format
+#' @param spec1 output of rlassoAutoDML
+#' 
+#' @export
+#' @rdname for_tex
 for_tex <- function(spec1) {
   print(paste(" & ", spec1[1], " & ", spec1[2], "   &    ", round(spec1[3], 2), "   &   ", round(spec1[4], 2), sep = ""))
 }
+
+
+b2<-function(d,z){
+  return(c(1,d,z,d*z))
+}
+
+simulate_data = function(n,method = 3,rank = 5){
+  ###designed to return list(Y,T,X) with ATE 2.2
+  ###Inputs
+  #n: dimensions of data Y:length n vec T:length n vec, X: n x n
+  ###Output: list(Y,T,X)
+  
+  X = matrix(0,n,100)
+  Y = c()
+  T = c()
+  beta = c()
+  for (i in 1:100){
+    beta = c(beta,1/(i^2))
+  }
+  
+  sigma = diag(100)
+  for (i in 1:99){
+    sigma[i,i+1] = 0.5
+    sigma[i+1,i] = 0.5
+    
+    
+    for (i in 1:n){
+      X_i = rmvnorm(1,rep(0,100),sigma)
+      v = rnorm(1,0,1)
+      eps = rnorm(1,0,1)
+      if (3*X_i%*%beta+0.75*v>=0){
+        T_i = 1
+      }else{
+        T_i = 0
+      }
+      Y = c(Y,1.2*T_i+1.2*X_i%*%beta+T_i^2+T_i*X_i[1]+eps)
+      T = c(T,T_i)
+      X[i,] = X_i
+    }
+    
+    return(list(Y,T,X))
+    
+    
+    
+  }
+}
+  
+

@@ -1,37 +1,42 @@
 #' Auto DML based on rlasso
 #' 
-#' TODO:
-#' insert a meaningful description and include references from the literature.
+#' Implements the Double ML algorithm introduced in for estimating causal effects
+#' This method was first introdued in https://arxiv.org/abs/1608.00060 which required
+#' manual calculation of the Riesz representer. In Auto DML (from https://arxiv.org/abs/1809.05224)
+#' the Riesz representer is estimated automatically and doesn't need to be explicitly 
+#' computed.
+#' 
+#' This implementation 
 #'
 #' @param Y A vector of outputs
 #' @param D A vector of treatment values
 #' @param X A matrix of covariates
 #' @param dict A dictionary
-#' TODO: explain what the dictionary does and state what default does
+#' function of (d,z) that maps to a vector
+#' default is (1,d,z)
 #' @param bias debiased vs. biased results
-#' TODO: do users really need the biased results or are they just used for
-#' illustration purposes
-#' @param D_LB 
-#' TODO: documentation for this parameter (including default)
-#' @param D_add 
-#' TODO: documentation for this parameter (including default)
-#' @param L
-#' TODO: documentation for this parameter (including default)
-#' @param max_iter
-#' TODO: documentation for this parameter (including default)
+#' @param D_LB Lower bound on D (default 0)
+#' @param D_add value added to D (default 0.2)
+#' @param L number of folds data is split into (default 5)
+#' @param max_iter maximum iterations of Lasso (default 10)
 #' @return list with average treatment effect and standard error
 #' @examples
-#' # TODO include a quick and independent example (including data loading/generation)
-#' # rlassoAutoDML(Y, T, X, dict)
+#' # data = simulate_data(500)
+#' #
+#' # Y = data[[1]]
+#' # D = data[[2]]
+#' # X = data[[3]]
+#'
+#' # rlassoAutoDML(Y,D,X,dict = b2)
+#' # rlassoAutoDML(Y, T, X)
 #' @export
 #' @rdname rlassoDML
 rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
                           bias = FALSE, L = 5, max_iter = 10) {
   
   if (is.null(dict)) {
-    # TODO: insert default behavior if no dictionary is provided by the user
-    dict = function(x, y) {
-      return(x)
+    dict = function(d,z){
+      return(c(1,d,z))
     }
     
   }
