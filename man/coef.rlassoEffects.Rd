@@ -17,10 +17,10 @@
 
 \item{complete}{general option of the function \code{coef}.}
 
-\item{selection.matrix}{if TRUE, a selection matrix is returned that indicates the selected variables from each auxiliary regression. 
+\item{selection.matrix}{if TRUE, a selection matrix is returned that indicates the selected variables from each auxiliary regression.
 Default is set to FALSE.}
 
-\item{include.targets}{if FALSE (by default) only the selected control variables are listed in the \code{selection.matrix}. If set to TRUE, 
+\item{include.targets}{if FALSE (by default) only the selected control variables are listed in the \code{selection.matrix}. If set to TRUE,
 the selection matrix will also indicate the selection of the target coefficients that are specified in the  \code{rlassoEffects} call.}
 
 \item{...}{further arguments passed to functions coef or print.}
@@ -39,20 +39,22 @@ Printing coefficients and selection matrix for S3 object \code{rlassoEffects}. I
 \examples{
 library(hdm)
 set.seed(1)
-n = 100 #sample size
-p = 100 # number of variables
-s = 7 # number of non-zero variables
-X = matrix(rnorm(n*p), ncol=p)
-colnames(X) <- paste("X", 1:p, sep="")
-beta = c(rep(3,s), rep(0,p-s))
-y = 1 + X\%*\%beta + rnorm(n)
-data = data.frame(cbind(y,X))
+n <- 100 # sample size
+p <- 100 # number of variables
+s <- 7 # number of non-zero variables
+X <- matrix(rnorm(n * p), ncol = p)
+colnames(X) <- paste("X", 1:p, sep = "")
+beta <- c(rep(3, s), rep(0, p - s))
+y <- 1 + X \%*\% beta + rnorm(n)
+data <- data.frame(cbind(y, X))
 colnames(data)[1] <- "y"
-lasso.effect = rlassoEffects(X, y, index=c(1,2,3,50), 
-                             method = "double selection")
+lasso.effect <- rlassoEffects(X, y,
+  index = c(1, 2, 3, 50),
+  method = "double selection"
+)
 coef(lasso.effect) # standard use of coef() - without selection matrix
 # with selection matrix
 coef(lasso.effect, selection.matrix = TRUE)
 # prettier output with print_coef (identical options as coef())
-print_coef(lasso.effect, selection.matrix = TRUE) 
+print_coef(lasso.effect, selection.matrix = TRUE)
 }

@@ -10,10 +10,10 @@ This package implements methods for estimation and inference in a high-dimension
 }
 \details{
 \tabular{ll}{ Package: \tab hdm\cr Type: \tab Package\cr Version: \tab
-0.1\cr Date: \tab 2015-05-25\cr License: \tab GPL-3\cr } This package provides efficient estimators 
-and  uniformly valid confidence intervals for various low-dimensional causal/structural parameters  
+0.1\cr Date: \tab 2015-05-25\cr License: \tab GPL-3\cr } This package provides efficient estimators
+and  uniformly valid confidence intervals for various low-dimensional causal/structural parameters
 appearing in high-dimensional approximately sparse models. The package
-includes functions for fitting heteroskedastic robust Lasso regressions with non-Gaussian erros and 
+includes functions for fitting heteroskedastic robust Lasso regressions with non-Gaussian erros and
 for instrumental variable (IV) and treatment effect estimation in a
 high-dimensional setting. Moreover, the methods enable valid post-selection
 inference. Moreover, a theoretically grounded, data-driven choice of the penalty level is provided.

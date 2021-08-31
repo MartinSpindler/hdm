@@ -99,19 +99,19 @@ set.seed(2)
 n <- 250
 p <- 100
 px <- 10
-X <- matrix(rnorm(n*p), ncol=p)
-beta <- c(rep(2,px), rep(0,p-px))
+X <- matrix(rnorm(n * p), ncol = p)
+beta <- c(rep(2, px), rep(0, p - px))
 intercept <- 1
-P <- exp(intercept + X \%*\% beta)/(1+exp(intercept + X \%*\% beta))
-y <- rbinom(length(y), size=1, prob=P)
+P <- exp(intercept + X \%*\% beta) / (1 + exp(intercept + X \%*\% beta))
+y <- rbinom(length(y), size = 1, prob = P)
 ## fit rlassologit object
-rlassologit.reg <- rlassologit(y~X)
+rlassologit.reg <- rlassologit(y ~ X)
 ## methods
-summary(rlassologit.reg, all=F)
+summary(rlassologit.reg, all = F)
 print(rlassologit.reg)
-predict(rlassologit.reg, type='response')
-X3 <- matrix(rnorm(n*p), ncol=p)
-predict(rlassologit.reg, newdata=X3)
+predict(rlassologit.reg, type = "response")
+X3 <- matrix(rnorm(n * p), ncol = p)
+predict(rlassologit.reg, newdata = X3)
 }
 }
 \references{
