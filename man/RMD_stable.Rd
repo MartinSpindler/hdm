@@ -9,39 +9,39 @@ RMD_stable(
   D,
   X,
   p0,
-  D_LB,
-  D_add,
-  max_iter,
-  b,
-  is_alpha,
-  is_lasso,
+  D_LB = 0,
+  D_add = 0.2,
+  max_iter = 10,
+  b = NULL,
   c = 0.5,
   alpha = 0.1,
   tol = 1e-06
 )
 }
 \arguments{
-\item{Y}{}
+\item{Y}{A vector of outputs}
 
-\item{D}{}
+\item{D}{A vector of treatment values}
 
-\item{X}{}
+\item{X}{A matrix of covariates}
 
-\item{p0}{}
+\item{p0}{initial value of p}
 
-\item{D_LB}{}
+\item{D_LB}{Lower bound on D (default 0)}
 
-\item{D_add}{}
+\item{D_add}{value added to D (default 0.2)}
 
-\item{max_iter}{}
+\item{max_iter}{maximum iterations of Lasso (default 10)}
 
-\item{b}{}
+\item{b}{A dictionary
+function of (d,z) that maps to a vector
+default is (1,d,z)}
 
-\item{is_alpha}{}
+\item{c}{parameter to tune lambda (default 0.5)}
 
-\item{is_lasso}{}
+\item{alpha}{parameter to tune lambda (default 0.1)}
 
-\item{tol}{}
+\item{tol}{minimum improvement to continue looping (default 1e-6)}
 }
 \description{
 TODO: insert description on what this function does and document all
