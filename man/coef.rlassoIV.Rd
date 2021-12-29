@@ -17,7 +17,7 @@ Default is set to FALSE. See section on details for more information.}
 \item{...}{further arguments passed to function coef.}
 }
 \value{
-Coefficients obtained from \code{rlassoIV} by default. If option \code{selection.matrix} is \code{TRUE}, a list is returned with final coefficients, a matrix \code{selection.matrix}, and a matrix \code{selection.matrixZ}: 
+Coefficients obtained from \code{rlassoIV} by default. If option \code{selection.matrix} is \code{TRUE}, a list is returned with final coefficients, a matrix \code{selection.matrix}, and a matrix \code{selection.matrixZ}:
 \code{selection.matrix} contains the selection index for the lasso regression of \code{y} on \code{x} (first column) and the lasso regression of the predicted values of \code{d} on \code{x}
 together with the union of these indizes.
 \code{selection.matrixZ} contains the selection index from the first-stage lasso regression of \code{d} on \code{z} and \code{x}.
@@ -27,7 +27,7 @@ Method to extract coefficients from objects of class \code{rlassoIV}.
 }
 \details{
 Printing coefficients and selection matrix for S3 object \code{rlassoIV}. \code{"x"} indicates that a variable has been selected, i.e., the corresponding estimated coefficient is different from zero.
-The very last column collects all variables that have been selected in at least one of the lasso regressions represented in the \code{selection.matrix}. 
+The very last column collects all variables that have been selected in at least one of the lasso regressions represented in the \code{selection.matrix}.
 \code{rlassoIV} performs three lasso regression steps. A first stage lasso regression of the endogenous treatment variable \code{d} on the instruments \code{z} and exogenous covariates \code{x},
 a lasso regression of \code{y} on the exogenous variables \code{x}, and a lasso regression of the instrumented treatment variable, i.e., a regression of the predicted values of \code{d}, on controls \code{x}.
 }
@@ -38,7 +38,7 @@ z <- EminentDomain$logGDP$z # instruments
 x <- EminentDomain$logGDP$x # exogenous variables
 y <- EminentDomain$logGDP$y # outcome varialbe
 d <- EminentDomain$logGDP$d # treatment / endogenous variable
-lasso.IV = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=TRUE) 
+lasso.IV <- rlassoIV(x = x, d = d, y = y, z = z, select.X = TRUE, select.Z = TRUE)
 coef(lasso.IV) # default behavior
 coef(lasso.IV, selection.matrix = T) # print selection matrix
 }

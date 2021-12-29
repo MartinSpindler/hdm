@@ -28,7 +28,7 @@ rlassoIVselectX(x, ...)
 \item{formula}{An object of class \code{Formula} of the form " y ~ x + d | x + z" with y the outcome variable,
 d endogenous variable, z instrumental variables, and x exogenous variables.}
 
-\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model. 
+\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
 If not found in data, the variables are taken from environment(formula), typically the environment from which \code{rlassoIVselectX} is called.}
 }
 \value{
@@ -45,20 +45,24 @@ The function returns an element of class \code{rlassoIVselectX}
 \details{
 The implementation is a special case of of Chernozhukov et al. (2015).
 The option \code{post=TRUE} conducts post-lasso estimation for the Lasso estimations, i.e. a refit of the
-model with the selected variables. Exogenous variables 
+model with the selected variables. Exogenous variables
 \code{x} are automatically used as instruments and added to the
 instrument set \code{z}.
 }
 \examples{
 library(hdm)
-data(AJR); y = AJR$GDP; d = AJR$Exprop; z = AJR$logMort
-x = model.matrix(~ -1 + (Latitude + Latitude2 + Africa + 
-                           Asia + Namer + Samer)^2, data=AJR)
+data(AJR)
+y <- AJR$GDP
+d <- AJR$Exprop
+z <- AJR$logMort
+x <- model.matrix(~ -1 + (Latitude + Latitude2 + Africa +
+  Asia + Namer + Samer)^2, data = AJR)
 dim(x)
-  #AJR.Xselect = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=FALSE)
-  AJR.Xselect = rlassoIV(GDP ~ Exprop +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2 |
-             logMort +  (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2,
-             data=AJR, select.X=TRUE, select.Z=FALSE)
+# AJR.Xselect = rlassoIV(x=x, d=d, y=y, z=z, select.X=TRUE, select.Z=FALSE)
+AJR.Xselect <- rlassoIV(GDP ~ Exprop + (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2 |
+  logMort + (Latitude + Latitude2 + Africa + Asia + Namer + Samer)^2,
+data = AJR, select.X = TRUE, select.Z = FALSE
+)
 summary(AJR.Xselect)
 confint(AJR.Xselect)
 }

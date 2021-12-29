@@ -27,14 +27,18 @@
 #' @export
 
 
-LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000, 
-                                                           optTol = 10^(-5), zeroThreshold = 10^(-6)), XX = NULL, Xy = NULL, beta.start = NULL) {
+LassoShooting.fit <- function(x, y, lambda, control = list(
+                                maxIter = 1000,
+                                optTol = 10^(-5), zeroThreshold = 10^(-6)
+                              ), XX = NULL, Xy = NULL, beta.start = NULL) {
   n <- dim(x)[1]
   p <- dim(x)[2]
-  if (is.null(XX)) 
+  if (is.null(XX)) {
     (XX <- crossprod(x))
-  if (is.null(Xy)) 
+  }
+  if (is.null(Xy)) {
     (Xy <- crossprod(x, y))
+  }
   # Start from the LS solution for beta if no beta.start is provided
   if (is.null(beta.start)) {
     # Ridge start beta <- MASS::ginv(XX + diag(as.vector(lambda), p) %*%
@@ -49,7 +53,7 @@ LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000,
   m <- 1
   XX2 <- XX * 2
   Xy2 <- Xy * 2
-  
+
   while (m < control$maxIter) {
     beta_old <- beta
     for (j in 1:p) {
@@ -59,13 +63,16 @@ LassoShooting.fit <- function(x, y, lambda, control = list(maxIter = 1000,
         beta[j] <- 0
         next
       }
-      
-      if (S0 > lambda[j]) 
-        beta[j] <- (lambda[j] - S0)/XX2[j, j]
-      if (S0 < -1 * lambda[j]) 
-        beta[j] <- (-1 * lambda[j] - S0)/XX2[j, j]
-      if (abs(S0) <= lambda[j]) 
+
+      if (S0 > lambda[j]) {
+        beta[j] <- (lambda[j] - S0) / XX2[j, j]
+      }
+      if (S0 < -1 * lambda[j]) {
+        beta[j] <- (-1 * lambda[j] - S0) / XX2[j, j]
+      }
+      if (abs(S0) <= lambda[j]) {
         beta[j] <- 0
+      }
     }
     # Update
     wp <- cbind(wp, beta)

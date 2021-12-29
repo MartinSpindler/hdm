@@ -33,7 +33,7 @@ indicates if variables (TRUE) should be included in any case.}
 
 \item{formula}{An element of class \code{formula} specifying the linear model.}
 
-\item{data}{an optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model. 
+\item{data}{an optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
 If not found in data, the variables are taken from environment(formula), typically the environment from which the function is called.}
 
 \item{I}{An one-sided formula specifying the variables for which inference is conducted.}
@@ -63,16 +63,16 @@ set.seed(2)
 n <- 250
 p <- 100
 px <- 10
-X <- matrix(rnorm(n*p), ncol=p)
-colnames(X) = paste("V", 1:p, sep="")
-beta <- c(rep(2,px), rep(0,p-px))
+X <- matrix(rnorm(n * p), ncol = p)
+colnames(X) <- paste("V", 1:p, sep = "")
+beta <- c(rep(2, px), rep(0, p - px))
 intercept <- 1
-P <- exp(intercept + X \%*\% beta)/(1+exp(intercept + X \%*\% beta))
-y <- rbinom(n, size=1, prob=P)
-xd <- X[,2:50]
-d <- X[,1]
-logit.effect <- rlassologitEffect(x=xd, d=d, y=y)
-logit.effects <- rlassologitEffects(X,y, index=c(1,2,40))
+P <- exp(intercept + X \%*\% beta) / (1 + exp(intercept + X \%*\% beta))
+y <- rbinom(n, size = 1, prob = P)
+xd <- X[, 2:50]
+d <- X[, 1]
+logit.effect <- rlassologitEffect(x = xd, d = d, y = y)
+logit.effects <- rlassologitEffects(X, y, index = c(1, 2, 40))
 logit.effects.f <- rlassologitEffects(y ~ X, I = ~ V1 + V2)
 }
 }

@@ -67,7 +67,7 @@ penalized.}
 
 \item{model}{logical. If \code{TRUE} (default), model matrix is returned.}
 
-\item{penalty}{list with options for the calculation of the penalty. 
+\item{penalty}{list with options for the calculation of the penalty.
 \itemize{
 \item{\code{c} and \code{gamma}}{ constants for the penalty with default \code{c=1.1} and \code{gamma=0.1}}
 \item{\code{homoscedastic}}{ logical, if homoscedastic errors are considered (default \code{FALSE}). Option \code{none} is described below.}
@@ -110,7 +110,7 @@ returned is of the S3 class \code{rlasso}.
 The function estimates the coefficients of a Lasso regression with
 data-driven penalty under homoscedasticity / heteroscedasticity and non-Gaussian noise. The options \code{homoscedastic} is a logical with \code{FALSE} by default.
 Moreover, for the calculation of the penalty parameter it can be chosen, if the penalization parameter depends on the  design matrix (\code{X.dependent.lambda=TRUE}) or \code{independent} (default, \code{X.dependent.lambda=FALSE}).
-The default value of the constant \code{c} is \code{1.1} in the post-Lasso case and \code{0.5} in the Lasso case. 
+The default value of the constant \code{c} is \code{1.1} in the post-Lasso case and \code{0.5} in the Lasso case.
  A \emph{special} option is to set \code{homoscedastic} to \code{none} and to supply a values \code{lambda.start}. Then this value is used as penalty parameter with independent design and heteroscedastic errors to weight the regressors.
 For details of the
 implementation of the Algorithm for estimation of the data-driven penalty,
@@ -118,25 +118,25 @@ in particular the regressor-independent loadings, we refer to Appendix A in
 Belloni et al. (2012). When the option "none" is chosen for \code{homoscedastic} (together with
 \code{lambda.start}), lambda is set to \code{lambda.start} and the
 regressor-independent loadings und heteroscedasticity are used. The options "X-dependent" and
-"X-independent" under homoscedasticity are described in Belloni et al. (2013). 
+"X-independent" under homoscedasticity are described in Belloni et al. (2013).
 
 The option \code{post=TRUE} conducts post-lasso estimation, i.e. a refit of
 the model with the selected variables.
 }
 \examples{
 set.seed(1)
-n = 100 #sample size
-p = 100 # number of variables
-s = 3 # nubmer of variables with non-zero coefficients
-X = Xnames = matrix(rnorm(n*p), ncol=p)
-colnames(Xnames) <- paste("V", 1:p, sep="")
-beta = c(rep(5,s), rep(0,p-s))
-Y = X\%*\%beta + rnorm(n)
-reg.lasso <- rlasso(Y~Xnames)
-Xnew = matrix(rnorm(n*p), ncol=p)  # new X
-colnames(Xnew) <- paste("V", 1:p, sep="")
-Ynew =  Xnew\%*\%beta + rnorm(n)  #new Y
-yhat = predict(reg.lasso, newdata = Xnew)
+n <- 100 # sample size
+p <- 100 # number of variables
+s <- 3 # nubmer of variables with non-zero coefficients
+X <- Xnames <- matrix(rnorm(n * p), ncol = p)
+colnames(Xnames) <- paste("V", 1:p, sep = "")
+beta <- c(rep(5, s), rep(0, p - s))
+Y <- X \%*\% beta + rnorm(n)
+reg.lasso <- rlasso(Y ~ Xnames)
+Xnew <- matrix(rnorm(n * p), ncol = p) # new X
+colnames(Xnew) <- paste("V", 1:p, sep = "")
+Ynew <- Xnew \%*\% beta + rnorm(n) # new Y
+yhat <- predict(reg.lasso, newdata = Xnew)
 }
 \references{
 A. Belloni, D. Chen, V. Chernozhukov and C. Hansen (2012).

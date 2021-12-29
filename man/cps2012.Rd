@@ -5,7 +5,7 @@
 \alias{cps2012}
 \title{cps2012 data set}
 \format{
-\describe{ 
+\describe{
 \item{lnw}{log of hourly wage (annual earnings / annual hours)}
 \item{female}{female indicator}
 \item{married status}{ six indicators: widowed, divorced, separated, nevermarried, and married (omitted)}
@@ -20,9 +20,9 @@
 Census data from the US for the year 2012.
 }
 \details{
-The CPS is a monthly U.S. household survey conducted jointly by the U.S. Census Bureau and the Bureau of Labor Statistics. The data comprise the year 2012. 
-This data set was used in Mulligan and Rubinstein (2008). 
-The sample comprises white non-hipanic, ages 25-54, working full time full year (35+ hours per week at least 50 weeks), exclude living in group quarters, 
+The CPS is a monthly U.S. household survey conducted jointly by the U.S. Census Bureau and the Bureau of Labor Statistics. The data comprise the year 2012.
+This data set was used in Mulligan and Rubinstein (2008).
+The sample comprises white non-hipanic, ages 25-54, working full time full year (35+ hours per week at least 50 weeks), exclude living in group quarters,
  self-employed, military, agricultural, and private household sector, allocated earning, inconsistent report on earnings and employment, missing data.
 }
 \examples{

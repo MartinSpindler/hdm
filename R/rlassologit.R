@@ -35,30 +35,30 @@
 #' @export
 #' @rdname rlassologit
 #' @examples
-#'\dontrun{
+#' \dontrun{
 #' library(hdm)
 #' ## DGP
 #' set.seed(2)
 #' n <- 250
 #' p <- 100
 #' px <- 10
-#' X <- matrix(rnorm(n*p), ncol=p)
-#' beta <- c(rep(2,px), rep(0,p-px))
+#' X <- matrix(rnorm(n * p), ncol = p)
+#' beta <- c(rep(2, px), rep(0, p - px))
 #' intercept <- 1
-#' P <- exp(intercept + X %*% beta)/(1+exp(intercept + X %*% beta))
-#' y <- rbinom(length(y), size=1, prob=P)
+#' P <- exp(intercept + X %*% beta) / (1 + exp(intercept + X %*% beta))
+#' y <- rbinom(length(y), size = 1, prob = P)
 #' ## fit rlassologit object
-#' rlassologit.reg <- rlassologit(y~X)
+#' rlassologit.reg <- rlassologit(y ~ X)
 #' ## methods
-#' summary(rlassologit.reg, all=F)
+#' summary(rlassologit.reg, all = F)
 #' print(rlassologit.reg)
-#' predict(rlassologit.reg, type='response')
-#' X3 <- matrix(rnorm(n*p), ncol=p)
-#' predict(rlassologit.reg, newdata=X3)
+#' predict(rlassologit.reg, type = "response")
+#' X3 <- matrix(rnorm(n * p), ncol = p)
+#' predict(rlassologit.reg, newdata = X3)
 #' }
 rlassologit <- function(x, ...) {
   UseMethod("rlassologit")
-  }# definition generic function
+} # definition generic function
 
 #' @param formula an object of class 'formula' (or one that can be coerced to
 #' that class): a symbolic description of the model to be fitted in the form
@@ -66,8 +66,10 @@ rlassologit <- function(x, ...) {
 #' @param data an optional data frame, list or environment.
 #' @export
 #' @rdname rlassologit
-rlassologit.formula <- function(formula, data = NULL, post = TRUE, intercept = TRUE,  model = TRUE, penalty = list(lambda = NULL, 
-                                                                                     c = 1.1, gamma = 0.1/log(n)), control = list(threshold = NULL),  ...) {
+rlassologit.formula <- function(formula, data = NULL, post = TRUE, intercept = TRUE, model = TRUE, penalty = list(
+                                  lambda = NULL,
+                                  c = 1.1, gamma = 0.1 / log(n)
+                                ), control = list(threshold = NULL), ...) {
   cl <- match.call()
   mf <- match.call(expand.dots = FALSE)
   m <- match(c("formula", "data"), names(mf), 0L)
@@ -79,99 +81,114 @@ rlassologit.formula <- function(formula, data = NULL, post = TRUE, intercept = T
   attr(mt, "intercept") <- 1
   y <- model.response(mf, "numeric")
   n <- length(y)
-  x <- model.matrix(mt, mf)[,-1, drop=FALSE]
+  x <- model.matrix(mt, mf)[, -1, drop = FALSE]
   if (missing(data)) {
     if (is.call(formula[[3]])) {
       colnames(x) <- gsub(re.escape(format(formula[[3]])), "", colnames(x))
     } else {
-      colnames(x) <- gsub(re.escape(formula[[3]]), "", colnames(x))  
+      colnames(x) <- gsub(re.escape(formula[[3]]), "", colnames(x))
     }
   }
-  est <- rlassologit(x, y, post = post, intercept = intercept, model = model, penalty = penalty,  
-                         control = control,  ...)
+  est <- rlassologit(x, y,
+    post = post, intercept = intercept, model = model, penalty = penalty,
+    control = control, ...
+  )
   est$call <- cl
   return(est)
 }
 
 #' @export
 #' @rdname rlassologit
-rlassologit.character <- function(x, data = NULL, post = TRUE, intercept = TRUE,  model = TRUE, penalty = list(lambda = NULL, 
-                                                                                                                   c = 1.1, gamma = 0.1/log(n)), control = list(threshold = NULL),  ...) {
+rlassologit.character <- function(x, data = NULL, post = TRUE, intercept = TRUE, model = TRUE, penalty = list(
+                                    lambda = NULL,
+                                    c = 1.1, gamma = 0.1 / log(n)
+                                  ), control = list(threshold = NULL), ...) {
   formula <- as.formula(x)
-  res <- rlassologit.formula(formula, data = data, post = post, intercept = intercept,  model = model, penalty = penalty, control = control,  ...)
+  res <- rlassologit.formula(formula, data = data, post = post, intercept = intercept, model = model, penalty = penalty, control = control, ...)
   return(res)
 }
 
 #' @rdname rlassologit
 #' @export
-rlassologit.default <- function(x, y, post = TRUE, intercept = TRUE,  model = TRUE, penalty = list(lambda = NULL, 
-                                                                                c = 1.1, gamma =  0.1/log(n)), control = list(threshold = NULL), ...) {
+rlassologit.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE, penalty = list(
+                                  lambda = NULL,
+                                  c = 1.1, gamma = 0.1 / log(n)
+                                ), control = list(threshold = NULL), ...) {
   n <- dim(x)[1]
   p <- dim(x)[2]
-  if (is.null(colnames(x))) 
+  if (is.null(colnames(x))) {
     colnames(x) <- paste("V", 1:p, sep = "")
+  }
   ind.names <- 1:p
-  
+
   if (!exists("c", where = penalty)) {
-    if (post==TRUE) {
-      penalty$c = 1.1
+    if (post == TRUE) {
+      penalty$c <- 1.1
     } else {
-      penalty$c = 0.5
+      penalty$c <- 0.5
     }
   }
-  
+
   if (!exists("gamma", where = penalty)) {
-    penalty$gamma = 0.1/log(n)
+    penalty$gamma <- 0.1 / log(n)
   }
-  
+
   if (is.null(penalty$gamma)) {
-    penalty$gamma = 0.1/log(n)
+    penalty$gamma <- 0.1 / log(n)
   }
-  
+
   if (!is.null(penalty$lambda)) {
-    lambda <- penalty$lambda/(2 * n)
+    lambda <- penalty$lambda / (2 * n)
     lambda0 <- lambda * (2 * n)
   } else {
-    lambda0 <- penalty$c/2 * sqrt(n) * qnorm(1 - penalty$gamma/(2 * p))
-    #lambda0 <- penalty$c/2 * sqrt(n) * qnorm(1 - penalty$gamma/(max(n, p*log(n))))
-    lambda <- lambda0/(2 * n)
+    lambda0 <- penalty$c / 2 * sqrt(n) * qnorm(1 - penalty$gamma / (2 * p))
+    # lambda0 <- penalty$c/2 * sqrt(n) * qnorm(1 - penalty$gamma/(max(n, p*log(n))))
+    lambda <- lambda0 / (2 * n)
   }
-  
+
   s0 <- sqrt(var(y))
   # calculation parameters
-  #xs <- scale(x, center = FALSE, scale = TRUE) # to prevent "double" scaling, removed also from next line
-  log.lasso <- glmnet::glmnet(x, y, family = c("binomial"), alpha = 1,
-                              lambda = lambda[1], standardize = TRUE, intercept = intercept)
+  # xs <- scale(x, center = FALSE, scale = TRUE) # to prevent "double" scaling, removed also from next line
+  log.lasso <- glmnet::glmnet(x, y,
+    family = c("binomial"), alpha = 1,
+    lambda = lambda[1], standardize = TRUE, intercept = intercept
+  )
   coefTemp <- as.vector(log.lasso$beta)
   coefTemp[is.na(coefTemp)] <- 0
   ind1 <- (abs(coefTemp) > 0)
   x1 <- as.matrix(x[, ind1, drop = FALSE])
   if (dim(x1)[2] == 0) {
     if (intercept == TRUE) {
-      a0 <- log(mean(y)/(1 - mean(y)))
+      a0 <- log(mean(y) / (1 - mean(y)))
       res <- y - mean(y)
-      coefs <- c(a0, rep(0,p))
+      coefs <- c(a0, rep(0, p))
       names(coefTemp) <- names(ind1) <- colnames(x)
       names(coefs) <- c("(Intercept)", names(coefTemp))
     }
-    
+
     if (intercept == FALSE) {
-      a0 <- 0  # or NA?
+      a0 <- 0 # or NA?
       res <- y - 0.5
       message("Residuals not defined, set to 0.5")
-      coefs <- rep(0,p)
+      coefs <- rep(0, p)
       names(coefTemp) <- names(ind1) <- colnames(x)
       names(coefs) <- names(coefTemp)
     }
-    est <- list(coefficients = coefs, beta = coefTemp, intercept = a0, index = rep(FALSE, 
-                                                               p), s0 = s0, lambda0 = lambda0, residuals = res, sigma = sqrt(var(res)), 
-                call = match.call(), options = list(post = post, intercept = intercept, 
-                                                    control = control))
+    est <- list(
+      coefficients = coefs, beta = coefTemp, intercept = a0, index = rep(
+        FALSE,
+        p
+      ), s0 = s0, lambda0 = lambda0, residuals = res, sigma = sqrt(var(res)),
+      call = match.call(), options = list(
+        post = post, intercept = intercept,
+        control = control
+      )
+    )
     if (model) est$model <- x
     class(est) <- c("rlassologit")
     return(est)
   }
-  
+
   # refinement variance estimation
   if (post) {
     if (intercept) {
@@ -183,7 +200,7 @@ rlassologit.default <- function(x, y, post = TRUE, intercept = TRUE,  model = TR
       e1 <- y - reg$fitted.values
       coefTemp[ind1] <- coefT
     }
-    
+
     if (!intercept) {
       reg <- glm(y ~ -1 + x1, family = binomial(link = "logit"))
       coefT <- coef(reg)
@@ -195,38 +212,44 @@ rlassologit.default <- function(x, y, post = TRUE, intercept = TRUE,  model = TR
   if (!post) {
     e1 <- y - predict(log.lasso, newx = x, type = "response")
   }
-  
+
   coefTemp <- as.vector(coefTemp)
   coefTemp[abs(coefTemp) < control$threshold] <- 0
   ind1 <- as.vector(ind1)
   names(coefTemp) <- names(ind1) <- colnames(x)
-  
-  
+
+
   if (intercept == TRUE) {
-    if (post == TRUE) 
+    if (post == TRUE) {
       a0 <- coef(reg)[1]
-    if (post == FALSE) 
+    }
+    if (post == FALSE) {
       a0 <- coef(log.lasso)[1]
-    
+    }
+
     coefs <- c(a0, coefTemp)
     names(coefs)[1] <- "(Intercept)"
   }
-  
+
   if (intercept == FALSE) {
-    a0 <- 0  # or NA?
+    a0 <- 0 # or NA?
     coefs <- coefTemp
   }
-  
-  est <- list(coefficients = coefs, beta = coefTemp, intercept=a0, index = ind1, lambda0 = lambda0, 
-              residuals = e1, sigma = sqrt(var(e1)), call = match.call(), options = list(post = post, 
-                                                                                         intercept = intercept, control = control))
+
+  est <- list(
+    coefficients = coefs, beta = coefTemp, intercept = a0, index = ind1, lambda0 = lambda0,
+    residuals = e1, sigma = sqrt(var(e1)), call = match.call(), options = list(
+      post = post,
+      intercept = intercept, control = control
+    )
+  )
   if (model) est$model <- x
   class(est) <- c("rlassologit")
   return(est)
 }
 
 
-############################################################################################################################### 
+###############################################################################################################################
 
 ################# Methods for logistic Lasso
 
@@ -248,7 +271,7 @@ rlassologit.default <- function(x, y, post = TRUE, intercept = TRUE,  model = TR
 #' @aliases methods.rlassologit print.rlassologit summary.rlassologit predict.rlassologit model.matrix.rlassologit
 #' @export
 
-# predict.rlassologit <- function(object, newdata = NULL, type = "response", 
+# predict.rlassologit <- function(object, newdata = NULL, type = "response",
 #                                 ...) {
 #   if (missing(newdata) || is.null(newdata)) {
 #     if (is.matrix(model.matrix(object))) {
@@ -275,7 +298,7 @@ rlassologit.default <- function(x, y, post = TRUE, intercept = TRUE,  model = TR
 #     } else {
 #       X <- as.matrix(newdata[, varcoefbasis])
 #     }
-#       
+#
 #     } else {
 #       #X <- as.matrix(newdata)
 #       formula <- eval(object$call[[2]])
@@ -284,34 +307,34 @@ rlassologit.default <- function(x, y, post = TRUE, intercept = TRUE,  model = TR
 #         X <- X[,-object$options$ind.scale]
 #       }
 #       stopifnot(ncol(X)==length(object$coefficients))
-#       
+#
 #     }
 #   }
 #   n <- dim(X)[1]  #length(object$residuals)
 #   beta <- object$coefficients
 #   if (object$options[["intercept"]]) {
 #     yp <- object$a0 + as.matrix(X) %*% as.vector(beta)
-#     if (dim(X)[2] == 0) 
+#     if (dim(X)[2] == 0)
 #       yp <- rep(object$a0, n)
-#     if (type == "response") 
+#     if (type == "response")
 #       yhat <- 1/(1 + exp(-yp))
-#     if (type == "link") 
+#     if (type == "link")
 #       yhat <- yp
 #   }
 #   if (!object$options[["intercept"]]) {
 #     yp <- X %*% as.vector(beta)
-#     if (dim(X)[2] == 0) 
+#     if (dim(X)[2] == 0)
 #       yp <- rep(0, n)
 #     yhat <- 1/(1 + exp(-yp))
-#     if (type == "response") 
+#     if (type == "response")
 #       yhat <- 1/(1 + exp(-yp))
-#     if (type == "link") 
+#     if (type == "link")
 #       yhat <- yp
 #   }
 #   return(yhat)
 # }
 
-predict.rlassologit <- function (object, newdata = NULL, type = "response", ...){
+predict.rlassologit <- function(object, newdata = NULL, type = "response", ...) {
   # if (missing(newdata) || is.null(newdata)) {
   #   X <- model.matrix(object)
   #   if (sum(object$options$ind.scale) != 0) {
@@ -336,8 +359,8 @@ predict.rlassologit <- function (object, newdata = NULL, type = "response", ...)
   # }
   mf <- match.call(expand.dots = TRUE)
   m <- match("newx", names(mf), 0L)
-  if (m!=0L) stop("Please use argument \"newdata\" instead of \"newx\" to provide data for prediction.")
-  
+  if (m != 0L) stop("Please use argument \"newdata\" instead of \"newx\" to provide data for prediction.")
+
   k <- length(object$beta)
   if (missing(newdata) || is.null(newdata)) {
     X <- model.matrix(object)
@@ -350,19 +373,19 @@ predict.rlassologit <- function (object, newdata = NULL, type = "response", ...)
       if (dim(X)[2] != k) {
         stop("No variable names provided in newdata and number of parameters does not fit!")
       } else {
-        #message("No variable names provided in newdata. Prediction relies on right ordering of the variables.")
+        # message("No variable names provided in newdata. Prediction relies on right ordering of the variables.")
       }
     } else {
       varcoef <- names(object$beta)
-      if (all(is.element(varcoef, colnames(newdata)))){
+      if (all(is.element(varcoef, colnames(newdata)))) {
         X <- as.matrix(newdata[, varcoef])
       } else {
         mod.frame <- as.data.frame(cbind(rep(1, nrow(newdata)), newdata))
         colnames(mod.frame)[1] <- as.character(eval(object$call$formula)[[2]])
         X <- try(model.matrix(eval(object$call$formula), data = mod.frame)[, -1, drop = FALSE])
-        if(inherits(X, "try-error")){
+        if (inherits(X, "try-error")) {
           stop("newdata does not contain the variables specified in formula")
-        } 
+        }
       }
     }
   }
@@ -373,22 +396,28 @@ predict.rlassologit <- function (object, newdata = NULL, type = "response", ...)
   beta <- object$beta
   if (object$options[["intercept"]]) {
     yp <- object$intercept + X %*% as.vector(beta)
-    if (dim(X)[2] == 0) 
+    if (dim(X)[2] == 0) {
       yp <- rep(object$intercept, n)
-    if (type == "response") 
-      yhat <- 1/(1 + exp(-yp))
-    if (type == "link") 
+    }
+    if (type == "response") {
+      yhat <- 1 / (1 + exp(-yp))
+    }
+    if (type == "link") {
       yhat <- yp
+    }
   }
   if (!object$options[["intercept"]]) {
     yp <- X %*% as.vector(beta)
-    if (dim(X)[2] == 0) 
+    if (dim(X)[2] == 0) {
       yp <- rep(0, n)
-    yhat <- 1/(1 + exp(-yp))
-    if (type == "response") 
-      yhat <- 1/(1 + exp(-yp))
-    if (type == "link") 
+    }
+    yhat <- 1 / (1 + exp(-yp))
+    if (type == "response") {
+      yhat <- 1 / (1 + exp(-yp))
+    }
+    if (type == "link") {
       yhat <- yp
+    }
   }
   return(yhat)
 }
@@ -397,7 +426,7 @@ predict.rlassologit <- function (object, newdata = NULL, type = "response", ...)
 #' @export
 
 # model.matrix.rlassologit <- function(object, ...) {
-#   
+#
 #   # falls formula
 #   if (is.call(object$call[[2]])) { # problem when formula handed as expression
 #     # falls kein Datensatz uebergeben
@@ -418,12 +447,12 @@ predict.rlassologit <- function (object, newdata = NULL, type = "response", ...)
 #   return(mm)
 # }
 
-model.matrix.rlassologit <- function(object, ...){
-  if(is.null(object$model)){
-    if (!is.null(object$call$x)){
+model.matrix.rlassologit <- function(object, ...) {
+  if (is.null(object$model)) {
+    if (!is.null(object$call$x)) {
       mm <- as.matrix(eval(object$call$x))
     } else {
-      if(!is.null(object$call$data)){
+      if (!is.null(object$call$data)) {
         mm <- model.matrix(eval(object$call$formula), data = eval(object$call$data))[, -1, drop = FALSE]
       } else {
         mm <- model.matrix(eval(object$call$formula))[, -1, drop = FALSE]
@@ -439,33 +468,43 @@ model.matrix.rlassologit <- function(object, ...){
 #' @rdname methods.rlassologit
 #' @export
 
-print.rlassologit <- function(x, all = TRUE, digits = max(3L, getOption("digits") - 
-                                                            3L), ...) {
-  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
-      "\n\n", sep = "")
+print.rlassologit <- function(x, all = TRUE, digits = max(3L, getOption("digits") -
+                                3L), ...) {
+  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"),
+    "\n\n",
+    sep = ""
+  )
   if (length(coef(x))) {
     coeffs <- coef(x)
-    #if (x$options$intercept) {
+    # if (x$options$intercept) {
     #  coeffs <- c(x$intercept, coeffs)
     #  names(coeffs)[1] <- "(Intercept)"
     #  index <- cbind(1, x$index)
-    #}
+    # }
     if (all) {
       cat("Coefficients:\n")
-      print.default(format(coeffs, digits = digits), print.gap = 2L, 
-                    quote = FALSE)
+      print.default(format(coeffs, digits = digits),
+        print.gap = 2L,
+        quote = FALSE
+      )
     } else {
-      #print.default(format(coeffs[index], digits = digits), print.gap = 2L, 
+      # print.default(format(coeffs[index], digits = digits), print.gap = 2L,
       #              quote = FALSE)
       if (x$options$intercept) {
-        print.default(format(coef(x)[c(TRUE,x$index)], digits = digits), print.gap = 2L,
-                      quote = FALSE)
+        print.default(format(coef(x)[c(TRUE, x$index)], digits = digits),
+          print.gap = 2L,
+          quote = FALSE
+        )
       } else {
-        print.default(format(beta$x[x$index], digits = digits), print.gap = 2L,
-                      quote = FALSE)
+        print.default(format(beta$x[x$index], digits = digits),
+          print.gap = 2L,
+          quote = FALSE
+        )
       }
     }
-  } else cat("No coefficients\n")
+  } else {
+    cat("No coefficients\n")
+  }
   cat("\n")
   invisible(x)
 }
@@ -473,12 +512,15 @@ print.rlassologit <- function(x, all = TRUE, digits = max(3L, getOption("digits"
 #' @rdname methods.rlassologit
 #' @export
 
-summary.rlassologit <- function(object, all = TRUE, digits = max(3L, getOption("digits") - 
-                                                                   3L), ...) {
-  cat("\nCall:\n", paste(deparse(object$call), sep = "\n", collapse = "\n"), 
-      "\n", sep = "")
-  cat("\nPost-Lasso Estimation: ", paste(deparse(object$options$post), 
-                                         sep = "\n", collapse = "\n"), "\n", sep = " ")
+summary.rlassologit <- function(object, all = TRUE, digits = max(3L, getOption("digits") -
+                                  3L), ...) {
+  cat("\nCall:\n", paste(deparse(object$call), sep = "\n", collapse = "\n"),
+    "\n",
+    sep = ""
+  )
+  cat("\nPost-Lasso Estimation: ", paste(deparse(object$options$post),
+    sep = "\n", collapse = "\n"
+  ), "\n", sep = " ")
   coefs <- object$coefficients
   p <- length(object$beta)
   num.selected <- sum(abs(object$beta) > 0)
@@ -497,7 +539,7 @@ summary.rlassologit <- function(object, all = TRUE, digits = max(3L, getOption("
     coefm[, 1] <- coefs
     colnames(coefm) <- "Estimate"
     rownames(coefm) <- names(coefs)
-    printCoefmat(coefm, digits = digits, na.print = "NA")  #,  P.values=TRUE, has.Pvalue=TRUE)
+    printCoefmat(coefm, digits = digits, na.print = "NA") # ,  P.values=TRUE, has.Pvalue=TRUE)
   }
   cat("\n")
   invisible(object)
