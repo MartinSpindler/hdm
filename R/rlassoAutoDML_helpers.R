@@ -78,7 +78,7 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 #' @param tol minimum improvement to continue looping (default 1e-6)
 #'
 #' @export
-RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add 0,2, max_iter = 10, b = NULL, c = 0.5, alpha = 0.1, tol = 1e-6) {
+RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NULL, c = 0.5, alpha = 0.1, tol = 1e-6) {
   
   
   if (is.null(b)) {
