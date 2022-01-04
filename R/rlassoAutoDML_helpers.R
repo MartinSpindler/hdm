@@ -10,12 +10,12 @@ m2 <- function(y, d, z, gamma) {
   return(y * gamma(d, z))
 }
 
-psi_tilde <- function(y, d, z, m, alpha, gamma) {
-  return(m(y, d, z, gamma) + alpha(d, z) * (y - gamma(d, z)))
-}
-
-psi_tilde_bias <- function(y, d, z, m, alpha, gamma) {
-  return(m(y, d, z, gamma))
+psi_tilde <- function(y, d, z, m, alpha, gamma, debiased) {
+  if (debiased) {
+    return(m(y, d, z, gamma) + alpha(d, z) * (y - gamma(d, z)))
+  } else if (!debiased) {
+    return(m(y, d, z, gamma))
+  }
 }
 
 default_dict = function(d,z){
@@ -68,7 +68,7 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 #' @param Y A vector of outputs
 #' @param D A vector of treatment values
 #' @param X A matrix of covariates 
-#' @param p0 initial value of p.
+#' @param p0 initial value of p
 #' @param D_LB Lower bound on D (default 0)
 #' @param D_add value added to D (default 0.2)
 #' @param max_iter maximum iterations of Lasso (default 10)

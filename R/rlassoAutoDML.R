@@ -21,8 +21,8 @@
 #' @param X exogenous variables
 #' @param dict a dictionary
 #' function of (d,z) that maps to a vector. Default is (1,d,z)
-#' @param bias debiased (if FALSE) vs. biased (if TRUE) results.
-#' Default is FALSE.
+#' @param debiased debiased (if TRUE) vs. biased (if FALSE) results.
+#' Default is TRUE.
 #' @param D_LB lower bound on D (default 0)
 #' @param D_add value added to D (default 0.2)
 #' @param L number of folds data is split into (default 5)
@@ -43,7 +43,7 @@
 #' @export
 #' @rdname rlassoDML
 rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
-                          bias = FALSE, L = 5, max_iter = 10, p0 = NULL) {
+                          debiased = TRUE, L = 5, max_iter = 10, p0 = NULL) {
   
   if (is.null(dict)) {
     dict = default_dict
@@ -52,8 +52,6 @@ rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
   p <- length(dict(D[1], X[1, ]))
   
   if (is.null(p0)) {
-    # p0=dim(X0) used in low-dim dictionary in the stage 1 tuning procedure
-    # TODO: is this comment true or is p0 = dim(X0)/4 used or can we drop this?
     p0 <- ceiling(p / 4)
     if (p > 60) {
       p0 <- ceiling(p / 40)
@@ -105,11 +103,7 @@ rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
     # psi_star
     Psi_tilde.l <- rep(0, n.l)
     for (i in 1:n.l) {
-      if (bias) { # plug-in
-        Psi_tilde.l[i] <- psi_tilde_bias(Y.l[i], T.l[i], X.l[i, ], m, alpha_hat, gamma_hat) # without subtracting theta_hat
-      } else { # DML
-        Psi_tilde.l[i] <- psi_tilde(Y.l[i], T.l[i], X.l[i, ], m, alpha_hat, gamma_hat) # without subtracting theta_hat
-      }
+      Psi_tilde.l[i] <- psi_tilde(Y.l[i], T.l[i], X.l[i, ], m, alpha_hat, gamma_hat, debiased)
     }
     Psi_tilde <- c(Psi_tilde, Psi_tilde.l)
   }

@@ -11,7 +11,7 @@ rlassoAutoDML(
   dict = NULL,
   D_LB = 0,
   D_add = 0.2,
-  bias = FALSE,
+  debiased = TRUE,
   L = 5,
   max_iter = 10,
   p0 = NULL
@@ -31,8 +31,8 @@ function of (d,z) that maps to a vector. Default is (1,d,z)}
 
 \item{D_add}{value added to D (default 0.2)}
 
-\item{bias}{debiased (if FALSE) vs. biased (if TRUE) results.
-Default is FALSE.}
+\item{debiased}{debiased (if TRUE) vs. biased (if FALSE) results.
+Default is TRUE.}
 
 \item{L}{number of folds data is split into (default 5)}
 
