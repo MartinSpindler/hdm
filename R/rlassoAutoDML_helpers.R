@@ -18,11 +18,11 @@ psi_tilde <- function(y, d, z, m, alpha, gamma, debiased) {
   }
 }
 
-default_dict = function(d,z){
-      return(c(1,d,z))
+default_dict <- function(d, z) {
+  return(c(1, d, z))
 }
 
-dict_mult_coef = function(d, z, rho_hat) {
+dict_mult_coef <- function(d, z, rho_hat) {
   return(dict(d, z) %*% rho_hat)
 }
 
@@ -65,9 +65,9 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 }
 
 #' RMD_stable
-#' 
+#'
 #' Estimation of parameters.
-#' 
+#'
 #' @inheritParams rlassoAutoDML
 #' @param c parameter to tune lambda (default 0.5)
 #' @param gamma parameter to tune lambda (default 0.1)
@@ -75,12 +75,12 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 #'
 #' @export
 RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NULL, c = 0.5, gamma = 0.1, tol = 1e-6) {
-  
-  
+
+
   if (is.null(b)) {
-    b = default_dict
+    b <- default_dict
   }
-  
+
   k <- 1
   l <- 0.1
 
@@ -113,7 +113,7 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   # alpha_hat
   ###########
   diff_rho <- 1
-  
+
   while (diff_rho > tol & k <= max_iter) {
     # previous values
     rho_hat_old <- rho_hat + 0
@@ -134,4 +134,3 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
 
   return(rho_hat)
 }
-
