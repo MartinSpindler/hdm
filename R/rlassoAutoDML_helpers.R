@@ -1,5 +1,3 @@
-library("mvtnorm")
-
 two.norm <- function(x) {
   return(sqrt(x %*% x))
 }
@@ -162,47 +160,6 @@ for_tex <- function(spec1) {
 
 b2<-function(d,z){
   return(c(1,d,z,d*z))
-}
-
-simulate_data = function(n,method = 3,rank = 5){
-  ###designed to return list(Y,T,X) with ATE 2.2
-  ###Inputs
-  #n: dimensions of data Y:length n vec T:length n vec, X: n x n
-  ###Output: list(Y,T,X)
-  
-  X = matrix(0,n,100)
-  Y = c()
-  T = c()
-  beta = c()
-  for (i in 1:100){
-    beta = c(beta,1/(i^2))
-  }
-  
-  sigma = diag(100)
-  for (i in 1:99){
-    sigma[i,i+1] = 0.5
-    sigma[i+1,i] = 0.5
-    
-    
-    for (i in 1:n){
-      X_i = rmvnorm(1,rep(0,100),sigma)
-      v = rnorm(1,0,1)
-      eps = rnorm(1,0,1)
-      if (3*X_i%*%beta+0.75*v>=0){
-        T_i = 1
-      }else{
-        T_i = 0
-      }
-      Y = c(Y,1.2*T_i+1.2*X_i%*%beta+T_i^2+T_i*X_i[1]+eps)
-      T = c(T,T_i)
-      X[i,] = X_i
-    }
-    
-    return(list(Y,T,X))
-    
-    
-    
-  }
 }
   
 
