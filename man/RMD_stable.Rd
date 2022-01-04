@@ -14,7 +14,7 @@ RMD_stable(
   max_iter = 10,
   b = NULL,
   c = 0.5,
-  alpha = 0.1,
+  gamma = 0.1,
   tol = 1e-06
 )
 }
@@ -35,7 +35,7 @@ RMD_stable(
 
 \item{c}{parameter to tune lambda (default 0.5)}
 
-\item{alpha}{parameter to tune lambda (default 0.1)}
+\item{gamma}{parameter to tune lambda (default 0.1)}
 
 \item{tol}{minimum improvement to continue looping (default 1e-6)}
 }
