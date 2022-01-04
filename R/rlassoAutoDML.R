@@ -112,7 +112,10 @@ rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
   var <- mean(Psi^2)
   se <- sqrt(var / n)
   
-  out <- c(table(D)[[2]], table(D)[[1]], ate, se)
+  out <- list("treated:" = table(D)[[2]],
+              "untreated" = table(D)[[1]],
+              "ATE:" = ate, 
+              "SE:" = se)
   
   return(out)
 }
