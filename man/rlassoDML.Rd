@@ -13,42 +13,43 @@ rlassoAutoDML(
   D_add = 0.2,
   bias = FALSE,
   L = 5,
-  max_iter = 10
+  max_iter = 10,
+  p0 = NULL
 )
 }
 \arguments{
-\item{Y}{A vector of outputs}
+\item{Y}{outcome variable / dependent variable}
 
-\item{D}{A vector of treatment values}
+\item{D}{treatment variable (binary)}
 
-\item{X}{A matrix of covariates}
+\item{X}{exogenous variables}
 
-\item{dict}{A dictionary
-function of (d,z) that maps to a vector
-default is (1,d,z)}
+\item{dict}{a dictionary
+function of (d,z) that maps to a vector. Default is (1,d,z)}
 
-\item{D_LB}{Lower bound on D (default 0)}
+\item{D_LB}{lower bound on D (default 0)}
 
 \item{D_add}{value added to D (default 0.2)}
 
-\item{bias}{debiased vs. biased results}
+\item{bias}{debiased (if FALSE) vs. biased (if TRUE) results.
+Default is FALSE.}
 
 \item{L}{number of folds data is split into (default 5)}
 
 \item{max_iter}{maximum iterations of Lasso (default 10)}
+
+\item{p0}{initial value of p. By default, a rule of thumb is applied.}
 }
 \value{
 list with average treatment effect and standard error
 }
 \description{
-Implements the Double ML algorithm introduced in for estimating causal effects
-This method was first introdued in https://arxiv.org/abs/1608.00060 which required
-manual calculation of the Riesz representer. In Auto DML (from https://arxiv.org/abs/1809.05224)
-the Riesz representer is estimated automatically and doesn't need to be explicitly 
-computed.
-}
-\details{
-This implementation
+Implements AutoDML on the Double ML algorithm for estimating causal effects.
+This method was first introduced in Chernozhukov et al. (2018a) which required
+manual calculation of the Riesz representer in the corresponding (IRM) model.
+In AutoDML (Chernozhukov et al., 2018b), the Riesz representer is estimated
+automatically and doesn't need to be explicitly computed. This implementation
+is based on the \code{rlasso} learner.#'
 }
 \examples{
 # data = simulate_data(500)
@@ -59,4 +60,14 @@ This implementation
 
 # rlassoAutoDML(Y,D,X,dict = b2)
 # rlassoAutoDML(Y, T, X)
+}
+\references{
+Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E.,
+Hansen, C., Newey, W. and Robins, J. (2018a), Double/debiased machine learning
+for treatment and structural parameters.
+The Econometrics Journal, 21: C1-C68. \doi{10.1111/ectj.12097}.
+
+Chernozhukov, V., Newey, W.K., and Singh, R. (2018b), Automatic
+Debiased Machine Learning of Causal and Structural Effects. arXiv preprint
+arXiv:1809.05224 (2018).
 }

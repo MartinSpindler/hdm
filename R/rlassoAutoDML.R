@@ -1,26 +1,37 @@
 #' Auto DML based on rlasso
 #' 
-#' Implements the Double ML algorithm introduced in for estimating causal effects
-#' This method was first introdued in https://arxiv.org/abs/1608.00060 which required
-#' manual calculation of the Riesz representer. In Auto DML (from https://arxiv.org/abs/1809.05224)
-#' the Riesz representer is estimated automatically and doesn't need to be explicitly 
-#' computed.
+#' Implements AutoDML on the Double ML algorithm for estimating causal effects.
+#' This method was first introduced in Chernozhukov et al. (2018a) which required
+#' manual calculation of the Riesz representer in the corresponding (IRM) model.
+#' In AutoDML (Chernozhukov et al., 2018b), the Riesz representer is estimated
+#' automatically and doesn't need to be explicitly computed. This implementation
+#' is based on the \code{rlasso} learner.#'
 #' 
-#' This implementation 
+#' @references Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E.,
+#' Hansen, C., Newey, W. and Robins, J. (2018a), Double/debiased machine learning
+#' for treatment and structural parameters.
+#' The Econometrics Journal, 21: C1-C68. \doi{10.1111/ectj.12097}.
+#' 
+#' @references Chernozhukov, V., Newey, W.K., and Singh, R. (2018b), Automatic
+#' Debiased Machine Learning of Causal and Structural Effects. arXiv preprint
+#' arXiv:1809.05224 (2018).
 #'
-#' @param Y A vector of outputs
-#' @param D A vector of treatment values
-#' @param X A matrix of covariates
-#' @param dict A dictionary
-#' function of (d,z) that maps to a vector
-#' default is (1,d,z)
-#' @param bias debiased vs. biased results
-#' @param D_LB Lower bound on D (default 0)
+#' @param Y outcome variable / dependent variable
+#' @param D treatment variable (binary)
+#' @param X exogenous variables
+#' @param dict a dictionary
+#' function of (d,z) that maps to a vector. Default is (1,d,z)
+#' @param bias debiased (if FALSE) vs. biased (if TRUE) results.
+#' Default is FALSE.
+#' @param D_LB lower bound on D (default 0)
 #' @param D_add value added to D (default 0.2)
 #' @param L number of folds data is split into (default 5)
 #' @param max_iter maximum iterations of Lasso (default 10)
+#' @param p0 initial value of p. By default, a rule of thumb is applied.
+# TODO: Explicitly describe rule of thumb.
 #' @return list with average treatment effect and standard error
 #' @examples
+# TODO: Include replicable example
 #' # data = simulate_data(500)
 #' #
 #' # Y = data[[1]]
@@ -32,23 +43,23 @@
 #' @export
 #' @rdname rlassoDML
 rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
-                          bias = FALSE, L = 5, max_iter = 10) {
+                          bias = FALSE, L = 5, max_iter = 10, p0 = NULL) {
   
   if (is.null(dict)) {
-    dict = function(d,z){
-      return(c(1,d,z))
-    }
-    
+    dict = default_dict
   }
+  
   p <- length(dict(D[1], X[1, ]))
   
-  # p0=dim(X0) used in low-dim dictionary in the stage 1 tuning procedure
-  # TODO: is this comment true or is p0 = dim(X0)/4 used or can we drop this?
-  p0 <- ceiling(p / 4)
-  if (p > 60) {
-    p0 <- ceiling(p / 40)
-    
+  if (is.null(p0)) {
+    # p0=dim(X0) used in low-dim dictionary in the stage 1 tuning procedure
+    # TODO: is this comment true or is p0 = dim(X0)/4 used or can we drop this?
+    p0 <- ceiling(p / 4)
+    if (p > 60) {
+      p0 <- ceiling(p / 40)
+    }
   }
+  
   n <- nrow(X)
   folds <- split(sample(n, n, replace = FALSE), as.factor(1:L))
   

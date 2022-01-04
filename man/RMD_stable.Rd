@@ -25,7 +25,7 @@ RMD_stable(
 
 \item{X}{A matrix of covariates}
 
-\item{p0}{initial value of p}
+\item{p0}{initial value of p.}
 
 \item{D_LB}{Lower bound on D (default 0)}
 
