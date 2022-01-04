@@ -22,6 +22,11 @@ default_dict = function(d,z){
       return(c(1,d,z))
 }
 
+dict_mult_coef = function(d, z, rho_hat) {
+  return(dict(d, z) %*% rho_hat)
+}
+
+
 get_MNG <- function(Y, D, X, b) {
   p <- length(b(D[1], X[1, ]))
   n.nl <- length(D)
@@ -61,20 +66,9 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 
 #' RMD_stable
 #' 
-#' TODO: insert description on what this function does and document all
-#' parameters
+#' Estimation of parameters.
 #' 
-#' TODO: set defaults for arguments
-#' @param Y A vector of outputs
-#' @param D A vector of treatment values
-#' @param X A matrix of covariates 
-#' @param p0 initial value of p
-#' @param D_LB Lower bound on D (default 0)
-#' @param D_add value added to D (default 0.2)
-#' @param max_iter maximum iterations of Lasso (default 10)
-#' @param b A dictionary
-#' function of (d,z) that maps to a vector
-#' default is (1,d,z)
+#' @inheritParams rlassoAutoDML
 #' @param c parameter to tune lambda (default 0.5)
 #' @param alpha parameter to tune lambda (default 0.1)
 #' @param tol minimum improvement to continue looping (default 1e-6)
@@ -84,11 +78,9 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   
   
   if (is.null(b)) {
-    b = function(d,z){
-      return(c(1,d,z))
-    }
-    
+    b = default_dict
   }
+  
   k <- 1
   l <- 0.1
 

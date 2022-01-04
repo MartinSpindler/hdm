@@ -19,23 +19,19 @@ RMD_stable(
 )
 }
 \arguments{
-\item{Y}{A vector of outputs}
+\item{Y}{outcome variable / dependent variable}
 
-\item{D}{A vector of treatment values}
+\item{D}{treatment variable (binary)}
 
-\item{X}{A matrix of covariates}
+\item{X}{exogenous variables}
 
-\item{p0}{initial value of p}
+\item{p0}{initial value of p. By default, a rule of thumb is applied.}
 
-\item{D_LB}{Lower bound on D (default 0)}
+\item{D_LB}{lower bound on D (default 0)}
 
 \item{D_add}{value added to D (default 0.2)}
 
 \item{max_iter}{maximum iterations of Lasso (default 10)}
-
-\item{b}{A dictionary
-function of (d,z) that maps to a vector
-default is (1,d,z)}
 
 \item{c}{parameter to tune lambda (default 0.5)}
 
@@ -44,9 +40,5 @@ default is (1,d,z)}
 \item{tol}{minimum improvement to continue looping (default 1e-6)}
 }
 \description{
-TODO: insert description on what this function does and document all
-parameters
-}
-\details{
-TODO: set defaults for arguments
+Estimation of parameters.
 }

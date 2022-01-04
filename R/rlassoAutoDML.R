@@ -73,16 +73,13 @@ rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
     X.l <- X[folds[[l]], ]
     X.nl <- X[-folds[[l]], ]
     
-    
     n.l <- length(T.l)
     n.nl <- length(T.nl)
     
     # get stage 1 (on nl)
     rho_hat <- RMD_stable(Y.nl, T.nl, X.nl, p0, D_LB, D_add, max_iter, dict)
     
-    alpha_hat <- function(d, z) {
-      return(dict(d, z) %*% rho_hat)
-    }
+    alpha_hat <- dict_mult_coef(d, z, rho_hat)
     
     n <- nrow(X.nl)
     p <- length(dict(T.nl[1], X.nl[1, ]))
@@ -93,10 +90,8 @@ rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
     }
     
     gamma_coeff <- rlasso(B, Y.nl, intercept = F)$coefficients
-    gamma_hat <- function(d, z) {
-      return(dict(d, z) %*% gamma_coeff)
-    }
-    
+    gamma_hat <- dict_mult_coef(d, z, gamma_coef)
+
     print(paste0("fold: ", l))
     
     # get stage 2 (on l)
