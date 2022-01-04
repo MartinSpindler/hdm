@@ -2,9 +2,12 @@
 % Please edit documentation in R/rlassoAutoDML.R
 \name{rlassoAutoDML}
 \alias{rlassoAutoDML}
+\alias{rlassoAutoDML.default}
 \title{Auto DML based on rlasso}
 \usage{
-rlassoAutoDML(
+rlassoAutoDML(x, ...)
+
+\method{rlassoAutoDML}{default}(
   Y,
   D,
   X,
@@ -41,10 +44,10 @@ Default is TRUE.}
 \item{p0}{initial value of p. By default, a rule of thumb is applied.}
 }
 \value{
-list with average treatment effect and standard error
+named list with average treatment effect and standard error
 }
 \description{
-Implements AutoDML on the Double ML algorithm for estimating causal effects.
+Implements AutoDML based on the Double ML algorithm for estimating causal effects.
 This method was first introduced in Chernozhukov et al. (2018a) which required
 manual calculation of the Riesz representer in the corresponding (IRM) model.
 In AutoDML (Chernozhukov et al., 2018b), the Riesz representer is estimated

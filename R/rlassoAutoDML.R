@@ -1,6 +1,6 @@
 #' Auto DML based on rlasso
 #' 
-#' Implements AutoDML on the Double ML algorithm for estimating causal effects.
+#' Implements AutoDML based on the Double ML algorithm for estimating causal effects.
 #' This method was first introduced in Chernozhukov et al. (2018a) which required
 #' manual calculation of the Riesz representer in the corresponding (IRM) model.
 #' In AutoDML (Chernozhukov et al., 2018b), the Riesz representer is estimated
@@ -29,7 +29,7 @@
 #' @param max_iter maximum iterations of Lasso (default 10)
 #' @param p0 initial value of p. By default, a rule of thumb is applied.
 # TODO: Explicitly describe rule of thumb.
-#' @return list with average treatment effect and standard error
+#' @return named list with average treatment effect and standard error
 #' @examples
 # TODO: Include replicable example
 #' # data = simulate_data(500)
@@ -41,8 +41,14 @@
 #' # rlassoAutoDML(Y,D,X,dict = b2)
 #' # rlassoAutoDML(Y, T, X)
 #' @export
-#' @rdname rlassoDML
-rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
+#' @rdname rlassoAutoDML
+rlassoAutoDML <- function(x, ...) {
+  UseMethod("rlassoAutoDML")
+} # definition of generic method
+
+#' @export
+#' @rdname rlassoAutoDML
+rlassoAutoDML.default <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
                           debiased = TRUE, L = 5, max_iter = 10, p0 = NULL) {
   
   if (is.null(dict)) {
@@ -112,10 +118,21 @@ rlassoAutoDML <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
   var <- mean(Psi^2)
   se <- sqrt(var / n)
   
-  out <- list("treated:" = table(D)[[2]],
+  res <- list("treated:" = table(D)[[2]],
               "untreated" = table(D)[[1]],
               "ATE:" = ate, 
               "SE:" = se)
   
-  return(out)
+  class(res) <- "rlassoAutoDML"
+  
+  return(res)
+}
+
+
+#' prints output of rlassoAutoDML in an easy to read format
+#' @param obj Object of class rlassoAutoDML
+#' 
+#' @export
+print.rlassoAutoDML <- function(obj) {
+  print(paste(" treated: ", obj$treated, " untreated: ", obj$untreated, "   ATE:    ", round(obj$ATE, 2), "   SE:   ", round(obj$SE, 2), sep = ""))
 }

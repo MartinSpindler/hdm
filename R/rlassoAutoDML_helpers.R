@@ -135,27 +135,3 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   return(rho_hat)
 }
 
-#' prints output of rlassoAutoDML in an easy to read format
-#' @param spec1 output of rlassoAutoDML
-#' 
-#' @export
-#' @rdname printer
-printer <- function(spec1) {
-  print(paste(" treated: ", spec1[1], " untreated: ", spec1[2], "   ATE:    ", round(spec1[3], 2), "   SE:   ", round(spec1[4], 2), sep = ""))
-}
-
-#' prints output of rlassoAutoDML in latex table format
-#' @param spec1 output of rlassoAutoDML
-#' 
-#' @export
-#' @rdname for_tex
-for_tex <- function(spec1) {
-  print(paste(" & ", spec1[1], " & ", spec1[2], "   &    ", round(spec1[3], 2), "   &   ", round(spec1[4], 2), sep = ""))
-}
-
-
-b2<-function(d,z){
-  return(c(1,d,z,d*z))
-}
-  
-
