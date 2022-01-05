@@ -29,6 +29,7 @@ Suggests:
     testthat,
     knitr,
     xtable,
-    mvtnorm
+    mvtnorm,
+    DoubleML
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

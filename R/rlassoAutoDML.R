@@ -31,15 +31,18 @@
 #' If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.
 #' @return named list with average treatment effect and standard error
 #' @examples
-#' # TODO: Include replicable example
-#' # data = simulate_data(500)
-#' #
-#' # Y = data[[1]]
-#' # D = data[[2]]
-#' # X = data[[3]]
-#'
-#' # rlassoAutoDML(Y,D,X,dict = b2)
-#' # rlassoAutoDML(Y, T, X)
+#' library(hdm)
+#' library(DoubleML)
+#' data <- make_irm_data(theta = 2, return_type = "matrix")
+#' Y = data$y
+#' D = data$d
+#' X = data$X
+#' 
+#' # Define a dictionary
+#' b2 <-function(d,z){
+#'   return(c(1,d,z,d*z))
+#' }
+#' rlassoAutoDML(Y,D,X,dict = b2)
 #' @export
 #' @rdname rlassoAutoDML
 rlassoAutoDML <- function(x, ...) {

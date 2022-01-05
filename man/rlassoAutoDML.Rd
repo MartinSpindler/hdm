@@ -56,15 +56,17 @@ automatically and doesn't need to be explicitly computed. This implementation
 is based on the \code{rlasso} learner.#'
 }
 \examples{
-# TODO: Include replicable example
-# data = simulate_data(500)
-#
-# Y = data[[1]]
-# D = data[[2]]
-# X = data[[3]]
+library(DoubleML)
+data <- make_irm_data(theta = 2, return_type = "matrix")
+Y = data$y
+D = data$d
+X = data$X
 
-# rlassoAutoDML(Y,D,X,dict = b2)
-# rlassoAutoDML(Y, T, X)
+# Define a dictionary
+b2 <-function(d,z){
+  return(c(1,d,z,d*z))
+}
+rlassoAutoDML(Y,D,X,dict = b2)
 }
 \references{
 Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E.,
