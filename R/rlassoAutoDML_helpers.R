@@ -2,30 +2,31 @@ two.norm <- function(x) {
   return(sqrt(x %*% x))
 }
 
-m <- function(y, d, z, gamma) { # all data arguments to make interchangeable with m2
-  return(gamma(1, z) - gamma(0, z))
+m <- function(y, d, z, gamma, dict) { # all data arguments to make interchangeable with m2
+  gamma_1z = dict(1, z) %*% gamma
+  gamma_0z = dict(0, z) %*% gamma
+  
+  return(gamma_1z - gamma_0z)
 }
 
 m2 <- function(y, d, z, gamma) {
   return(y * gamma(d, z))
 }
 
-psi_tilde <- function(y, d, z, m, alpha, gamma, debiased) {
+psi_tilde <- function(y, d, z, m, rho, gamma, dict, debiased) {
+  gamma_dz = dict(d,z) %*% gamma
+  
   if (debiased) {
-    return(m(y, d, z, gamma) + alpha(d, z) * (y - gamma(d, z)))
+    alpha_dz = dict(d,z) %*% rho 
+    return(m(y, d, z, gamma, dict) + alpha_dz * (y - gamma_dz))
   } else if (!debiased) {
-    return(m(y, d, z, gamma))
+    return(m(y, d, z, gamma, dict))
   }
 }
 
 default_dict <- function(d, z) {
   return(c(1, d, z))
 }
-
-dict_mult_coef <- function(d, z, rho_hat) {
-  return(dict(d, z) %*% rho_hat)
-}
-
 
 get_MNG <- function(Y, D, X, b) {
   p <- length(b(D[1], X[1, ]))
@@ -37,7 +38,7 @@ get_MNG <- function(Y, D, X, b) {
 
   for (i in 1:n.nl) {
     B[i, ] <- b(D[i], X[i, ])
-    M[, i] <- m(Y[i], D[i], X[i, ], b)
+    M[, i] <- b(1, X[i, ]) - b(0, X[i,])
     N[, i] <- m2(Y[i], D[i], X[i, ], b) # this is a more general formulation for N
   }
 
@@ -49,13 +50,13 @@ get_MNG <- function(Y, D, X, b) {
 }
 
 
-get_D <- function(Y, D, X, m, rho_hat, b) {
+get_D <- function(Y, D, X, rho_hat, b) {
   n <- nrow(X)
   p <- length(b(D[1], X[1, ]))
 
   df <- matrix(0, p, n)
   for (i in 1:n) {
-    df[, i] <- b(D[i], X[i, ]) * as.vector(rho_hat %*% b(D[i], X[i, ])) - m(Y[i], D[i], X[i, ], b)
+    df[, i] <- b(D[i], X[i, ]) * as.vector(rho_hat %*% b(D[i], X[i, ])) - (b(1, X[i, ]) - b(0, X[i,]))
   }
   df <- df^2
   D2 <- rowMeans(df)
@@ -76,7 +77,6 @@ get_D <- function(Y, D, X, m, rho_hat, b) {
 #' @export
 RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NULL, c = 0.5, gamma = 0.1, tol = 1e-6) {
 
-
   if (is.null(b)) {
     b <- default_dict
   }
@@ -88,7 +88,12 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   n <- length(D)
 
   # low-dimensional moments
-  X0 <- X[, 1:p0]
+  # TODO: Check if order of columns in X really should play a role, in this version they do!
+  # Alternative I: Random choice
+  # col_indx <- sample(p, size = p0, replace = FALSE)
+  # X0 <- X[, col_indx, drop = FALSE]
+  # Alternative II: Based on preliminary screening as in rlasso
+  X0 <- X[, 1:p0, drop = FALSE]
   MNG0 <- get_MNG(Y, D, X0, b)
   M_hat0 <- MNG0[[1]]
   N_hat0 <- MNG0[[2]]
@@ -113,13 +118,13 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   # alpha_hat
   ###########
   diff_rho <- 1
-
+  
   while (diff_rho > tol & k <= max_iter) {
     # previous values
     rho_hat_old <- rho_hat + 0
 
     # normalization
-    D_hat_rho <- get_D(Y, D, X, m, rho_hat_old, b)
+    D_hat_rho <- get_D(Y, D, X, rho_hat_old, b)
     D_hat_rho <- pmax(D_LB, D_hat_rho)
     D_hat_rho <- D_hat_rho + D_add
 

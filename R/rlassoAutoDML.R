@@ -85,8 +85,6 @@ rlassoAutoDML.default <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
     # get stage 1 (on nl)
     rho_hat <- RMD_stable(Y.nl, T.nl, X.nl, p0, D_LB, D_add, max_iter, dict)
 
-    alpha_hat <- dict_mult_coef(d, z, rho_hat)
-
     n <- nrow(X.nl)
     p <- length(dict(T.nl[1], X.nl[1, ]))
     # Apply the dictionary b to W
@@ -96,7 +94,6 @@ rlassoAutoDML.default <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
     }
 
     gamma_coeff <- rlasso(B, Y.nl, intercept = F)$coefficients
-    gamma_hat <- dict_mult_coef(d, z, gamma_coef)
 
     print(paste0("fold: ", l))
 
@@ -104,7 +101,7 @@ rlassoAutoDML.default <- function(Y, D, X, dict = NULL, D_LB = 0, D_add = 0.2,
     # psi_star
     Psi_tilde.l <- rep(0, n.l)
     for (i in 1:n.l) {
-      Psi_tilde.l[i] <- psi_tilde(Y.l[i], T.l[i], X.l[i, ], m, alpha_hat, gamma_hat, debiased)
+      Psi_tilde.l[i] <- psi_tilde(Y.l[i], T.l[i], X.l[i, ], m, rho_hat, gamma_coeff, dict, debiased)
     }
     Psi_tilde <- c(Psi_tilde, Psi_tilde.l)
   }
