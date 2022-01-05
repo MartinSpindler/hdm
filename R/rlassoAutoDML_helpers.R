@@ -65,9 +65,9 @@ get_D <- function(Y, D, X, rho_hat, b) {
   return(D) # pass around D as vector
 }
 
-#' RMD_stable
+#' Estimation of Riesz Representer
 #'
-#' Estimation of parameters.
+#' Implements estimation of the Riesz representer \eqn{\alpha}.
 #'
 #' @inheritParams rlassoAutoDML
 #' @param c parameter to tune lambda (default 0.5)

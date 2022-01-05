@@ -8,9 +8,9 @@
 rlassoAutoDML(x, ...)
 
 \method{rlassoAutoDML}{default}(
-  Y,
-  D,
   X,
+  D,
+  Y,
   dict = NULL,
   D_LB = 0,
   D_add = 0.2,
@@ -21,11 +21,11 @@ rlassoAutoDML(x, ...)
 )
 }
 \arguments{
-\item{Y}{outcome variable / dependent variable}
+\item{X}{exogenous variables}
 
 \item{D}{treatment variable (binary)}
 
-\item{X}{exogenous variables}
+\item{Y}{outcome variable / dependent variable}
 
 \item{dict}{a dictionary
 function of (d,z) that maps to a vector. Default is (1,d,z)}
@@ -45,28 +45,35 @@ Default is TRUE.}
 If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.}
 }
 \value{
-named list with average treatment effect and standard error
+an object of class \code{rlassoAutoDML} with estimated effects,
+standard errors and individual effects in the form of a \code{list}.
 }
 \description{
-Implements AutoDML based on the Double ML algorithm for estimating causal effects.
-This method was first introduced in Chernozhukov et al. (2018a) which required
-manual calculation of the Riesz representer in the corresponding (IRM) model.
-In AutoDML (Chernozhukov et al., 2018b), the Riesz representer is estimated
-automatically and doesn't need to be explicitly computed. This implementation
-is based on the \code{rlasso} learner.#'
+Implements AutoDML based on rigorous lasso learner (\code{rlasso}) as developed
+in Chernozhukov et al. (2018b). The algorithm is based on the double ML
+cross-fitting algorithm. This method was first introduced in Chernozhukov et
+al. (2018a) which required manual calculation of the Riesz representer in the
+corresponding (IRM) model. In AutoDML (Chernozhukov et al., 2018b), the Riesz
+representer is estimated automatically and doesn't need to be explicitly
+computed.
 }
 \examples{
+library(hdm)
 library(DoubleML)
 data <- make_irm_data(theta = 2, return_type = "matrix")
-Y = data$y
-D = data$d
-X = data$X
+Y <- data$y
+D <- data$d
+X <- data$X
 
 # Define a dictionary
-b2 <-function(d,z){
+b2 <- function(d,z){
   return(c(1,d,z,d*z))
 }
-rlassoAutoDML(Y,D,X,dict = b2)
+lasso.auto <- rlassoAutoDML(X, D, Y, dict = b2)
+summary(lasso.auto)
+print(lasso.auto)
+confint(lasso.auto)
+
 }
 \references{
 Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E.,
@@ -77,4 +84,7 @@ The Econometrics Journal, 21: C1-C68. \doi{10.1111/ectj.12097}.
 Chernozhukov, V., Newey, W.K., and Singh, R. (2018b), Automatic
 Debiased Machine Learning of Causal and Structural Effects. arXiv preprint
 arXiv:1809.05224 (2018).
+}
+\seealso{
+rlasso
 }

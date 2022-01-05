@@ -2,7 +2,7 @@
 % Please edit documentation in R/rlassoAutoDML_helpers.R
 \name{RMD_stable}
 \alias{RMD_stable}
-\title{RMD_stable}
+\title{Estimation of Riesz Representer}
 \usage{
 RMD_stable(
   Y,
@@ -41,5 +41,5 @@ If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.}
 \item{tol}{minimum improvement to continue looping (default 1e-6)}
 }
 \description{
-Estimation of parameters.
+Implements estimation of the Riesz representer \eqn{\alpha}.
 }
