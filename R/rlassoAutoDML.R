@@ -27,8 +27,8 @@
 #' @param D_add value added to D (default 0.2)
 #' @param L number of folds data is split into (default 5)
 #' @param max_iter maximum iterations of Lasso (default 10)
-#' @param p0 initial value of p. By default, a rule of thumb is applied.
-# TODO: Explicitly describe rule of thumb.
+#' @param p0 initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
+#' If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.
 #' @return named list with average treatment effect and standard error
 #' @examples
 #' # TODO: Include replicable example

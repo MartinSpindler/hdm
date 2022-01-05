@@ -3,9 +3,9 @@ two.norm <- function(x) {
 }
 
 m <- function(y, d, z, gamma, dict) { # all data arguments to make interchangeable with m2
-  gamma_1z = dict(1, z) %*% gamma
-  gamma_0z = dict(0, z) %*% gamma
-  
+  gamma_1z <- dict(1, z) %*% gamma
+  gamma_0z <- dict(0, z) %*% gamma
+
   return(gamma_1z - gamma_0z)
 }
 
@@ -14,10 +14,10 @@ m2 <- function(y, d, z, gamma) {
 }
 
 psi_tilde <- function(y, d, z, m, rho, gamma, dict, debiased) {
-  gamma_dz = dict(d,z) %*% gamma
-  
+  gamma_dz <- dict(d, z) %*% gamma
+
   if (debiased) {
-    alpha_dz = dict(d,z) %*% rho 
+    alpha_dz <- dict(d, z) %*% rho
     return(m(y, d, z, gamma, dict) + alpha_dz * (y - gamma_dz))
   } else if (!debiased) {
     return(m(y, d, z, gamma, dict))
@@ -38,7 +38,7 @@ get_MNG <- function(Y, D, X, b) {
 
   for (i in 1:n.nl) {
     B[i, ] <- b(D[i], X[i, ])
-    M[, i] <- b(1, X[i, ]) - b(0, X[i,])
+    M[, i] <- b(1, X[i, ]) - b(0, X[i, ])
     N[, i] <- m2(Y[i], D[i], X[i, ], b) # this is a more general formulation for N
   }
 
@@ -56,7 +56,7 @@ get_D <- function(Y, D, X, rho_hat, b) {
 
   df <- matrix(0, p, n)
   for (i in 1:n) {
-    df[, i] <- b(D[i], X[i, ]) * as.vector(rho_hat %*% b(D[i], X[i, ])) - (b(1, X[i, ]) - b(0, X[i,]))
+    df[, i] <- b(D[i], X[i, ]) * as.vector(rho_hat %*% b(D[i], X[i, ])) - (b(1, X[i, ]) - b(0, X[i, ]))
   }
   df <- df^2
   D2 <- rowMeans(df)
@@ -118,7 +118,7 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   # alpha_hat
   ###########
   diff_rho <- 1
-  
+
   while (diff_rho > tol & k <= max_iter) {
     # previous values
     rho_hat_old <- rho_hat + 0

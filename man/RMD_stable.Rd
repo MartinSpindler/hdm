@@ -25,7 +25,8 @@ RMD_stable(
 
 \item{X}{exogenous variables}
 
-\item{p0}{initial value of p. By default, a rule of thumb is applied.}
+\item{p0}{initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
+If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.}
 
 \item{D_LB}{lower bound on D (default 0)}
 

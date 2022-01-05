@@ -41,7 +41,8 @@ Default is TRUE.}
 
 \item{max_iter}{maximum iterations of Lasso (default 10)}
 
-\item{p0}{initial value of p. By default, a rule of thumb is applied.}
+\item{p0}{initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
+If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.}
 }
 \value{
 named list with average treatment effect and standard error
