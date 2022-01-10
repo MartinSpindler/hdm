@@ -30,7 +30,7 @@
 #' @param max_iter maximum iterations of Lasso (default 10)
 #' @param p0 initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
 #' If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.
-#' @return an object of class \code{rlassoAutoDML} with estimated effects,
+#' @return an object of class \code{rlassoATEAutoDML} with estimated effects,
 #' standard errors and individual effects in the form of a \code{list}.
 #' @seealso rlasso
 #' @examples
@@ -45,20 +45,20 @@
 #' b2 <- function(d,z){
 #'   return(c(1,d,z,d*z))
 #' }
-#' lasso.auto <- rlassoAutoDML(X, D, Y, dict = b2)
+#' lasso.auto <- rlassoATEAutoDML(X, D, Y, dict = b2)
 #' summary(lasso.auto)
 #' print(lasso.auto)
 #' confint(lasso.auto)
 #' 
 #' @export
-#' @rdname rlassoAutoDML
-rlassoAutoDML <- function(x, ...) {
-  UseMethod("rlassoAutoDML")
+#' @rdname rlassoATEAutoDML
+rlassoATEAutoDML <- function(x, ...) {
+  UseMethod("rlassoATEAutoDML")
 } # definition of generic method
 
 #' @export
-#' @rdname rlassoAutoDML
-rlassoAutoDML.default <- function(X, D, Y, dict = NULL, D_LB = 0, D_add = 0.2,
+#' @rdname rlassoATEAutoDML
+rlassoATEAutoDML.default <- function(X, D, Y, dict = NULL, D_LB = 0, D_add = 0.2,
                                   debiased = TRUE, L = 5, max_iter = 10, p0 = NULL) {
   
   if (is.null(dict)) {
@@ -135,30 +135,30 @@ rlassoAutoDML.default <- function(X, D, Y, dict = NULL, D_LB = 0, D_add = 0.2,
     treated = table(D)[[2]],
     untreated = table(D)[[1]])
   
-  class(res) <- "rlassoAutoDML"
+  class(res) <- "rlassoATEAutoDML"
   
   return(res)
 }
 
 
-################# Methods for rlassoAutoDML
+################# Methods for rlassoATEAutoDML
 
-#' Methods for S3 object \code{rlassoAutoDML}
+#' Methods for S3 object \code{rlassoATEAutoDML}
 #'
-#' Objects of class \code{rlassoAutoDML} are constructed by  \code{rlassoAutoDML}.
-#' \code{print.rlassoAutoDML} prints and displays some information about fitted \code{rlassoAutoDML} objects.
-#' \code{summary.rlassoAutoDML} summarizes information of a fitted \code{rlassoAutoDML} object.
-#' \code{confint.rlassoAutoDML} extracts the confidence intervals.
-#' @param object an object of class \code{rlassoAutoDML}
+#' Objects of class \code{rlassoATEAutoDML} are constructed by  \code{rlassoATEAutoDML}.
+#' \code{print.rlassoATEAutoDML} prints and displays some information about fitted \code{rlassoATEAutoDML} objects.
+#' \code{summary.rlassoATEAutoDML} summarizes information of a fitted \code{rlassoATEAutoDML} object.
+#' \code{confint.rlassoATEAutoDML} extracts the confidence intervals.
+#' @param object an object of class \code{rlassoATEAutoDML}
 #' @param digits number of significant digits in printout
 #' @param ... arguments passed to the print function and other methods
 #' @param parm a specification of which parameters are to be given confidence intervals, either a vector of numbers or a vector of names. If missing, all parameters are considered.
 #' @param level confidence level required.
-#' @rdname methods.rlassoAutoDML
-#' @aliases methods.rlassoAutoDML print.rlassoAutoDML summary.rlassoAutoDML
+#' @rdname methods.rlassoATEAutoDML
+#' @aliases methods.rlassoATEAutoDML print.rlassoATEAutoDML summary.rlassoATEAutoDML
 #' @export
 
-print.rlassoAutoDML <- function(object, digits = max(3L, getOption("digits") - 3L),
+print.rlassoATEAutoDML <- function(object, digits = max(3L, getOption("digits") - 3L),
                                 ...) {
   cat("\nCall:\n", paste(deparse(object$call), sep = "\n", collapse = "\n"),
       "\n\n",
@@ -176,9 +176,9 @@ print.rlassoAutoDML <- function(object, digits = max(3L, getOption("digits") - 3
   invisible(object$te)
 }
 
-#' @rdname methods.rlassoAutoDML
+#' @rdname methods.rlassoATEAutoDML
 #' @export
-summary.rlassoAutoDML <- function(object, digits = max(3L, getOption("digits") -
+summary.rlassoATEAutoDML <- function(object, digits = max(3L, getOption("digits") -
                                                          3L), ...) {
   if (length(object$te)) {
     table <- matrix(NA, ncol = 4, nrow = 1)
@@ -203,9 +203,9 @@ summary.rlassoAutoDML <- function(object, digits = max(3L, getOption("digits") -
 }
 
 
-#' @rdname methods.rlassoAutoDML
+#' @rdname methods.rlassoATEAutoDML
 #' @export
-confint.rlassoAutoDML <- function(object, parm, level = 0.95, ...) {
+confint.rlassoATEAutoDML <- function(object, parm, level = 0.95, ...) {
   n <- object$samplesize
   k <- 1
   cf <- object$te
