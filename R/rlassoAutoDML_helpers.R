@@ -24,11 +24,11 @@ psi_tilde <- function(y, d, z, m, rho, gamma, dict, debiased, X.up = NULL, X.dow
       return(m(y, d, z, gamma, dict))
     }
   } else {
-    gamma_dz <- dict(z, 0) %*% gamma
-    gamma_dz_up <- dict(X.up, 0) %*% gamma
-    gamma_dz_down <- dict(X.down, 0) %*% gamma
+    gamma_dz <- z %*% gamma
+    gamma_dz_up <- X.up %*% gamma
+    gamma_dz_down <- X.down %*% gamma
     if (debiased) {
-      alpha_dz = dict(z, 0) %*% rho
+      alpha_dz = z %*% rho
       return((gamma_dz_up - gamma_dz_down)/delta + (alpha_dz - gamma_dz))
     } else if (!debiased) {
       return((gamma_dz_up - gamma_dz_down)/delta)
@@ -41,15 +41,10 @@ default_dict_ATE <- function(d, z) {
   return(c(1, d, z))
 }
 
-default_dict_PD <- function(d, z) {
-  return(d)
-}
-
 get_MNG <- function(Y, D = NULL, X, b, p, X.up = NULL, X.down = NULL, delta = NULL) {
   
-  n <- length(D)
-  
   if (is.null(delta)) {
+    n <- length(D)
     if (is.null(p)) {
       p <- length(b(D[1], X[1, ]))
     }
@@ -70,10 +65,14 @@ get_MNG <- function(Y, D = NULL, X, b, p, X.up = NULL, X.down = NULL, delta = NU
                 G_hat = G_hat, B = B))
     
   } else {
+    n <- nrow(X)
+    if (is.null(p)) {
+      p <- ncol(X)
+    }
     M <- matrix(0, p, n)
     N <- matrix(0, p, n)
     for (i in 1:n){
-      M[,i]=(b(X.up[i,], X[i, ]) - b(X.down[i,], X[i,]))/delta #since m(w,b)=(x.up-x.down)/delta
+      M[,i]=(X.up[i,] - X.down[i,])/delta #since m(w,b)=(x.up-x.down)/delta
       N[,i]=Y[i]*X[i,] #since m2(w,b)=y*x
     }
     M_hat <- rowMeans(M)
@@ -97,7 +96,7 @@ get_D <- function(Y, D = NULL, X, rho_hat, b, p, X.up = NULL, X.down = NULL, del
   } else {
     
     for (i in 1:n){
-      df[,i]=X[i,]*as.vector(rho_hat %*% X[i,])- (b(X.up[i,], X[i, ]) - b(X.down[i,], X[i, ]))/delta
+      df[,i]=X[i,]*as.vector(rho_hat %*% X[i,])- (X.up[i,] - X.down[i,])/delta
     }
   }
   df <- df^2
@@ -138,7 +137,14 @@ RMD_stable <- function(Y, D = NULL, X = NULL, X.up = NULL, X.down = NULL, p, del
   # X0 <- X[, col_indx, drop = FALSE]
   # Alternative II: Based on preliminary screening as in rlasso
   X0 <- X[, 1:p0, drop = FALSE]
-  MNG0 <- get_MNG(Y, D, X0, dict, NULL, X.up, X.down, delta)
+  if (!is.null(delta)) {
+    X0.up <- X.up[, 1:p0, drop = FALSE]
+    X0.down <- X.down[, 1:p0, drop = FALSE]
+  } else {
+    X0.up <- NULL
+    X0.down <- NULL
+  }
+  MNG0 <- get_MNG(Y, D, X0, dict, NULL, X0.up, X0.down, delta)
   M_hat0 <- MNG0$M_hat
   N_hat0 <- MNG0$N_hat
   G_hat0 <- MNG0$G_hat
