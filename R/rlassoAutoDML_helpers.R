@@ -96,7 +96,7 @@ get_D <- function(Y, D = NULL, X, rho_hat, b, p, X.up = NULL, X.down = NULL, del
   } else {
     
     for (i in 1:n){
-      df[,i]=X[i,]*as.vector(rho_hat %*% X[i,])- (X.up[i,] - X.down[i,])/delta
+      df[,i]=X[i,]*as.vector(rho_hat %*% X[i,]) - (X.up[i,] - X.down[i,])/delta
     }
   }
   df <- df^2
@@ -128,7 +128,7 @@ RMD_stable <- function(Y, D = NULL, X = NULL, X.up = NULL, X.down = NULL, p, del
 
   k <- 1
   l <- 0.1
-  n <- length(D)
+  n <- nrow(X)
 
   # low-dimensional moments
   # TODO: Check if order of columns in X really should play a role, in this version they do!
