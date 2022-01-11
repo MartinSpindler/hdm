@@ -1,7 +1,8 @@
 #' Auto DML based on rlasso
 #'
 #' Implements AutoDML based on rigorous lasso learner (\code{rlasso}) as developed
-#' in Chernozhukov et al. (2018b). The algorithm is based on the double ML
+#' in Chernozhukov et al. (2018b). Estimates the average treatment effect (ATE) of a binary treatment variable, \eqn{D} on an outcome variable \eqn{Y} in presence of confounding variables \eqn{X}.
+#' The algorithm is based on the double ML
 #' cross-fitting algorithm. This method was first introduced in Chernozhukov et
 #' al. (2018a) which required manual calculation of the Riesz representer in the
 #' corresponding (IRM) model. In AutoDML (Chernozhukov et al., 2018b), the Riesz
@@ -28,8 +29,6 @@
 #' @param D_add value added to D (default 0.2)
 #' @param L number of folds data is split into (default 5)
 #' @param max_iter maximum iterations of Lasso (default 10)
-#' @param p0 initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
-#' If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.
 #' @return an object of class \code{rlassoATEAutoDML} with estimated effects,
 #' standard errors and individual effects in the form of a \code{list}.
 #' @seealso rlasso
@@ -59,21 +58,15 @@ rlassoATEAutoDML <- function(x, ...) {
 #' @export
 #' @rdname rlassoATEAutoDML
 rlassoATEAutoDML.default <- function(X, D, Y, dict = NULL, D_LB = 0, D_add = 0.2,
-                                  debiased = TRUE, L = 5, max_iter = 10, p0 = NULL) {
+                                  debiased = TRUE, L = 5, max_iter = 10) {
+  
+  # TODO: Asserts for D
   
   if (is.null(dict)) {
-    dict <- default_dict
+    dict <- default_dict_ATE
   }
   
   p <- length(dict(D[1], X[1, ]))
-  
-  if (is.null(p0)) {
-    p0 <- ceiling(p / 4)
-    if (p > 60) {
-      p0 <- ceiling(p / 40)
-    }
-  }
-  
   n <- nrow(X)
   folds <- split(sample(n, n, replace = FALSE), as.factor(1:L))
   
@@ -93,7 +86,7 @@ rlassoATEAutoDML.default <- function(X, D, Y, dict = NULL, D_LB = 0, D_add = 0.2
     n.nl <- length(T.nl)
     
     # get stage 1 (on nl)
-    rho_hat <- RMD_stable(Y.nl, T.nl, X.nl, p0, D_LB, D_add, max_iter, dict)
+    rho_hat <- RMD_stable(Y.nl, T.nl, X.nl, NULL, NULL, p, NULL, D_LB, D_add, max_iter, dict)
     
     n <- nrow(X.nl)
     p <- length(dict(T.nl[1], X.nl[1, ]))

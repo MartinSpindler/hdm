@@ -16,8 +16,7 @@ rlassoATEAutoDML(x, ...)
   D_add = 0.2,
   debiased = TRUE,
   L = 5,
-  max_iter = 10,
-  p0 = NULL
+  max_iter = 10
 )
 }
 \arguments{
@@ -40,9 +39,6 @@ Default is TRUE.}
 \item{L}{number of folds data is split into (default 5)}
 
 \item{max_iter}{maximum iterations of Lasso (default 10)}
-
-\item{p0}{initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
-If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.}
 }
 \value{
 an object of class \code{rlassoATEAutoDML} with estimated effects,
@@ -50,7 +46,8 @@ standard errors and individual effects in the form of a \code{list}.
 }
 \description{
 Implements AutoDML based on rigorous lasso learner (\code{rlasso}) as developed
-in Chernozhukov et al. (2018b). The algorithm is based on the double ML
+in Chernozhukov et al. (2018b). Estimates the average treatment effect (ATE) of a binary treatment variable, \eqn{D} on an outcome variable \eqn{Y} in presence of confounding variables \eqn{X}.
+The algorithm is based on the double ML
 cross-fitting algorithm. This method was first introduced in Chernozhukov et
 al. (2018a) which required manual calculation of the Riesz representer in the
 corresponding (IRM) model. In AutoDML (Chernozhukov et al., 2018b), the Riesz

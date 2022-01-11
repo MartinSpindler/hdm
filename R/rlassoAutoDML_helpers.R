@@ -9,58 +9,99 @@ m <- function(y, d, z, gamma, dict) { # all data arguments to make interchangeab
   return(gamma_1z - gamma_0z)
 }
 
+
 m2 <- function(y, d, z, gamma) {
   return(y * gamma(d, z))
 }
 
-psi_tilde <- function(y, d, z, m, rho, gamma, dict, debiased) {
-  gamma_dz <- dict(d, z) %*% gamma
-
-  if (debiased) {
-    alpha_dz <- dict(d, z) %*% rho
-    return(m(y, d, z, gamma, dict) + alpha_dz * (y - gamma_dz))
-  } else if (!debiased) {
-    return(m(y, d, z, gamma, dict))
+psi_tilde <- function(y, d, z, m, rho, gamma, dict, debiased, X.up = NULL, X.down = NULL, delta = NULL) {
+  if (is.null(delta)) {
+    gamma_dz <- dict(d, z) %*% gamma
+    if (debiased) {
+      alpha_dz <- dict(d, z) %*% rho
+      return(m(y, d, z, gamma, dict) + alpha_dz * (y - gamma_dz))
+    } else if (!debiased) {
+      return(m(y, d, z, gamma, dict))
+    }
+  } else {
+    gamma_dz <- dict(z, 0) %*% gamma
+    gamma_dz_up <- dict(X.up, 0) %*% gamma
+    gamma_dz_down <- dict(X.down, 0) %*% gamma
+    if (debiased) {
+      alpha_dz = dict(z, 0) %*% rho
+      return((gamma_dz_up - gamma_dz_down)/delta + (alpha_dz - gamma_dz))
+    } else if (!debiased) {
+      return((gamma_dz_up - gamma_dz_down)/delta)
+    }
   }
 }
 
-default_dict <- function(d, z) {
+
+default_dict_ATE <- function(d, z) {
   return(c(1, d, z))
 }
 
-get_MNG <- function(Y, D, X, b) {
-  p <- length(b(D[1], X[1, ]))
-  n.nl <- length(D)
+default_dict_PD <- function(d, z) {
+  return(d)
+}
 
-  B <- matrix(0, n.nl, p)
-  M <- matrix(0, p, n.nl)
-  N <- matrix(0, p, n.nl)
-
-  for (i in 1:n.nl) {
-    B[i, ] <- b(D[i], X[i, ])
-    M[, i] <- b(1, X[i, ]) - b(0, X[i, ])
-    N[, i] <- m2(Y[i], D[i], X[i, ], b) # this is a more general formulation for N
+get_MNG <- function(Y, D = NULL, X, b, p, X.up = NULL, X.down = NULL, delta = NULL) {
+  
+  n <- length(D)
+  
+  if (is.null(delta)) {
+    if (is.null(p)) {
+      p <- length(b(D[1], X[1, ]))
+    }
+    M <- matrix(0, p, n)
+    N <- matrix(0, p, n)
+    B <- matrix(0, n, p)
+    
+    for (i in 1:n) {
+      B[i, ] <- b(D[i], X[i, ])
+      M[, i] <- b(1, X[i, ]) - b(0, X[i, ])
+      N[, i] <- m2(Y[i], D[i], X[i, ], b) # this is a more general formulation for N
+    }
+    M_hat <- rowMeans(M)
+    N_hat <- rowMeans(N)
+    G_hat <- t(B) %*% B / n
+    
+    return(list(M_hat = M_hat, N_hat = N_hat,
+                G_hat = G_hat, B = B))
+    
+  } else {
+    M <- matrix(0, p, n)
+    N <- matrix(0, p, n)
+    for (i in 1:n){
+      M[,i]=(b(X.up[i,], X[i, ]) - b(X.down[i,], X[i,]))/delta #since m(w,b)=(x.up-x.down)/delta
+      N[,i]=Y[i]*X[i,] #since m2(w,b)=y*x
+    }
+    M_hat <- rowMeans(M)
+    N_hat <- rowMeans(N)
+    G_hat = t(X) %*% X/n
+    
+    return(list(M_hat = M_hat, N_hat = N_hat, G_hat = G_hat))
   }
-
-  M_hat <- rowMeans(M)
-  N_hat <- rowMeans(N)
-  G_hat <- t(B) %*% B / n.nl
-
-  return(list(M_hat, N_hat, G_hat, B))
 }
 
 
-get_D <- function(Y, D, X, rho_hat, b) {
+get_D <- function(Y, D = NULL, X, rho_hat, b, p, X.up = NULL, X.down = NULL, delta = NULL) {
   n <- nrow(X)
-  p <- length(b(D[1], X[1, ]))
-
   df <- matrix(0, p, n)
-  for (i in 1:n) {
-    df[, i] <- b(D[i], X[i, ]) * as.vector(rho_hat %*% b(D[i], X[i, ])) - (b(1, X[i, ]) - b(0, X[i, ]))
+  
+  if (is.null(delta)) {
+    
+    for (i in 1:n) {
+      df[, i] <- b(D[i], X[i, ]) * as.vector(rho_hat %*% b(D[i], X[i, ])) - (b(1, X[i, ]) - b(0, X[i, ]))
+    }
+  } else {
+    
+    for (i in 1:n){
+      df[,i]=X[i,]*as.vector(rho_hat %*% X[i,])- (b(X.up[i,], X[i, ]) - b(X.down[i,], X[i, ]))/delta
+    }
   }
   df <- df^2
   D2 <- rowMeans(df)
-
   D <- sqrt(D2)
   return(D) # pass around D as vector
 }
@@ -69,22 +110,25 @@ get_D <- function(Y, D, X, rho_hat, b) {
 #'
 #' Implements estimation of the Riesz representer \eqn{\alpha}.
 #'
-#' @inheritParams rlassoAutoDML
+#' @inheritParams rlassoATEAutoDML
+#' @param p0 initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
+#' If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.
 #' @param c parameter to tune lambda (default 0.5)
 #' @param gamma parameter to tune lambda (default 0.1)
 #' @param tol minimum improvement to continue looping (default 1e-6)
 #'
 #' @export
-RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NULL, c = 0.5, gamma = 0.1, tol = 1e-6) {
+RMD_stable <- function(Y, D = NULL, X = NULL, X.up = NULL, X.down = NULL, p, delta = NULL, D_LB = 0, D_add = 0.2, max_iter = 10, dict = NULL, p0 = NULL, c = 0.5, gamma = 0.1, tol = 1e-6) {
 
-  if (is.null(b)) {
-    b <- default_dict
+  if (is.null(p0)) {
+    p0 <- ceiling(p / 4)
+    if (p > 60) {
+      p0 <- ceiling(p / 40)
+    }
   }
 
   k <- 1
   l <- 0.1
-
-  p <- length(b(D[1], X[1, ]))
   n <- length(D)
 
   # low-dimensional moments
@@ -94,10 +138,10 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   # X0 <- X[, col_indx, drop = FALSE]
   # Alternative II: Based on preliminary screening as in rlasso
   X0 <- X[, 1:p0, drop = FALSE]
-  MNG0 <- get_MNG(Y, D, X0, b)
-  M_hat0 <- MNG0[[1]]
-  N_hat0 <- MNG0[[2]]
-  G_hat0 <- MNG0[[3]]
+  MNG0 <- get_MNG(Y, D, X0, dict, NULL, X.up, X.down, delta)
+  M_hat0 <- MNG0$M_hat
+  N_hat0 <- MNG0$N_hat
+  G_hat0 <- MNG0$G_hat
 
   # initial estimate
   rho_hat0 <- solve(G_hat0, M_hat0)
@@ -106,10 +150,10 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
   beta_hat <- c(beta_hat0, rep(0, p - ncol(G_hat0)))
 
   # moments
-  MNG <- get_MNG(Y, D, X, b)
-  M_hat <- MNG[[1]]
-  N_hat <- MNG[[2]]
-  G_hat <- MNG[[3]]
+  MNG <- get_MNG(Y, D, X, dict, p, X.up, X.down, delta)
+  M_hat <- MNG$M_hat
+  N_hat <- MNG$N_hat
+  G_hat <- MNG$G_hat
 
   # penalty
   lambda <- c * qnorm(1 - gamma / (2 * p)) / sqrt(n) # snippet
@@ -124,7 +168,7 @@ RMD_stable <- function(Y, D, X, p0, D_LB = 0, D_add = 0.2, max_iter = 10, b = NU
     rho_hat_old <- rho_hat + 0
 
     # normalization
-    D_hat_rho <- get_D(Y, D, X, rho_hat_old, b)
+    D_hat_rho <- get_D(Y, D, X, rho_hat_old, dict, p, X.up, X.down, delta)
     D_hat_rho <- pmax(D_LB, D_hat_rho)
     D_hat_rho <- D_hat_rho + D_add
 
