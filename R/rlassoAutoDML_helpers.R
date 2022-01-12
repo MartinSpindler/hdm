@@ -29,7 +29,7 @@ psi_tilde <- function(y, d, z, m, rho, gamma, dict, debiased, X.up = NULL, X.dow
     gamma_dz_down <- X.down %*% gamma
     if (debiased) {
       alpha_dz = z %*% rho
-      return((gamma_dz_up - gamma_dz_down)/delta + (alpha_dz - gamma_dz))
+      return((gamma_dz_up - gamma_dz_down)/delta + alpha_dz * (y - gamma_dz))
     } else if (!debiased) {
       return((gamma_dz_up - gamma_dz_down)/delta)
     }
