@@ -140,22 +140,22 @@ p_adjust.lm = function(x, method = "RW", B = 1000, test.index = NULL, ...) {
   checkmate::checkChoice(method, c("RW", stats::p.adjust.methods))
   checkmate::assert(checkmate::checkNull(test.index), checkmate::checkLogical(test.index), checkmate::checkNumeric(test.index), checkmate::checkCharacter(test.index))
 
-  cf = coef(x)
-  pnames = names(cf)
+  cf <- summary(x)$coefficients[, "Estimate"]
+  pnames <- names(cf)
 
   if (is.null(test.index)) {
-    k <- length(coef(x))
+    k <- length(cf)
     index <- c(1:k)
   } else {
     if (is.logical(test.index)) {
       k <- sum(test.index)
-      stopifnot(length(test.index) == length(coef(x)))
+      stopifnot(length(test.index) == length(cf))
       index <- which(test.index == T)
     } else {
 
       if (is.numeric(test.index)) {
         index <- as.integer(test.index)
-        stopifnot(all(test.index <= length(coef(x))) && length(test.index) <= length(coef(x)))
+        stopifnot(all(test.index <= length(cf)) && length(test.index) <= length(cf))
         k <- length(test.index)
       }
 
