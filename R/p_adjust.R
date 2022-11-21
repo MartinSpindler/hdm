@@ -174,7 +174,7 @@ p_adjust.lm = function(x, method = "RW", B = 1000, test.index = NULL, ...) {
   if (method == "RW") {
     tstats <- summary(x)$coefficients[index, c("t value")]
     pinit <- corr.padj <- pval <- vector(mode = "numeric", length = k)
-    Omegahat <- vcov(x)[index, index]
+    Omegahat <- vcov(x, complete = FALSE)[index, index]
     se <- sqrt(diag(Omegahat))
     Beta_i <- matrix(NA, ncol = k, nrow = B)
 
