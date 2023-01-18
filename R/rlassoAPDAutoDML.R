@@ -28,7 +28,7 @@
 #' @param D_add value added to D (default 0.2)
 #' @param L number of folds data is split into (default 5)
 #' @param max_iter maximum iterations of Lasso (default 10)
-#' @return an object of class \code{rlassoPDAutoDML} with estimated effects,
+#' @return an object of class \code{rlassoAPDAutoDML} with estimated effects,
 #' standard errors and individual effects in the form of a \code{list}.
 #' @seealso rlasso
 #' @examples
@@ -36,14 +36,14 @@
 # TODO: Add example
 #' 
 #' @export
-#' @rdname rlassoPDAutoDML
-rlassoPDAutoDML <- function(x, ...) {
-  UseMethod("rlassoPDAutoDML")
+#' @rdname rlassoAPDAutoDML
+rlassoAPDAutoDML <- function(x, ...) {
+  UseMethod("rlassoAPDAutoDML")
 } # definition of generic method
 
 #' @export
-#' @rdname rlassoPDAutoDML
-rlassoPDAutoDML.default <- function(X, Y, delta = NULL, X.up = NULL, X.down = NULL, D_LB = 0, D_add = 0.2,
+#' @rdname rlassoAPDAutoDML
+rlassoAPDAutoDML.default <- function(X, Y, delta = NULL, X.up = NULL, X.down = NULL, D_LB = 0, D_add = 0.2,
                                   debiased = TRUE, L = 5, max_iter = 10) {
   
   # TODO: Asserts for X, X.low, and X.up
@@ -105,30 +105,30 @@ rlassoPDAutoDML.default <- function(X, Y, delta = NULL, X.up = NULL, X.down = NU
     call = match.call(),
     samplesize = n)
   
-  class(res) <- "rlassoPDAutoDML"
+  class(res) <- "rlassoAPDAutoDML"
   
   return(res)
 }
 
 
-################# Methods for rlassoPDAutoDML
+################# Methods for rlassoAPDAutoDML
 
-#' Methods for S3 object \code{rlassoPDAutoDML}
+#' Methods for S3 object \code{rlassoAPDAutoDML}
 #'
-#' Objects of class \code{rlassoPDAutoDML} are constructed by  \code{rlassoPDAutoDML}.
-#' \code{print.rlassoPDAutoDML} prints and displays some information about fitted \code{rlassoPDAutoDML} objects.
-#' \code{summary.rlassoPDAutoDML} summarizes information of a fitted \code{rlassoPDAutoDML} object.
-#' \code{confint.rlassoPDAutoDML} extracts the confidence intervals.
-#' @param object an object of class \code{rlassoPDAutoDML}
+#' Objects of class \code{rlassoAPDAutoDML} are constructed by  \code{rlassoAPDAutoDML}.
+#' \code{print.rlassoAPDAutoDML} prints and displays some information about fitted \code{rlassoAPDAutoDML} objects.
+#' \code{summary.rlassoAPDAutoDML} summarizes information of a fitted \code{rlassoAPDAutoDML} object.
+#' \code{confint.rlassoAPDAutoDML} extracts the confidence intervals.
+#' @param object an object of class \code{rlassoAPDAutoDML}
 #' @param digits number of significant digits in printout
 #' @param ... arguments passed to the print function and other methods
 #' @param parm a specification of which parameters are to be given confidence intervals, either a vector of numbers or a vector of names. If missing, all parameters are considered.
 #' @param level confidence level required.
-#' @rdname methods.rlassoPDAutoDML
-#' @aliases methods.rlassoPDAutoDML print.rlassoPDAutoDML summary.rlassoPDAutoDML
+#' @rdname methods.rlassoAPDAutoDML
+#' @aliases methods.rlassoAPDAutoDML print.rlassoAPDAutoDML summary.rlassoAPDAutoDML
 #' @export
 
-print.rlassoPDAutoDML <- function(object, digits = max(3L, getOption("digits") - 3L),
+print.rlassoAPDAutoDML <- function(object, digits = max(3L, getOption("digits") - 3L),
                                 ...) {
   cat("\nCall:\n", paste(deparse(object$call), sep = "\n", collapse = "\n"),
       "\n\n",
@@ -146,9 +146,9 @@ print.rlassoPDAutoDML <- function(object, digits = max(3L, getOption("digits") -
   invisible(object$te)
 }
 
-#' @rdname methods.rlassoPDAutoDML
+#' @rdname methods.rlassoAPDAutoDML
 #' @export
-summary.rlassoPDAutoDML <- function(object, digits = max(3L, getOption("digits") -
+summary.rlassoAPDAutoDML <- function(object, digits = max(3L, getOption("digits") -
                                                          3L), ...) {
   if (length(object$te)) {
     table <- matrix(NA, ncol = 4, nrow = 1)
@@ -173,9 +173,9 @@ summary.rlassoPDAutoDML <- function(object, digits = max(3L, getOption("digits")
 }
 
 
-#' @rdname methods.rlassoPDAutoDML
+#' @rdname methods.rlassoAPDAutoDML
 #' @export
-confint.rlassoPDAutoDML <- function(object, parm, level = 0.95, ...) {
+confint.rlassoAPDAutoDML <- function(object, parm, level = 0.95, ...) {
   n <- object$samplesize
   k <- 1
   cf <- object$te
