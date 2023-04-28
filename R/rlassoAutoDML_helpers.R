@@ -2,102 +2,31 @@ two.norm <- function(x) {
   return(sqrt(x %*% x))
 }
 
-m <- function(y, d, z, gamma, dict) { # all data arguments to make interchangeable with m2
-  gamma_1z <- dict(1, z) %*% gamma
-  gamma_0z <- dict(0, z) %*% gamma
-
-  return(gamma_1z - gamma_0z)
-}
-
-
-m2 <- function(y, d, z, gamma) {
-  return(y * gamma(d, z))
-}
-
-psi_tilde <- function(y, d, z, m, rho, gamma, dict, debiased, X.up = NULL, X.down = NULL, delta = NULL) {
-  if (is.null(delta)) {
-    gamma_dz <- dict(d, z) %*% gamma
-    if (debiased) {
-      alpha_dz <- dict(d, z) %*% rho
-      return(m(y, d, z, gamma, dict) + alpha_dz * (y - gamma_dz))
-    } else if (!debiased) {
-      return(m(y, d, z, gamma, dict))
-    }
-  } else {
-    gamma_dz <- z %*% gamma
-    gamma_dz_up <- X.up %*% gamma
-    gamma_dz_down <- X.down %*% gamma
-    if (debiased) {
-      alpha_dz = z %*% rho
-      return((gamma_dz_up - gamma_dz_down)/delta + alpha_dz * (y - gamma_dz))
-    } else if (!debiased) {
-      return((gamma_dz_up - gamma_dz_down)/delta)
-    }
+psi_tilde <- function(y, x, m, rho, gamma, debiased) {
+  # stage 2
+  # fit alpha
+  alpha_fit <- x %*% rho
+  # fit/predict gamma
+  gamma_fit <- x %*% gamma
+  # fit derivative of gamma
+  m_fit <- m %*% gamma
+  if (debiased) {
+    return(m_fit + alpha_fit * (y - gamma_fit))
+  } else if (!debiased) {
+    return(m_fit)
   }
 }
-
 
 default_dict_ATE <- function(d, z) {
   return(c(1, d, z))
 }
 
-get_MNG <- function(Y, D = NULL, X, b, p, X.up = NULL, X.down = NULL, delta = NULL) {
-  
-  if (is.null(delta)) {
-    n <- length(D)
-    if (is.null(p)) {
-      p <- length(b(D[1], X[1, ]))
-    }
-    M <- matrix(0, p, n)
-    N <- matrix(0, p, n)
-    B <- matrix(0, n, p)
-    
-    for (i in 1:n) {
-      B[i, ] <- b(D[i], X[i, ])
-      M[, i] <- b(1, X[i, ]) - b(0, X[i, ])
-      N[, i] <- m2(Y[i], D[i], X[i, ], b) # this is a more general formulation for N
-    }
-    M_hat <- rowMeans(M)
-    N_hat <- rowMeans(N)
-    G_hat <- t(B) %*% B / n
-    
-    return(list(M_hat = M_hat, N_hat = N_hat,
-                G_hat = G_hat, B = B))
-    
-  } else {
-    n <- nrow(X)
-    if (is.null(p)) {
-      p <- ncol(X)
-    }
-    M <- matrix(0, p, n)
-    N <- matrix(0, p, n)
-    for (i in 1:n){
-      M[,i]=(X.up[i,] - X.down[i,])/delta #since m(w,b)=(x.up-x.down)/delta
-      N[,i]=Y[i]*X[i,] #since m2(w,b)=y*x
-    }
-    M_hat <- rowMeans(M)
-    N_hat <- rowMeans(N)
-    G_hat = t(X) %*% X/n
-    
-    return(list(M_hat = M_hat, N_hat = N_hat, G_hat = G_hat))
-  }
-}
-
-
-get_D <- function(Y, D = NULL, X, rho_hat, b, p, X.up = NULL, X.down = NULL, delta = NULL) {
+get_D <- function(Y, X, M, rho_hat, p) {
   n <- nrow(X)
   df <- matrix(0, p, n)
   
-  if (is.null(delta)) {
-    
-    for (i in 1:n) {
-      df[, i] <- b(D[i], X[i, ]) * as.vector(rho_hat %*% b(D[i], X[i, ])) - (b(1, X[i, ]) - b(0, X[i, ]))
-    }
-  } else {
-    
-    for (i in 1:n){
-      df[,i]=X[i,]*as.vector(rho_hat %*% X[i,]) - (X.up[i,] - X.down[i,])/delta
-    }
+  for (i in 1:n){
+    df[,i] = as.numeric(X[i,]*as.vector(rho_hat %*% X[i,]) - M[i,])
   }
   df <- df^2
   D2 <- rowMeans(df)
@@ -109,58 +38,35 @@ get_D <- function(Y, D = NULL, X, rho_hat, b, p, X.up = NULL, X.down = NULL, del
 #'
 #' Implements estimation of the Riesz representer \eqn{\alpha}.
 #'
-#' @inheritParams rlassoATEAutoDML
-#' @param p0 initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
-#' If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.
+#' TODO: Finalize documentation
+#' @inheritParams rlassoAutoDML
 #' @param c parameter to tune lambda (default 0.5)
 #' @param gamma parameter to tune lambda (default 0.1)
 #' @param tol minimum improvement to continue looping (default 1e-6)
 #'
 #' @export
-RMD_stable <- function(Y, D = NULL, X = NULL, X.up = NULL, X.down = NULL, p, delta = NULL, D_LB = 0, D_add = 0.2, max_iter = 10, dict = NULL, p0 = NULL, c = 0.5, gamma = 0.1, tol = 1e-6) {
+RMD_stable <- function(Y, X, M, p, D_LB = 0, D_add = 0.2,
+                       max_iter = 10, c = 0.5,
+                       gamma = 0.1, tol = 1e-6, prelim_quantities = NULL) {
 
-  if (is.null(p0)) {
-    p0 <- ceiling(p / 4)
-    if (p > 60) {
-      p0 <- ceiling(p / 40)
-    }
-  }
-
-  k <- 1
-  l <- 0.1
+  rho_hat <- rep(0, p)
   n <- nrow(X)
-
-  # low-dimensional moments
-  # TODO: Check if order of columns in X really should play a role, in this version they do!
-  # Alternative I: Random choice
-  # col_indx <- sample(p, size = p0, replace = FALSE)
-  # X0 <- X[, col_indx, drop = FALSE]
-  # Alternative II: Based on preliminary screening as in rlasso
-  X0 <- X[, 1:p0, drop = FALSE]
-  if (!is.null(delta)) {
-    X0.up <- X.up[, 1:p0, drop = FALSE]
-    X0.down <- X.down[, 1:p0, drop = FALSE]
-  } else {
-    X0.up <- NULL
-    X0.down <- NULL
+  
+  if (!is.null(prelim_quantities)) {
+    M_prelim <- prelim_quantities$M_prelim
+    X_prelim <- prelim_quantities$X_prelim
+    M_hat_prelim <- colMeans(M_prelim)
+    G_hat_prelim <- t(X_prelim)%*%X_prelim/nrow(X_prelim)
+    
+    # initial estimate
+    rho_hat_prelim <- solve(G_hat_prelim, M_hat_prelim)
+    rho_hat[1:prelim_quantities$p_prelim_out] <- rho_hat_prelim
   }
-  MNG0 <- get_MNG(Y, D, X0, dict, NULL, X0.up, X0.down, delta)
-  M_hat0 <- MNG0$M_hat
-  N_hat0 <- MNG0$N_hat
-  G_hat0 <- MNG0$G_hat
-
-  # initial estimate
-  rho_hat0 <- solve(G_hat0, M_hat0)
-  rho_hat <- c(rho_hat0, rep(0, p - ncol(G_hat0)))
-  beta_hat0 <- solve(G_hat0, N_hat0)
-  beta_hat <- c(beta_hat0, rep(0, p - ncol(G_hat0)))
-
+  
   # moments
-  MNG <- get_MNG(Y, D, X, dict, p, X.up, X.down, delta)
-  M_hat <- MNG$M_hat
-  N_hat <- MNG$N_hat
-  G_hat <- MNG$G_hat
-
+  M_hat <- colMeans(M)
+  G_hat <- t(X) %*% X/n
+  
   # penalty
   lambda <- c * qnorm(1 - gamma / (2 * p)) / sqrt(n) # snippet
 
@@ -168,24 +74,50 @@ RMD_stable <- function(Y, D = NULL, X = NULL, X.up = NULL, X.down = NULL, p, del
   # alpha_hat
   ###########
   diff_rho <- 1
+  k <- 1
+  l <- 0.1
 
   while (diff_rho > tol & k <= max_iter) {
     # previous values
-    rho_hat_old <- rho_hat + 0
+    rho_hat_old <- rho_hat
 
     # normalization
-    D_hat_rho <- get_D(Y, D, X, rho_hat_old, dict, p, X.up, X.down, delta)
+    D_hat_rho <- get_D(Y, X, M, rho_hat_old, p)
     D_hat_rho <- pmax(D_LB, D_hat_rho)
     D_hat_rho <- D_hat_rho + D_add
 
     L <- c(l, rep(1, p - 1)) # dictionary is ordered (constant,...)
     lambda_vec <- lambda * L * D_hat_rho # v3: insert D here
-    rho_hat <- LassoShooting.fit(G_hat, M_hat, lambda_vec, XX = -G_hat / 2, Xy = -M_hat / 2, beta.start = rep(0, p))$coefficients
+    rho_hat <- LassoShooting.fit(G_hat, M_hat, lambda_vec, XX = -G_hat/2,
+                                 Xy = -M_hat/2, beta.start = rep(0, p))$coefficients
     # difference
     diff_rho <- two.norm(rho_hat - rho_hat_old)
     k <- k + 1
-
   }
 
   return(rho_hat)
 }
+
+RMD_opt <- function(Y, X, M, p, c = 0.5,
+                        gamma = 0.1, prelim_quantities = NULL) {
+  n <- nrow(X)
+  # moments
+  M_hat <- colMeans(M)
+  G_hat <- t(X) %*% X/n
+  
+  # penalty
+  lambda <- c * qnorm(1 - gamma / (2 * p)) / sqrt(n) # snippet
+  # optimization setup 
+  rho <- Variable(p)
+  D_guess <- rep(1, p)
+  np_L1 <- function(M_hat, G_hat, rho){
+    -2*t(rho)%*%M_hat + CVXR::quad_form(rho, G_hat) #PSDWRAP(G_hat)
+  }
+  problem <- Problem(Minimize(np_L1(M_hat, G_hat, rho) + 
+                                2*lambda*CVXR::norm1(CVXR::multiply(D_guess,rho))))
+  
+  result <- CVXR::solve(problem)
+  rho_hat <- as.vector(result$getValue(rho))
+  return(rho_hat)
+}
+
