@@ -24,7 +24,8 @@ Imports:
     ggplot2,
     checkmate,
     Formula,
-    methods
+    methods,
+    data.table
 Suggests:
     testthat,
     knitr,
@@ -32,4 +33,4 @@ Suggests:
     mvtnorm,
     DoubleML
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
