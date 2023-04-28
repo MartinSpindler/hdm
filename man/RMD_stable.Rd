@@ -23,7 +23,7 @@ RMD_stable(
 
 \item{D_add}{value added to D (default 0.2)}
 
-\item{max_iter}{maximum iterations of Lasso (default 10)}
+\item{max_iter}{maximum iterations of Lasso for debiasing (default 10)}
 
 \item{c}{parameter to tune lambda (default 0.5)}
 

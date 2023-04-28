@@ -20,7 +20,8 @@ rlassoAutoDML(x, ...)
 )
 }
 \arguments{
-\item{data}{Backend with preprocessed data for estimation of ATE or APD.}
+\item{data}{Backend with preprocessed data for estimation of 
+ATE (output of function DataATEAutoDML) or APD (output of DataAPDAutoDML function).}
 
 \item{D_LB}{lower bound on D (default 0)}
 
@@ -31,43 +32,36 @@ Default is TRUE.}
 
 \item{L}{number of folds data is split into (default 5)}
 
-\item{max_iter}{maximum iterations of Lasso (default 10)}
+\item{max_iter}{maximum iterations of Lasso for debiasing (default 10)}
 
-\item{est_type}{specifying the type of estimator, must either be "APD" for average partial derivative or "ATE" for average treatment effect.}
+\item{est_type}{specifying the type of estimator, must either be "APD" 
+for average partial derivative or "ATE" for average treatment effect.}
 }
 \value{
 an object of class \code{rlassoAutoDML} with estimated effects,
 standard errors and individual effects in the form of a \code{list}.
 }
 \description{
-Implements AutoDML based on rigorous lasso learner (\code{rlasso}) as developed
-in Chernozhukov et al. (2018b). Estimates the average treatment effect (ATE) of a binary treatment variable, \eqn{D} on an outcome variable \eqn{Y} in presence of confounding variables \eqn{X} or the average partial derivative (APD) of a continuous treatment variable, \eqn{D} on an outcome variable \eqn{Y}.
+Implements AutoDML based onlasso learners (\code{rlasso}) as developed
+in Chernozhukov et al. (2022) and Klosin and Vilgalys (2022).
+Estimates the average treatment effect (ATE)
+of a binary treatment variable, \eqn{D} on an outcome variable \eqn{Y} in presence of confounding variables \eqn{X} or the average partial derivative (APD) of a continuous treatment variable, \eqn{D} on an outcome variable \eqn{Y}.
 The algorithm is based on the double ML
 cross-fitting algorithm. This method was first introduced in Chernozhukov et
-al. (2018a) which required manual calculation of the Riesz representer in the
-corresponding (IRM) model. In AutoDML (Chernozhukov et al., 2018b), the Riesz
+al. (2018) which required manual calculation of the Riesz representer in the
+corresponding (IRM) model. In AutoDML (Chernozhukov 2022), the Riesz
 representer is estimated automatically and doesn't need to be explicitly
 computed.
 }
-\details{
-TODO Finish Docu
-}
 \examples{
 library(hdm)
-library(DoubleML)
-data <- make_irm_data(theta = 2, return_type = "matrix")
-Y <- data$y
-D <- data$d
-X <- data$X
-
-# Define a dictionary
-b2 <- function(d,z){
-  return(c(1,d,z,d*z))
-}
-lasso.auto <- rlassoAutoDML(X, D, Y, dict = b2, type = "ATE")
-summary(lasso.auto)
-print(lasso.auto)
-confint(lasso.auto)
+data <- DGP_contD(N, 20)
+Xnames = colnames(data)[grep("X", colnames(data))]
+backend_contD = DataAPDAutoDML(x = Xnames, d = "D", y = "y", data = data,
+                              poly = 3, interactions = TRUE,
+                              intercept = "intercept")
+auto_apd = rlassoAutoDML(backend_contD, est_type = "APD", debiased = TRUE)
+auto_apd$te
 
 }
 \references{
@@ -76,9 +70,13 @@ Hansen, C., Newey, W. and Robins, J. (2018a), Double/debiased machine learning
 for treatment and structural parameters.
 The Econometrics Journal, 21: C1-C68. \doi{10.1111/ectj.12097}.
 
-Chernozhukov, V., Newey, W.K., and Singh, R. (2018b), Automatic
-Debiased Machine Learning of Causal and Structural Effects. arXiv preprint
-arXiv:1809.05224 (2018).
+Chernozhukov, V., Newey, W.K., and Singh, R. (2022), Automatic
+Debiased Machine Learning of Causal and Structural Effects.
+Econometrica, 90.3: 967-1027
+
+Klosin, S., Vilgalys, M. (2022), Estimating Continuous
+Treatment Effects in Panel Data using Machine Learning with an Agricultural
+Application. arXiv preprint arXiv:2207.08789 (2022).
 }
 \seealso{
 rlasso

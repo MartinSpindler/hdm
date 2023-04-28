@@ -12,13 +12,15 @@ DataAPDAutoDML(
   data,
   poly_order = 3,
   interactions = TRUE,
-  intercept = NULL
+  intercept = NULL,
+  unit = NULL,
+  time = NULL
 )
 }
 \arguments{
 \item{x}{\code{character} specifying exogenous variables}
 
-\item{d}{\code{character} specifying treatment variable (continous)}
+\item{d}{\code{character} specifying treatment variable (continuous)}
 
 \item{y}{\code{character} specifying outcome variable / dependent variable.}
 
@@ -32,6 +34,10 @@ DataAPDAutoDML(
 function of (d,x) that maps to a vector. Default is \code{dict <- function(d, x) return(c(1, d, x, d*x))}.}
 
 \item{intercept}{\code{character} specifying the intercept (must be included in \code{x_manual})}
+
+\item{unit}{\code{character} specifying unit variable of data in panel context, if not panel data omit (default NULL)}
+
+\item{time}{\code{character} specifying time variable of data in panel context, if not panel data omit (default NULL)}
 }
 \value{
 an object of class \code{DataAPDAutoDML} with the following entries
@@ -42,5 +48,9 @@ an object of class \code{DataAPDAutoDML} with the following entries
   }
 }
 \description{
-Data backend for auto-debiased estimation of average partial derivatives (continuous treatment variable). Implements the preprocessing steps required for auto-debiased estimation of the APD.
+Data backend for auto-debiased estimation of average partial derivatives 
+(continuous treatment variable). Implements the preprocessing steps required 
+for auto-debiased estimation of the APD. If interested in using panel data, 
+user must also enter "unit" and "time" variables as well. If using cross section
+these fields can be left empty.
 }

@@ -5,8 +5,8 @@
 \title{Function for Calculation of the penalty parameter}
 \usage{
 lambdaCalculation(
-  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
-    NULL, c = 1.1, gamma = 0.1),
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL,
+    c = 1.1, gamma = 0.1),
   y = NULL,
   x = NULL
 )

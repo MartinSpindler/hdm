@@ -16,8 +16,8 @@ rlasso(x, ...)
   post = TRUE,
   intercept = TRUE,
   model = TRUE,
-  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
-    NULL, c = 1.1, gamma = 0.1/log(n)),
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL,
+    c = 1.1, gamma = 0.1/log(n)),
   control = list(numIter = 15, tol = 10^-5, threshold = NULL),
   ...
 )
@@ -28,8 +28,8 @@ rlasso(x, ...)
   post = TRUE,
   intercept = TRUE,
   model = TRUE,
-  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
-    NULL, c = 1.1, gamma = 0.1/log(n)),
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL,
+    c = 1.1, gamma = 0.1/log(n)),
   control = list(numIter = 15, tol = 10^-5, threshold = NULL),
   ...
 )
@@ -40,8 +40,8 @@ rlasso(x, ...)
   post = TRUE,
   intercept = TRUE,
   model = TRUE,
-  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
-    NULL, c = 1.1, gamma = 0.1/log(n)),
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL,
+    c = 1.1, gamma = 0.1/log(n)),
   control = list(numIter = 15, tol = 10^-5, threshold = NULL),
   ...
 )
