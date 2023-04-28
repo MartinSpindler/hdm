@@ -6,40 +6,24 @@
 \usage{
 RMD_stable(
   Y,
-  D = NULL,
-  X = NULL,
-  X.up = NULL,
-  X.down = NULL,
+  X,
+  M,
   p,
-  delta = NULL,
   D_LB = 0,
   D_add = 0.2,
   max_iter = 10,
-  dict = NULL,
-  p0 = NULL,
   c = 0.5,
   gamma = 0.1,
-  tol = 1e-06
+  tol = 1e-06,
+  prelim_quantities = NULL
 )
 }
 \arguments{
-\item{Y}{outcome variable / dependent variable}
-
-\item{D}{treatment variable (binary)}
-
-\item{X}{exogenous variables}
-
 \item{D_LB}{lower bound on D (default 0)}
 
 \item{D_add}{value added to D (default 0.2)}
 
 \item{max_iter}{maximum iterations of Lasso (default 10)}
-
-\item{dict}{a dictionary
-function of (d,z) that maps to a vector. Default is (1,d,z)}
-
-\item{p0}{initial dimension used in preliminary estimation step. By default, a rule of thumb is applied:
-If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.}
 
 \item{c}{parameter to tune lambda (default 0.5)}
 
@@ -49,4 +33,7 @@ If \eqn{p \le 60}, p0 = p/4, else p0 = p/40.}
 }
 \description{
 Implements estimation of the Riesz representer \eqn{\alpha}.
+}
+\details{
+TODO: Finalize documentation
 }
