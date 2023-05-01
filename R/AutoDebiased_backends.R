@@ -228,7 +228,7 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
     ## add back unit and time 
     data_prep$unit <- data[[unit]]
     data_prep$time <- data[[time]]
-    all_vars <- c(cols_to_scale, "y")
+    all_vars <- c(cols_to_scale, y)
     data_prep <- data_prep[, (all_vars  ) := lapply(.SD, function(v) {v - shift(v)}), .(unit), .SDcols = all_vars ]
     first_time_period <- min(data_prep$time)
     idx_first_time_period <- data_prep[time == first_time_period, which = TRUE]
