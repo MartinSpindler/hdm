@@ -35,6 +35,8 @@
 #' @param max_iter maximum iterations of Lasso for debiasing (default 10)
 #' @param est_type specifying the type of estimator, must either be "APD" 
 #' for average partial derivative or "ATE" for average treatment effect.
+#' @param weights weight vector - must be length (N-1)*T - because weight vector
+#' for first differenced data 
 #' @return an object of class \code{rlassoAutoDML} with estimated effects,
 #' standard errors and individual effects in the form of a \code{list}.
 #' @seealso rlasso
@@ -59,7 +61,8 @@ rlassoAutoDML <- function(x, ...) {
 rlassoAutoDML.default <- function(data, D_LB = 0, D_add = 0.2,
                                   debiased = TRUE, L = 5, max_iter = 10,
                                   gamma_learner = "rlasso",
-                                  est_type = NULL, prelim_est = FALSE) {
+                                  est_type = NULL, prelim_est = FALSE, 
+                                  weights = NULL) {
   checkmate::check_subset(est_type, c("ATE", "APD"))
   if (est_type == "ATE") {
     checkmate::check_class(data, "DataATEAutoDML")
@@ -130,7 +133,12 @@ rlassoAutoDML.default <- function(data, D_LB = 0, D_add = 0.2,
   }
   
   # point estimation
-  ate <- mean(Psi_tilde)
+  if(is.null(weights)){
+    ate <- mean(Psi_tilde)
+  }else{
+    ate <- weighted.mean(m_fit, weights)
+    }
+  
   
   # influences
   Psi <- Psi_tilde - ate
