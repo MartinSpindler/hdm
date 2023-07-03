@@ -179,8 +179,23 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
     }
     data_prep[, paste0(new_cols_to_poly) := lapply(.SD, function(x) { x^pol_ord }), .SDcols = dx_names] 
   }
+  # generate interactions between covars x
+  if (interactions) {
+    cols_int_x_x <- paste0("int_", combn(x,2, FUN=paste, collapse='_')) 
+    comb_covars <- combn(x, 2)
+    for (col in 1:length(comb_covars[1,])){
+      col_name_new <- paste0("int_", comb_covars[1, col], "_", 
+                             comb_covars[2, col] )
+      data_prep[[col_name_new]] <- data_prep[[comb_covars[1, col]]]*data_prep[[comb_covars[2, col]]]
+      if(length(unique(data_prep[[col_name_new]])) <= 1){
+        data_prep[[col_name_new]] <- NULL
+      }
+      }
+  }
   
-  x_cols <- unique(c(x_cols, x_bin))
+  cols_int_x_x <- intersect(colnames(data_prep), cols_int_x_x) # vector of final interactions 
+  x_cols <- unique(c(x_cols, x_bin, cols_int_x_x))
+
   
   # generate interactions for d with x
   if (interactions) {
