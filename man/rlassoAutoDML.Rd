@@ -16,7 +16,8 @@ rlassoAutoDML(x, ...)
   max_iter = 10,
   gamma_learner = "rlasso",
   est_type = NULL,
-  prelim_est = FALSE
+  prelim_est = FALSE,
+  weights = NULL
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ Default is TRUE.}
 
 \item{est_type}{specifying the type of estimator, must either be "APD" 
 for average partial derivative or "ATE" for average treatment effect.}
+
+\item{weights}{weight vector - must be length (N-1)*T - because weight vector
+for first differenced data}
 }
 \value{
 an object of class \code{rlassoAutoDML} with estimated effects,
