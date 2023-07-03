@@ -135,16 +135,19 @@ rlassoAutoDML.default <- function(data, D_LB = 0, D_add = 0.2,
   # point estimation
   if(is.null(weights)){
     ate <- mean(Psi_tilde)
+    # influences
+    Psi <- Psi_tilde - ate
+    var <- mean(Psi^2)
+    se <- sqrt(var / n)
   }else{
-    ate <- weighted.mean(m_fit, weights)
+    ate <- weighted.mean(Psi_tilde, weights)
+    Psi <- Psi_tilde - ate
+    var <- weighted.mean(Psi^2, weights)
+    se <- sqrt(var / n)
     }
   
   
-  # influences
-  Psi <- Psi_tilde - ate
-  
-  var <- mean(Psi^2)
-  se <- sqrt(var / n)
+
   
   res <- list(
     se = se,
