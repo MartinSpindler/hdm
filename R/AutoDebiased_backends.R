@@ -190,11 +190,13 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
       if(length(unique(data_prep[[col_name_new]])) <= 1){
         data_prep[[col_name_new]] <- NULL
       }
-      }
+    }
+    cols_int_x_x <- intersect(colnames(data_prep), cols_int_x_x) # vector of final interactions 
+    x_cols <- unique(c(x_cols, x_bin, cols_int_x_x))
+  }else{
+    x_cols <- unique(c(x_cols, x_bin))
   }
   
-  cols_int_x_x <- intersect(colnames(data_prep), cols_int_x_x) # vector of final interactions 
-  x_cols <- unique(c(x_cols, x_bin, cols_int_x_x))
 
   
   # generate interactions for d with x
@@ -222,11 +224,16 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
     M[, (x_manual) := lapply(.SD, function(x) { rep(0, n) }), .SDcols = x_manual]
   }
   
-  # derivative of X interacted with D is just X 
-  for (this_x in x){
-    this_int <- paste0("int_", d, "_", this_x)
-    M[[this_int]] <- data_prep[[this_x]]
+  if (interactions) {
+    # derivative of X interacted with D is just X 
+    for (this_x in x){
+      this_int <- paste0("int_", d, "_", this_x)
+      M[[this_int]] <- data_prep[[this_x]]
+    }
+
   }
+    
+
   
   # Normalize M
   cols_to_scale <- setdiff(cols_with_covars, intercept)
