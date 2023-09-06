@@ -3,21 +3,22 @@
 #' Data backend for auto debiased ATE. Implements the preprocessing steps required for estimation of the ATE using auto debiased ATE.
 #' 
 #' 
-#' @param x character specifying exogenous variables
-#' @param d character specifying treatment variable (binary)
-#' @param y character specifying outcome variable / dependent variable
-#' @param data data frame or data.table
-#' @param dict a dictionary (function)
-#' function of (D,X) with D being a numeric and X a matrix, which returns a numeric vector. Default is \code{dict <- function(d, x) return(c(1, d, x))}. The dictionary will be applied on an individual level, i.e., being executed for each i in 1, ..., n.
+#' @param x \code{character} specifying exogenous variables
+#' @param d \code{character} specifying treatment variable (binary)
+#' @param y \code{character} specifying outcome variable / dependent variable
+#' @param data \code{data.frame} or \code{data.table} containing the raw input data.
+#' @param dict a dictionary (\code{function})
+#' function of (D,X) with D being a numeric and X a matrix, which returns a numeric vector. Default is \code{dict <- function(d, x) return(c(1, d, x))}. The dictionary will be applied on an individual level, i.e., being executed for each i in 1, ..., n with i representing a row in the \code{data}.
 #' @return an object of class \code{DataAutoDebiasedATE} with the following entries
 #' \itemize{
-#'   \item{\code{Y} - }{Y as passed as input}
-#'   \item{X - }{Processed X (dictionary applied to input data)}
-#'   \item{dict - }{dictionary}
-#'   
-#'   \item{"D_is_binary" - }{logical indicating whether the treatment variable is binary}
-#'   \item{"M" - }{Matrix M as of ...}
-#'   \item{"G" - }{Matrix G as of ...}
+#'   \item{\code{data_prep} - A copy of the original \code{data} (containing only variables as provided through \code{x}, \code{d} and \code{y})}
+#'   \item{\code{Y} - Y as passed as input} 
+#'   \item{\code{X} - Processed X (dictionary applied to input data)}
+#'   \item{\code{p} - Number of columns of preprocessed matrix \code{X}}
+#'   \item{\code{M} - Matrix M as of ... TODO }
+#'   \item{\code{X_prelim} - Version of matrix X used for a preliminary estimator}
+#'   \item{\code{M_prelim} - Version of matrix M used for a preliminary estimator}
+#'   \item{\code{p_prelim_out} - Number of columns of preprocessed matrix \code{X_prelim}}
 #' }
 #' 
 #' 
@@ -94,36 +95,34 @@ DataATEAutoDML <- function(x, d, y, data, dict = NULL) {
 #' (continuous treatment variable). Implements the preprocessing steps required 
 #' for auto-debiased estimation of the APD. If interested in using panel data, 
 #' user must also enter "unit" and "time" variables as well. If using cross section
-#' these fields can be left empty. 
+#' these fields can be left empty (\code{NULL}). 
 #' 
 #' 
 #' @param x \code{character} specifying exogenous variables
 #' @param d \code{character} specifying treatment variable (continuous)
 #' @param y \code{character} specifying outcome variable / dependent variable.
 #' @param x_manual \code{character} specifying variables that should manually be added to the model. These variables are excluded from the the internal preprocessing w.r.t. to polynomials and interactions. The corresponding data will be adjusted during derivative calculations. Variables should not include interactions with variable \code{d}.
-#' @param intercept \code{character} specifying the intercept (must be included in \code{x_manual})
 #' @param data \code{data.frame} or \code{data.table} with data set
 #' @param poly_order Polynomial order.
 #' @param interactions \code{logical} specifying whether two-way interactions of \code{x} and \code{d} should be constructed. Default is \code{true}.
-#' function of (d,x) that maps to a vector. Default is \code{dict <- function(d, x) return(c(1, d, x, d*x))}.
-#' @param unit \code{character} specifying unit variable of data in panel context, if not panel data omit (default NULL)
-#' @param time \code{character} specifying time variable of data in panel context, if not panel data omit (default NULL)
+#' @param unit \code{character} specifying unit variable of data in panel context, if not panel data omit (default \code{NULL}).
+#' @param time \code{character} specifying time variable of data in panel context, if not panel data omit (default \code{NULL}).
 #' @return an object of class \code{DataAPDAutoDML} with the following entries
 #' \itemize{
 #'   \item{\code{data_prep} - \code{data.table} object containing the preprocessed data}
-#'   \item{\code{Y} - }{\code{matrix} containing the outcome variable specified in \code{y}}
-#'   \item{\code{X} - }{\code{matrix} containing the variables specified in \code{d} and \code{x}}
-#'   }
+#'   \item{\code{Y} - Y as passed as input} 
+#'   \item{\code{X} - Processed X (dictionary applied to input data)}
+#'   \item{\code{p} - Number of columns of preprocessed matrix \code{X}}
+#'   \item{\code{M} - Matrix M as of ... TODO }
+#' }
 #'   
 #' @export
 DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
-                           interactions = TRUE, intercept = NULL, unit = NULL, 
+                           interactions = TRUE, unit = NULL, 
                            time = NULL) {
   checkmate::check_character(x)
   checkmate::check_character(d, max.len = 1)
   checkmate::check_character(y, max.len = 1)
-  checkmate::check_character(intercept)
-  checkmate::check_subset(intercept, x_manual)
   
   if (!is.null(x_manual)) {
     checkmate::check_character(x_manual)
@@ -135,6 +134,15 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
   checkmate::assert_class(data, "data.table")
   checkmate::assert_character(names(data), unique = TRUE)
   checkmate::check_numeric(poly_order, lower = 2, len = 1)
+  
+  # Check if columns in data have positive variance and drop otherwise
+  const_cols <- names(which(apply(data, 2, function(x) var(x) < 10^(-5))))
+  
+  if (length(const_cols) > 0) {
+    data[, c(const_cols):=NULL]
+    x <- x[x != const_cols ]
+    x_manual <- x_manual[x_manual != const_cols]
+  }
   
   if(!is.null(unit) & !is.null(time)){
     checkmate::check_character(unit, max.len = 1)
@@ -193,11 +201,9 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
     }
     cols_int_x_x <- intersect(colnames(data_prep), cols_int_x_x) # vector of final interactions 
     x_cols <- unique(c(x_cols, x_bin, cols_int_x_x))
-  }else{
+  } else {
     x_cols <- unique(c(x_cols, x_bin))
   }
-  
-
   
   # generate interactions for d with x
   if (interactions) {
@@ -233,16 +239,13 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
 
   }
     
-
-  
   # Normalize M
-  cols_to_scale <- setdiff(cols_with_covars, intercept)
   # save the SD of the X matrix - we use these to normalize the M 
-  basis_sd <- GMCM:::colSds(as.matrix(data_prep[,..cols_to_scale])) 
+  basis_sd <- GMCM:::colSds(as.matrix(data_prep[,..cols_with_covars])) 
   M <- t(t(M)/basis_sd)
   
   # normalize all covars in data_prep
-  data_prep[, (cols_to_scale) := lapply(.SD, function(x) { scale(x) }), .SDcols = cols_to_scale]
+  data_prep[, (cols_with_covars) := lapply(.SD, function(x) { scale(x) }), .SDcols = cols_with_covars]
 
   # if panel data take first difference 
   if(!is.null(unit) & !is.null(time)){
@@ -250,7 +253,7 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
     ## add back unit and time 
     data_prep$unit <- data[[unit]]
     data_prep$time <- data[[time]]
-    all_vars <- c(cols_to_scale, y)
+    all_vars <- c(cols_with_covars, y)
     data_prep <- data_prep[, (all_vars  ) := lapply(.SD, function(v) {v - shift(v)}), .(unit), .SDcols = all_vars ]
     first_time_period <- min(data_prep$time)
     idx_first_time_period <- data_prep[time == first_time_period, which = TRUE]
@@ -258,7 +261,6 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
     # now also remove first time period from M, but we dont first diff M 
     M <- M[-idx_first_time_period,]
   }
-  
   
   # export Y and X as vector & matrix
   Y <- data_prep[[y]]
@@ -273,13 +275,4 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
              "Y" = Y, "X" = X, "p" = p, "n" = n)
   class(obj) <- "DataAPDAutoDML"
   return(obj)
-}
-
-
-DataAPDAutoDML_from_matrix <- function(x, d, y, data, poly = 3) {
-  checkmate::check_numeric(data, finite = TRUE)
-  checkmate::check_numeric(d, finite = TRUE)
-  checkmate::check_numeric(y, finite = TRUE)
-  # Overwrite names to X, D, Y
-
 }
