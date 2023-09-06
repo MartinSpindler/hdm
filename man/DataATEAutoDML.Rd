@@ -7,27 +7,28 @@
 DataATEAutoDML(x, d, y, data, dict = NULL)
 }
 \arguments{
-\item{x}{character specifying exogenous variables}
+\item{x}{\code{character} specifying exogenous variables}
 
-\item{d}{character specifying treatment variable (binary)}
+\item{d}{\code{character} specifying treatment variable (binary)}
 
-\item{y}{character specifying outcome variable / dependent variable}
+\item{y}{\code{character} specifying outcome variable / dependent variable}
 
-\item{data}{data frame or data.table}
+\item{data}{\code{data.frame} or \code{data.table} containing the raw input data.}
 
-\item{dict}{a dictionary (function)
-function of (D,X) with D being a numeric and X a matrix, which returns a numeric vector. Default is \code{dict <- function(d, x) return(c(1, d, x))}. The dictionary will be applied on an individual level, i.e., being executed for each i in 1, ..., n.}
+\item{dict}{a dictionary (\code{function})
+function of (D,X) with D being a numeric and X a matrix, which returns a numeric vector. Default is \code{dict <- function(d, x) return(c(1, d, x))}. The dictionary will be applied on an individual level, i.e., being executed for each i in 1, ..., n with i representing a row in the \code{data}.}
 }
 \value{
 an object of class \code{DataAutoDebiasedATE} with the following entries
 \itemize{
-  \item{\code{Y} - }{Y as passed as input}
-  \item{X - }{Processed X (dictionary applied to input data)}
-  \item{dict - }{dictionary}
-  
-  \item{"D_is_binary" - }{logical indicating whether the treatment variable is binary}
-  \item{"M" - }{Matrix M as of ...}
-  \item{"G" - }{Matrix G as of ...}
+  \item{\code{data_prep} - A copy of the original \code{data} (containing only variables as provided through \code{x}, \code{d} and \code{y})}
+  \item{\code{Y} - Y as passed as input} 
+  \item{\code{X} - Processed X (dictionary applied to input data)}
+  \item{\code{p} - Number of columns of preprocessed matrix \code{X}}
+  \item{\code{M} - Matrix M as of ... TODO }
+  \item{\code{X_prelim} - Version of matrix X used for a preliminary estimator}
+  \item{\code{M_prelim} - Version of matrix M used for a preliminary estimator}
+  \item{\code{p_prelim_out} - Number of columns of preprocessed matrix \code{X_prelim}}
 }
 }
 \description{

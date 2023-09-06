@@ -12,7 +12,6 @@ DataAPDAutoDML(
   data,
   poly_order = 3,
   interactions = TRUE,
-  intercept = NULL,
   unit = NULL,
   time = NULL
 )
@@ -30,27 +29,26 @@ DataAPDAutoDML(
 
 \item{poly_order}{Polynomial order.}
 
-\item{interactions}{\code{logical} specifying whether two-way interactions of \code{x} and \code{d} should be constructed. Default is \code{true}.
-function of (d,x) that maps to a vector. Default is \code{dict <- function(d, x) return(c(1, d, x, d*x))}.}
+\item{interactions}{\code{logical} specifying whether two-way interactions of \code{x} and \code{d} should be constructed. Default is \code{true}.}
 
-\item{intercept}{\code{character} specifying the intercept (must be included in \code{x_manual})}
+\item{unit}{\code{character} specifying unit variable of data in panel context, if not panel data omit (default \code{NULL}).}
 
-\item{unit}{\code{character} specifying unit variable of data in panel context, if not panel data omit (default NULL)}
-
-\item{time}{\code{character} specifying time variable of data in panel context, if not panel data omit (default NULL)}
+\item{time}{\code{character} specifying time variable of data in panel context, if not panel data omit (default \code{NULL}).}
 }
 \value{
 an object of class \code{DataAPDAutoDML} with the following entries
 \itemize{
   \item{\code{data_prep} - \code{data.table} object containing the preprocessed data}
-  \item{\code{Y} - }{\code{matrix} containing the outcome variable specified in \code{y}}
-  \item{\code{X} - }{\code{matrix} containing the variables specified in \code{d} and \code{x}}
-  }
+  \item{\code{Y} - Y as passed as input} 
+  \item{\code{X} - Processed X (dictionary applied to input data)}
+  \item{\code{p} - Number of columns of preprocessed matrix \code{X}}
+  \item{\code{M} - Matrix M as of ... TODO }
+}
 }
 \description{
 Data backend for auto-debiased estimation of average partial derivatives 
 (continuous treatment variable). Implements the preprocessing steps required 
 for auto-debiased estimation of the APD. If interested in using panel data, 
 user must also enter "unit" and "time" variables as well. If using cross section
-these fields can be left empty.
+these fields can be left empty (\code{NULL}).
 }
