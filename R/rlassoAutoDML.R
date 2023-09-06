@@ -1,6 +1,6 @@
 #' Auto DML based on rlasso
 #'
-#' Implements AutoDML based onlasso learners (\code{rlasso}) as developed
+#' Implements AutoDML based on lasso learners (\code{rlasso}) as developed
 #' in Chernozhukov et al. (2022) and Klosin and Vilgalys (2022).
 #' Estimates the average treatment effect (ATE)
 #' of a binary treatment variable, \eqn{D} on an outcome variable \eqn{Y} in presence of confounding variables \eqn{X} or the average partial derivative (APD) of a continuous treatment variable, \eqn{D} on an outcome variable \eqn{Y}.
@@ -58,11 +58,11 @@ rlassoAutoDML <- function(x, ...) {
 
 #' @export
 #' @rdname rlassoAutoDML
-rlassoAutoDML.default <- function(data, D_LB = 0, D_add = 0.2,
-                                  debiased = TRUE, L = 5, max_iter = 10,
+rlassoAutoDML.default <- function(data, L = 5, max_iter = 10,
                                   gamma_learner = "rlasso",
                                   est_type = NULL, prelim_est = FALSE, 
-                                  weights = NULL) {
+                                  weights = NULL, debiased = TRUE,
+                                  D_LB = 0, D_add = 0.2) {
   checkmate::check_subset(est_type, c("ATE", "APD"))
   if (est_type == "ATE") {
     checkmate::check_class(data, "DataATEAutoDML")
