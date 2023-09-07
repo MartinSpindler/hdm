@@ -44,15 +44,15 @@ df <- DGP_bintreat(n_obs, 10, theta)
 weights_vec = rep(c(0,1),n_obs/2)
 
 test_cases = expand.grid(
-  dictionary_name = c("dict1"),#, "dict2", "dict3"),
+  dictionary_name = c("dict1", "dict2", "dict3"),
   L = c(2, 5),
-  gamma_learner = c("rlasso"),#, "cv.glmnet"),
+  gamma_learner = c("rlasso", "cv.glmnet"),
   est_type = "ATE",
   prelim_est = c(TRUE, FALSE),
   # weights = c(NULL, weights_vec),
-  debiased = c(TRUE), #, FALSE),
-  D_LB = c(0),
-  D_add = c(0.2),
+  debiased = c(TRUE, FALSE),
+  D_LB = c(0, 0.01),
+  D_add = c(0.2, 0.25),
   stringsAsFactors = FALSE)
 
 test_cases[".test_name"] = apply(test_cases, 1, paste, collapse = "_")
