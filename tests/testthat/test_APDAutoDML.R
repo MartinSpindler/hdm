@@ -31,6 +31,8 @@ DGP_panel <- function(N, N_T, p){
     return(list("data" = DT, "true" = mean(1 + 2*DT$D + 3*DT$D^2 + DT$X_1)))
 }
 
+weights_vec <- runif(n_obs, 0,1)
+
 test_cases = expand.grid(
   panel_data = c(FALSE, TRUE),
   L = c(2, 5),
@@ -38,7 +40,7 @@ test_cases = expand.grid(
   est_type = "APD",
   poly_degree = c(2, 4),
   interactions = c(FALSE, TRUE),
-  # weights = c(NULL, weights_vec),
+  weights = c(NULL, weights_vec),
   debiased = c(TRUE, FALSE),
   D_LB = c(0, 0.01),
   D_add = c(0.2, 0.25),
