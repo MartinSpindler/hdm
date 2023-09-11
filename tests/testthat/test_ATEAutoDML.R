@@ -41,7 +41,7 @@ dictionary3 <- function(d, z) {
 
 set.seed(2)
 df <- DGP_bintreat(n_obs, 10, theta)
-weights_vec = rep(c(0,1),n_obs/2)
+weights_vec <- runif(n_obs, 0,1)
 
 test_cases = expand.grid(
   dictionary_name = c("dict1", "dict2", "dict3"),
@@ -49,7 +49,7 @@ test_cases = expand.grid(
   gamma_learner = c("rlasso", "cv.glmnet"),
   est_type = "ATE",
   prelim_est = c(TRUE, FALSE),
-  # weights = c(NULL, weights_vec),
+  weights = c(NULL, weights_vec),
   debiased = c(TRUE, FALSE),
   D_LB = c(0, 0.01),
   D_add = c(0.2, 0.25),
