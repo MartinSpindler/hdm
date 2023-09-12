@@ -31,6 +31,8 @@ DGP_panel <- function(N, N_T, p){
     return(list("data" = DT, "true" = mean(1 + 2*DT$D + 3*DT$D^2 + DT$X_1)))
 }
 
+n_obs = 500
+
 weights_vec <- runif(n_obs, 0,1)
 
 test_cases = expand.grid(
@@ -53,14 +55,14 @@ patrick::with_parameters_test_that("Unit tests for rlassoAutoDML for ATE:",
     
     set.seed(2)
     if (!panel_data) {
-      data_gen <- DGP_contD(500, 10)
+      data_gen <- DGP_contD(n_obs, 10)
       df <- data_gen$data
       df$intercept <- rep(1, nrow(df))
       Xnames <- colnames(df)[grep("V", colnames(df))]
       backend_contD = DataAPDAutoDML(x = Xnames, d = "D", y = "y", data = df,
                                      poly = poly_degree, interactions = interactions)
     } else {
-      dgp_panel <- DGP_panel(1000, 10, 4)
+      dgp_panel <- DGP_panel(n_obs, 10, 4)
       DT_panel <- dgp_panel$data
       Xnames = colnames(DT_panel)[grep("X", colnames(DT_panel))]
       backend_contD <- DataAPDAutoDML(x = Xnames, d = "D", y = "y",
