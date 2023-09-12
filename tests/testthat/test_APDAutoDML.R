@@ -32,6 +32,7 @@ DGP_panel <- function(N, N_T, p){
 }
 
 n_obs = 500
+n_t = 4
 
 weights_vec <- runif(n_obs, 0,1)
 
@@ -42,7 +43,7 @@ test_cases = expand.grid(
   est_type = "APD",
   poly_degree = c(2, 4),
   interactions = c(FALSE, TRUE),
-  weights = c(NULL, weights_vec),
+  use_weights = c(FALSE, TRUE),
   debiased = c(TRUE, FALSE),
   D_LB = c(0, 0.01),
   D_add = c(0.2, 0.25),
@@ -62,7 +63,7 @@ patrick::with_parameters_test_that("Unit tests for rlassoAutoDML for ATE:",
       backend_contD = DataAPDAutoDML(x = Xnames, d = "D", y = "y", data = df,
                                      poly = poly_degree, interactions = interactions)
     } else {
-      dgp_panel <- DGP_panel(n_obs, 10, 4)
+      dgp_panel <- DGP_panel(n_obs, n_t, 4)
       DT_panel <- dgp_panel$data
       Xnames = colnames(DT_panel)[grep("X", colnames(DT_panel))]
       backend_contD <- DataAPDAutoDML(x = Xnames, d = "D", y = "y",
@@ -73,10 +74,16 @@ patrick::with_parameters_test_that("Unit tests for rlassoAutoDML for ATE:",
                                             time = "time")
     }
     
+    if (use_weights) {
+      weights = rep(weights_vec, n_t -1)
+    } else {
+      weights = NULL
+    }
+    
     auto_apd = rlassoAutoDML(backend_contD, L = L,
                              gamma_learner = gamma_learner,
                              est_type = est_type,
-                             # weights = weights,
+                             weights = weights,
                              debiased = debiased,
                              D_LB = D_LB,
                              D_add = D_add)
