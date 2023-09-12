@@ -49,7 +49,7 @@ test_cases = expand.grid(
   gamma_learner = c("rlasso", "cv.glmnet"),
   est_type = "ATE",
   prelim_est = c(TRUE, FALSE),
-  weights = c(NULL, weights_vec),
+  use_weights = c(FALSE, TRUE),
   debiased = c(TRUE, FALSE),
   D_LB = c(0, 0.01),
   D_add = c(0.2, 0.25),
@@ -72,6 +72,12 @@ patrick::with_parameters_test_that("Unit tests for rlassoAutoDML for ATE:",
       dictionary = dictionary3
     }
     
+    if (use_weights) {
+      weights = weights_vec
+    } else {
+      weights = NULL
+    }
+    
   Xnames = colnames(df)[grep("X", colnames(df))]
   backend_binD = DataATEAutoDML(x = Xnames, d = "D", y = "Y",
                               data = df, dict = dictionary)
@@ -80,7 +86,7 @@ patrick::with_parameters_test_that("Unit tests for rlassoAutoDML for ATE:",
                            gamma_learner = gamma_learner,
                            est_type = est_type,
                            prelim_est = prelim_est,
-                          # weights = weights,
+                           weights = weights,
                            debiased = debiased,
                            D_LB = D_LB,
                            D_add = D_add)
