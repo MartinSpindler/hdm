@@ -62,6 +62,8 @@ patrick::with_parameters_test_that("Unit tests for rlassoAutoDML for ATE:",
       Xnames <- colnames(df)[grep("V", colnames(df))]
       backend_contD = DataAPDAutoDML(x = Xnames, d = "D", y = "y", data = df,
                                      poly = poly_degree, interactions = interactions)
+      n_rep_weights = 1
+      
     } else {
       dgp_panel <- DGP_panel(n_obs, n_t, 4)
       DT_panel <- dgp_panel$data
@@ -72,10 +74,11 @@ patrick::with_parameters_test_that("Unit tests for rlassoAutoDML for ATE:",
                                             interactions = interactions,
                                             unit = "fixed",
                                             time = "time")
+      n_rep_weights = n_t -1
     }
     
     if (use_weights) {
-      weights = rep(weights_vec, n_t -1)
+      weights = rep(weights_vec, n_rep_weights)
     } else {
       weights = NULL
     }
