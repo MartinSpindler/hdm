@@ -259,12 +259,6 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
     data_prep <- data_prep[, (all_vars  ) :=
                              lapply(.SD, function(v) {v - mean(v)}), .(unit), 
                            .SDcols = all_vars ]
-    
-    first_time_period <- min(data_prep$time)
-    idx_first_time_period <- data_prep[time == first_time_period, which = TRUE]
-    data_prep <- data_prep[- idx_first_time_period, ] # removing first time period bc of first diff
-    # now also remove first time period from M, but we dont first diff M 
-    M <- M[-idx_first_time_period,]
   }
   
   # export Y and X as vector & matrix
