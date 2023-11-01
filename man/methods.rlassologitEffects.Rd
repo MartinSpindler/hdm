@@ -29,7 +29,7 @@
 \item{joint}{logical, if joint confidence intervals should be clalculated}
 }
 \description{
-Objects of class \code{rlassologitEffects} are construced by \code{rlassologitEffects} or \code{rlassologitEffect}. 
+Objects of class \code{rlassologitEffects} are construced by \code{rlassologitEffects} or \code{rlassologitEffect}.
 \code{print.rlassologitEffects} prints and displays some information about fitted \code{rlassologitEffect} objects.
 \code{summary.rlassologitEffects} summarizes information of a fitted \code{rlassologitEffects} object.
 \code{confint.rlassologitEffects} extracts the confidence intervals.

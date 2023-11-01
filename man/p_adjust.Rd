@@ -50,29 +50,29 @@ Objects of class \code{rlassoEffects} are constructed by
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{rlassoEffects}: \code{\link{rlassoEffects}}.
+\item \code{p_adjust(rlassoEffects)}: \code{\link{rlassoEffects}}.
 
-\item \code{lm}: \code{\link[stats]{lm}}.
+\item \code{p_adjust(lm)}: \code{\link[stats]{lm}}.
+
 }}
-
 \examples{
-library(hdm);
+library(hdm)
 set.seed(1)
-n = 100 #sample size
-p = 25 # number of variables
-s = 3 # nubmer of non-zero variables
-X = matrix(rnorm(n*p), ncol=p)
-colnames(X) <- paste("X", 1:p, sep="")
-beta = c(rep(3,s), rep(0,p-s))
-y = 1 + X\%*\%beta + rnorm(n)
-data = data.frame(cbind(y,X))
+n <- 100 # sample size
+p <- 25 # number of variables
+s <- 3 # nubmer of non-zero variables
+X <- matrix(rnorm(n * p), ncol = p)
+colnames(X) <- paste("X", 1:p, sep = "")
+beta <- c(rep(3, s), rep(0, p - s))
+y <- 1 + X \%*\% beta + rnorm(n)
+data <- data.frame(cbind(y, X))
 colnames(data)[1] <- "y"
-lasso.effect = rlassoEffects(X, y, index=c(1:20))
-pvals.lasso.effect = p_adjust(lasso.effect, method = "RW", B = 1000)
-ols = lm(y ~ -1 + X, data)
-pvals.ols = p_adjust(ols, method = "RW", B = 1000)
-pvals.ols = p_adjust(ols, method = "RW", B = 1000, test.index = c(1,2,5))
-pvals.ols = p_adjust(ols, method = "RW", B = 1000, test.index = c(rep(TRUE, 5), rep(FALSE, p-5)))
+lasso.effect <- rlassoEffects(X, y, index = c(1:20))
+pvals.lasso.effect <- p_adjust(lasso.effect, method = "RW", B = 1000)
+ols <- lm(y ~ -1 + X, data)
+pvals.ols <- p_adjust(ols, method = "RW", B = 1000)
+pvals.ols <- p_adjust(ols, method = "RW", B = 1000, test.index = c(1, 2, 5))
+pvals.ols <- p_adjust(ols, method = "RW", B = 1000, test.index = c(rep(TRUE, 5), rep(FALSE, p - 5)))
 }
 \references{
 J.P. Romano, M. Wolf (2005). Exact and approximate stepdown

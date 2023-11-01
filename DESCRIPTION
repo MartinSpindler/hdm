@@ -24,11 +24,14 @@ Imports:
     ggplot2,
     checkmate,
     Formula,
-    methods
+    methods,
+    data.table
 Suggests:
     testthat,
     knitr,
     xtable,
-    mvtnorm
+    mvtnorm,
+    DoubleML,
+    patrick
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3

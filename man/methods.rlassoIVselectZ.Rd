@@ -27,7 +27,7 @@
 \item{level}{confidence level required.}
 }
 \description{
-Objects of class \code{rlassoIVselectZ} are constructed by \code{rlassoIVselectZ}. 
+Objects of class \code{rlassoIVselectZ} are constructed by \code{rlassoIVselectZ}.
 \code{print.rlassoIVselectZ} prints and displays some information about fitted \code{rlassoIVselectZ} objects.
 \code{summary.rlassoIVselectZ} summarizes information of a fitted \code{rlassoIVselectZ} object.
 \code{confint.rlassoIVselectZ} extracts the confidence intervals.

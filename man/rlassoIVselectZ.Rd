@@ -31,7 +31,7 @@ Exogenous variables serve as their own instruments.}
 \item{formula}{An object of class \code{Formula} of the form " y ~ x + d | x + z" with y the outcome variable,
 d endogenous variable, z instrumental variables, and x exogenous variables.}
 
-\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model. 
+\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
 If not found in data, the variables are taken from environment(formula), typically the environment from which \code{rlassoIVselectZ} is called.}
 }
 \value{

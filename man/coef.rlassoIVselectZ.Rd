@@ -7,7 +7,7 @@
 \method{coef}{rlassoIVselectZ}(object, complete = TRUE, selection.matrix = FALSE, ...)
 }
 \arguments{
-\item{object}{an object of class \code{rlassoIVselectZ}, usually a result of a call 
+\item{object}{an object of class \code{rlassoIVselectZ}, usually a result of a call
 \code{rlassoIVselectZ} or \code{rlassoIV} with options \code{select.X=FALSE} and
 \code{select.Z=TRUE}.}
 
@@ -28,13 +28,13 @@ The very last column collects all variables that have been selected in at least 
 }
 \examples{
 \dontrun{
-lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+lasso.IV.Z <- rlassoIVselectZ(x = x, d = d, y = y, z = z)
 data(EminentDomain)
 z <- EminentDomain$logGDP$z # instruments
 x <- EminentDomain$logGDP$x # exogenous variables
 y <- EminentDomain$logGDP$y # outcome varialbe
 d <- EminentDomain$logGDP$d # treatment / endogenous variable
-lasso.IV.Z = rlassoIVselectZ(x=x, d=d, y=y, z=z)
+lasso.IV.Z <- rlassoIVselectZ(x = x, d = d, y = y, z = z)
 coef(lasso.IV.Z) # Default behavior
 coef(lasso.IV.Z, selection.matrix = T)
 }

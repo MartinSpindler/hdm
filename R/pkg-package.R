@@ -3,10 +3,10 @@
 #' This package implements methods for estimation and inference in a high-dimensional setting.
 #'
 #' \tabular{ll}{ Package: \tab hdm\cr Type: \tab Package\cr Version: \tab
-#' 0.1\cr Date: \tab 2015-05-25\cr License: \tab GPL-3\cr } This package provides efficient estimators 
-#' and  uniformly valid confidence intervals for various low-dimensional causal/structural parameters  
+#' 0.1\cr Date: \tab 2015-05-25\cr License: \tab GPL-3\cr } This package provides efficient estimators
+#' and  uniformly valid confidence intervals for various low-dimensional causal/structural parameters
 #' appearing in high-dimensional approximately sparse models. The package
-#' includes functions for fitting heteroskedastic robust Lasso regressions with non-Gaussian erros and 
+#' includes functions for fitting heteroskedastic robust Lasso regressions with non-Gaussian erros and
 #' for instrumental variable (IV) and treatment effect estimation in a
 #' high-dimensional setting. Moreover, the methods enable valid post-selection
 #' inference. Moreover, a theoretically grounded, data-driven choice of the penalty level is provided.
@@ -29,7 +29,7 @@
 #' Review of Economic Studies 81(2), 608-650.
 #' @importFrom stats binomial
 #' @importFrom stats coef
-#' @importFrom stats confint 
+#' @importFrom stats confint
 #' @importFrom stats cor
 #' @importFrom stats glm
 #' @importFrom stats lm
@@ -141,11 +141,11 @@ NULL
 #'
 #' Dataset on settler mortality.
 #'
-#' Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{http://economics.mit.edu/faculty/acemoglu/data/ajr2001} 
+#' Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{http://economics.mit.edu/faculty/acemoglu/data/ajr2001}
 #'
 #' @name AJR
 #' @docType data
-#' @format \describe{ 
+#' @format \describe{
 #' \item{Mort}{Settler mortality}
 #' \item{logMort}{logarithm of Mort}
 #' \item{Latitude}{Latitude}
@@ -156,7 +156,7 @@ NULL
 #' \item{Samer}{South America}
 #' \item{Neo}{Neo-Europes}
 #' \item{GDP}{GDP}
-#' \item{Exprop}{Average protection against expropriation risk} 
+#' \item{Exprop}{Average protection against expropriation risk}
 #' }
 #' @references D. Acemoglu, S. Johnson, J. A. Robinson  (2001). Colonial origins of comparative development: an empirical investigation.
 #' American Economic Review, 91, 1369--1401.
@@ -169,15 +169,15 @@ NULL
 #'
 #' Dataset on judicial eminent domain decisions.
 #'
-#' Data set was analyzed in Belloni et al. (2012).  They estimate the effect of judicial eminent domain decisions on economic outcomes with instrumental variables (IV) in a setting high a large set of potential IVs. 
-#' A detailed decription of the data can be found at 
-#' \url{https://www.econometricsociety.org/publications/econometrica/2012/11/01/sparse-models-and-methods-optimal-instruments-application} 
-#' The data set contains four "sub-data sets" which differ mainly in the dependent variables: repeat-sales FHFA/OFHEO house price index for metro (FHFA) and non-metro (NM) area, the Case-Shiller home price index (CS), 
+#' Data set was analyzed in Belloni et al. (2012).  They estimate the effect of judicial eminent domain decisions on economic outcomes with instrumental variables (IV) in a setting high a large set of potential IVs.
+#' A detailed decription of the data can be found at
+#' \url{https://www.econometricsociety.org/publications/econometrica/2012/11/01/sparse-models-and-methods-optimal-instruments-application}
+#' The data set contains four "sub-data sets" which differ mainly in the dependent variables: repeat-sales FHFA/OFHEO house price index for metro (FHFA) and non-metro (NM) area, the Case-Shiller home price index (CS),
 #' and state-level GDP from the Bureau of Economic Analysis - all transformed with the logarithm. The structure of each subdata set is given above.
 #' In the data set the following variables and name conventions are used:
-#' "numpanelskx_..." is the number of panels with at least k members with the characteristic following the "_". 
-#' The probability controls (names start with "F_prob_") follow a similar naming convention and give the probability of observing a panel with characteristic given following second "_" given the characteristics of the pool of judges available to be assigned to the case. 
-#' 
+#' "numpanelskx_..." is the number of panels with at least k members with the characteristic following the "_".
+#' The probability controls (names start with "F_prob_") follow a similar naming convention and give the probability of observing a panel with characteristic given following second "_" given the characteristics of the pool of judges available to be assigned to the case.
+#'
 #' Characteristics in the data for the control variables or instruments:
 #' \describe{
 #' \item{noreligion}{judge reports no religious affiliation}
@@ -198,10 +198,10 @@ NULL
 #' \item{circuit}{dummy for the circuit level (reference category excluded)}
 #' \item{missing_cy_12}{a dummy for whether there were no cases in that circuit-year}
 #' \item{numcasecat_12}{the number of takings appellate decisions}
-#'}
+#' }
 #' @name EminentDomain
 #' @docType data
-#' @format \describe{ 
+#' @format \describe{
 #' \item{y}{economic outcome variable}
 #' \item{x}{set of exogenous variables}
 #' \item{d}{eminent domain decisions}
@@ -219,13 +219,13 @@ NULL
 #'
 #' Automobile data set from the US.
 #'
-#' Data set was analysed in Berry, Levinsohn and Pakes (1995). The data stem from annual issues of the Automotive News Market Data Book. 
+#' Data set was analysed in Berry, Levinsohn and Pakes (1995). The data stem from annual issues of the Automotive News Market Data Book.
 #' The data set inlcudes information on all models marketed during the the period beginning 1971 and ending in 1990 cotaining 2217 model/years from 997 distinct models.
 #' A detailed description is given in BLP (1995, 868--871). The internal function \code{constructIV} constructs instrumental variables along the lines described and used in BLP (1995).
 #'
 #' @name BLP
 #' @docType data
-#' @format \describe{ 
+#' @format \describe{
 #' \item{model.name}{model name}
 #' \item{model.id}{model id}
 #' \item{firm.id}{firm id}
@@ -252,13 +252,13 @@ NULL
 #'
 #' Census data from the US for the year 2012.
 #'
-#' The CPS is a monthly U.S. household survey conducted jointly by the U.S. Census Bureau and the Bureau of Labor Statistics. The data comprise the year 2012. 
-#' This data set was used in Mulligan and Rubinstein (2008). 
-#' The sample comprises white non-hipanic, ages 25-54, working full time full year (35+ hours per week at least 50 weeks), exclude living in group quarters, 
+#' The CPS is a monthly U.S. household survey conducted jointly by the U.S. Census Bureau and the Bureau of Labor Statistics. The data comprise the year 2012.
+#' This data set was used in Mulligan and Rubinstein (2008).
+#' The sample comprises white non-hipanic, ages 25-54, working full time full year (35+ hours per week at least 50 weeks), exclude living in group quarters,
 #'  self-employed, military, agricultural, and private household sector, allocated earning, inconsistent report on earnings and employment, missing data.
 #' @name cps2012
 #' @docType data
-#' @format \describe{ 
+#' @format \describe{
 #' \item{lnw}{log of hourly wage (annual earnings / annual hours)}
 #' \item{female}{female indicator}
 #' \item{married status}{ six indicators: widowed, divorced, separated, nevermarried, and married (omitted)}
