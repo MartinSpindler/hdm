@@ -207,8 +207,10 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
   
   # generate interactions for d with x
   if (interactions) {
-    cols_int_d_x <- paste0("int_", d, "_", x) 
-    data_prep[, (cols_int_d_x) := lapply(.SD, function(x) { data_prep[[d]]*x }), .SDcols = x]
+    for (this_x in x) {
+      interaction_col_name <- paste0("int_", d, "_", this_x)
+      data_prep[[interaction_col_name]] <- data_prep[[d]] * data_prep[[this_x]]
+    }
   }
   
   # construct matrices M: manual derivative
