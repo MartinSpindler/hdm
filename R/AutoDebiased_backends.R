@@ -260,7 +260,7 @@ DataAPDAutoDML <- function(x, d, y, x_manual = NULL, data, poly_order = 3,
                              lapply(.SD, function(v) {v - mean(v)}), .(unit), 
                            .SDcols = all_vars ]
     # because of the within transform the M matrix needs to be scaled by (1 - 1/T)
-    M <- M*(1 - 1/max(data[[time]]))
+    #M <- M*(1 - 1/max(data[[time]]))
   }
   
   # export Y and X as vector & matrix
