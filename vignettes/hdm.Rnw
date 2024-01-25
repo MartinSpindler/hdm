@@ -35,6 +35,7 @@
 \author{Victor Chernozhukov, Christian Hansen, Martin Spindler}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \begin{abstract}
 The package High-dimensional Metrics (\Rpackage{hdm}) is an evolving collection of statistical methods for estimation and quantification of uncertainty in high-dimensional approximately sparse models. It focuses on providing confidence intervals and significance testing for (possibly many) low-dimensional subcomponents of the high-dimensional parameter vector. Efficient estimators and uniformly valid confidence intervals for regression coefficients on target variables (e.g., treatment or policy variable) in a high-dimensional approximately sparse regression model, for average treatment effect (ATE) and average treatment effect for the treated (ATET),  as well for extensions of these parameters to the endogenous setting are provided. 
 Theory grounded, data-driven methods for selecting the penalization parameter in Lasso regressions under heteroscedastic and non-Gaussian errors are implemented. Moreover, joint/ simultaneous confidence intervals for regression coefficients of a high-dimensional sparse regression are implemented, including a joint significance test for Lasso regression. Data sets which have been used in the literature and might be useful for classroom demonstration and for testing new estimators are included.  \R and the package \Rpackage{hdm} are open-source software projects and can be freely downloaded from CRAN:
@@ -102,10 +103,10 @@ install.packages("hdm")
 @
 
 \noindent
-The most current version of the package (development version) is maintained at R-Forge and can installed by
+The most current version of the package (development version) is maintained at the GitHub repository \url{https://github.com/MartinSpindler/hdm} and can be installed by the command (previous installation of the \texttt{remotes} package is required)
 
 <<eval=FALSE>>=
-install.packages("hdm", repos="http://R-Forge.R-project.org")
+remotes::install_github("MartinSpindler/hdm")
 @
 
 

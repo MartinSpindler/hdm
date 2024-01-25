@@ -1,7 +1,7 @@
 Package: hdm
 Type: Package
 Title: High-Dimensional Metrics
-Version: 0.3.1
+Version: 0.3.2
 Date: 2018-12-19
 Authors@R: c(person("Martin", "Spindler", email="martin.spindler@gmx.de", role=c("cre", "aut")), person("Victor", "Chernozhukov", role="aut"), person("Christian", "Hansen", role="aut"),  person("Philipp", "Bach", email = "philipp.bach@uni-hamburg.de", role="ctb"))
 Depends:
