@@ -33,11 +33,11 @@ globalVariables(c("post", "intercept", "penalty", "control", "error", "n", "sele
 #' @param model logical. If \code{TRUE} (default), model matrix is returned.
 #' @param penalty list with options for the calculation of the penalty. 
 #' \itemize{
-#' \item{\code{c} and \code{gamma}}{ constants for the penalty with default \code{c=1.1} and \code{gamma=0.1}}
-#' \item{\code{homoscedastic}}{ logical, if homoscedastic errors are considered (default \code{FALSE}). Option \code{none} is described below.}
-#' \item{\code{X.dependent.lambda}}{ logical,  \code{TRUE}, if the penalization parameter depends on the the design of the matrix \code{x}. \code{FALSE}, if independent of the design matrix  (default).}
-#' \item{\code{numSim}}{ number of simulations for the dependent methods, default=5000}
-#' \item{\code{lambda.start}}{ initial penalization value, compulsory for method "none"}
+#' \item \code{c} and \code{gamma} constants for the penalty with default \code{c=1.1} and \code{gamma=0.1}
+#' \item \code{homoscedastic} logical, if homoscedastic errors are considered (default \code{FALSE}). Option \code{none} is described below.
+#' \item \code{X.dependent.lambda} logical,  \code{TRUE}, if the penalization parameter depends on the the design of the matrix \code{x}. \code{FALSE}, if independent of the design matrix  (default).
+#' \item \code{numSim}  number of simulations for the dependent methods, default=5000
+#' \item \code{lambda.start} initial penalization value, compulsory for method "none"
 #' }
 #' @param control list with control values.
 #' \code{numIter} number of iterations for the algorithm for
@@ -48,17 +48,24 @@ globalVariables(c("post", "intercept", "penalty", "control", "error", "n", "sele
 #' @param ... further arguments (only for consistent defintion of methods)
 #' @return \code{rlasso} returns an object of class \code{rlasso}. An object of
 #' class "rlasso" is a list containing at least the following components:
-#' \item{coefficients}{parameter estimates}
-#' \item{beta}{parameter estimates (named vector of coefficients without intercept)}
-#' \item{intercept}{value of the intercept}
-#' \item{index}{index of selected
-#' variables (logical vector)} \item{lambda}{data-driven penalty term for each
-#' variable, product of lambda0 (the penalization parameter) and the loadings}
-#' \item{lambda0}{penalty term} \item{loadings}{loading for each regressor}
-#' \item{residuals}{residuals, response minus fitted values} \item{sigma}{root of the variance of
-#' the residuals} \item{iter}{number of iterations} \item{call}{function call}
-#' \item{options}{options}
-#' \item{model}{model matrix (if \code{model = TRUE} in function call)}
+#' \itemize{
+#' \item coefficients parameter estimates
+#' \item beta parameter estimates (named vector of coefficients without intercept)
+#' \item intercept value of the intercept
+#' \item index index of selected
+#' variables (logical vector)
+#' \item lambda data-driven penalty term for each
+#' variable, product of lambda0 (the penalization parameter) and the loadings
+#' \item lambda0 penalty term
+#' \item loadings loading for each regressor
+#' \item residuals residuals, response minus fitted values
+#' \item sigma root of the variance of
+#' the residuals
+#'  \item iter number of iterations
+#'  \item call function call
+#' \item options options
+#' \item model model matrix (if \code{model = TRUE} in function call)
+#' }
 #' @references A. Belloni, D. Chen, V. Chernozhukov and C. Hansen (2012).
 #' Sparse models and methods for optimal instruments with an application to
 #' eminent domain. \emph{Econometrica} 80 (6), 2369-2429.
@@ -393,11 +400,11 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
 #'
 #' @param penalty list with options for the calculation of the penalty. 
 #' \itemize{
-#' \item{\code{c} and \code{gamma}}{ constants for the penalty with default \code{c=1.1} and \code{gamma=0.1}}
-#' \item{\code{homoscedastic}}{ logical, if homoscedastic errors are considered (default \code{FALSE}). Option \code{none} is described below.}
-#' \item{\code{X.dependent.lambda}}{ if \code{independent} or \code{dependent} design matrix \code{X} is assumed for calculation of the parameter \eqn{\lambda}}
-#' \item{\code{numSim}}{ number of simulations for the X-dependent methods}
-#' \item{\code{lambda.start}}{ initial penalization value, compulsory for method "none"}
+#' \item \code{c} and \code{gamma} constants for the penalty with default \code{c=1.1} and \code{gamma=0.1}
+#' \item \code{homoscedastic} logical, if homoscedastic errors are considered (default \code{FALSE}). Option \code{none} is described below.
+#' \item \code{X.dependent.lambda} if \code{independent} or \code{dependent} design matrix \code{X} is assumed for calculation of the parameter \eqn{\lambda}
+#' \item \code{numSim}  number of simulations for the X-dependent methods
+#' \item \code{lambda.start} initial penalization value, compulsory for method "none"
 #' }
 #' @param x matrix of regressor variables
 #' @param y residual which is used for calculation of the variance or the data-dependent loadings

@@ -5,8 +5,8 @@
 \title{Function for Calculation of the penalty parameter}
 \usage{
 lambdaCalculation(
-  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start =
-    NULL, c = 1.1, gamma = 0.1),
+  penalty = list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL,
+    c = 1.1, gamma = 0.1),
   y = NULL,
   x = NULL
 )
@@ -14,11 +14,11 @@ lambdaCalculation(
 \arguments{
 \item{penalty}{list with options for the calculation of the penalty. 
 \itemize{
-\item{\code{c} and \code{gamma}}{ constants for the penalty with default \code{c=1.1} and \code{gamma=0.1}}
-\item{\code{homoscedastic}}{ logical, if homoscedastic errors are considered (default \code{FALSE}). Option \code{none} is described below.}
-\item{\code{X.dependent.lambda}}{ if \code{independent} or \code{dependent} design matrix \code{X} is assumed for calculation of the parameter \eqn{\lambda}}
-\item{\code{numSim}}{ number of simulations for the X-dependent methods}
-\item{\code{lambda.start}}{ initial penalization value, compulsory for method "none"}
+\item \code{c} and \code{gamma} constants for the penalty with default \code{c=1.1} and \code{gamma=0.1}
+\item \code{homoscedastic} logical, if homoscedastic errors are considered (default \code{FALSE}). Option \code{none} is described below.
+\item \code{X.dependent.lambda} if \code{independent} or \code{dependent} design matrix \code{X} is assumed for calculation of the parameter \eqn{\lambda}
+\item \code{numSim}  number of simulations for the X-dependent methods
+\item \code{lambda.start} initial penalization value, compulsory for method "none"
 }}
 
 \item{y}{residual which is used for calculation of the variance or the data-dependent loadings}
