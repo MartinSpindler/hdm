@@ -128,7 +128,7 @@ rlassoEffects.default <- function(x, y, index = c(1:ncol(x)), method = "partiall
     I3m <- I3[-index[i]]
     lasso.regs[[i]] <- try(col <- rlassoEffect(Xt, y, d, method = method, 
                                                I3 = I3m, post = post, ...), silent = TRUE)
-    if (class(lasso.regs[[i]]) == "try-error") {
+    if (is(lasso.regs[[i]], "try-error")) {
       next
     } else {
       coefficients[i] <- col$alpha

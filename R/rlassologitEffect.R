@@ -94,7 +94,7 @@ rlassologitEffects.default <- function(x, y, index = c(1:ncol(x)), I3 = NULL, po
     Xt <- x[, -index[i], drop = FALSE]
     I3m <- I3[-index[i]]
     lasso.regs[[i]] <- try(col <- rlassologitEffect(Xt, y, d, I3 = I3m, post = post))
-    if (class(lasso.regs[[i]]) == "try-error") {
+    if (is(lasso.regs[[i]], "try-error")) {
       next
     } else {
       coefficients[i] <- col$alpha

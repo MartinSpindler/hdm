@@ -243,7 +243,7 @@ if(!is.null(I)){
       }
     }
     # check: for logical I, it has to have the appropriate length:
-    if(class(I.orig) == "logical" & length(I.orig) != length(f1.no.y.string)){
+    if(is(I.orig, "logical") & length(I.orig) != length(f1.no.y.string)){
       stop(paste("If 'I' is logical, its length has to be the same as the number of 'elements' (",
                  length(f1.no.y.string),
                  ") in the 'x + d'-part of 'formula'.", sep=""))
