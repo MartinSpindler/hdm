@@ -67,8 +67,8 @@ NULL
 #' The number of complete observations is 90.
 #'
 #' @source The full data set and further details can be found at
-#' \url{http://www.nber.org/pub/barro.lee}, \url{http://www.barrolee.com}, and,
-#' \url{http://www.bristol.ac.uk//Depts//Economics//Growth//barlee.htm}.
+#' \url{http://www2.nber.org/pub/barro.lee/} and,
+#' \url{https://www.bristol.ac.uk//Depts//Economics//Growth//barlee.htm}.
 #'
 #' @name Growth Data
 #' @aliases Growth Example GrowthData GDP
@@ -141,7 +141,7 @@ NULL
 #'
 #' Dataset on settler mortality.
 #'
-#' Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{http://economics.mit.edu/faculty/acemoglu/data/ajr2001} 
+#' Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{https://economics.mit.edu/faculty/acemoglu/data/ajr2001} 
 #'
 #' @name AJR
 #' @docType data

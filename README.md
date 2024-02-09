@@ -17,7 +17,7 @@ The stable package release is available at [CRAN](https://CRAN.R-project.org/pac
 
 ### Getting Started: Vignette
 
-After installation, users can get started by following [the package vignette](doc/hdm.pdf).
+After installation, users can get started by following the package vignette.
  
  
 ## References
