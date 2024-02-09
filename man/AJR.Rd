@@ -23,7 +23,7 @@
 Dataset on settler mortality.
 }
 \details{
-Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{http://economics.mit.edu/faculty/acemoglu/data/ajr2001}
+Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{https://economics.mit.edu/faculty/acemoglu/data/ajr2001}
 }
 \examples{
 data(AJR)

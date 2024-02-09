@@ -17,8 +17,8 @@ for the periods 1965-1975 and 1975-1985}
 }
 \source{
 The full data set and further details can be found at
-\url{http://www.nber.org/pub/barro.lee}, \url{http://www.barrolee.com}, and,
-\url{http://www.bristol.ac.uk//Depts//Economics//Growth//barlee.htm}.
+\url{http://www2.nber.org/pub/barro.lee/} and,
+\url{https://www.bristol.ac.uk//Depts//Economics//Growth//barlee.htm}.
 }
 \description{
 Data set of growth compiled by Barro Lee.

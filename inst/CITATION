@@ -1,20 +1,10 @@
-citHeader("To cite hdm in publications please use:")
-
-citEntry(entry = "Article",
+bibentry("Article",
          title        = "{hdm}: High-Dimensional Metrics",
-         author       = personList(as.person("Victor Chernozhukov"),
-                                   as.person("Chris Hansen"),
-                                   as.person("Martin Spindler")),
+         author       = "Victor Chernozhukov and Chris Hansen and Martin Spindler",
          journal      = "R Journal",
          year         = "2016",
          volume       = "8",
          number       = "2",
          pages        = "185-199",
          url          = "https://journal.r-project.org/archive/2016/RJ-2016-040/index.html",
-         
-         textVersion  =
-           paste("Victor Chernozhukov, Chris Hansen, Martin Spindler (2016).",
-                 "hdm: High-Dimensional Metrics",
-                 "R Journal, 8(2), 185-199.",
-                 "URL https://journal.r-project.org/archive/2016/RJ-2016-040/index.html.")
 )
