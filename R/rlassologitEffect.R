@@ -305,7 +305,7 @@ confint.rlassologitEffects <- function(object, parm, level = 0.95, joint = FALSE
     a <- (1 - level)/2
     a <- c(a, 1 - a)
     fac <- qt(a, n - k)
-    pct <- format.perc(a, 3)
+    pct <- format_perc(a, 3)
     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, 
                                                                pct))
     ses <- object$se[parm]
@@ -345,7 +345,7 @@ confint.rlassologitEffects <- function(object, parm, level = 0.95, joint = FALSE
     }
      a <- (1 - level)  #not dividing by 2!
      ab <- c(a/2, 1 - a/2)
-     pct <- format.perc(ab, 3)
+     pct <- format_perc(ab, 3)
      ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, 
                                                                 pct))
     # hatc <- quantile(sim, probs = 1 - a)

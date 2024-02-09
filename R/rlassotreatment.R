@@ -452,7 +452,7 @@ confint.rlassoTE <- function(object, parm, level = 0.95, ...) {
   a <- (1 - level)/2
   a <- c(a, 1 - a)
   fac <- qt(a, n - k)
-  pct <- format.perc(a, 3)
+  pct <- format_perc(a, 3)
   ci <- array(NA, dim = c(length(pnames), 2L), dimnames = list(pnames, 
                                                                pct))
   if (is.null(object$type_boot)) {

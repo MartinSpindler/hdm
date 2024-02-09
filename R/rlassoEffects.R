@@ -330,7 +330,7 @@ print.rlassoEffects <- function(x, digits = max(3L, getOption("digits") -
 #     a <- c(a, 1 - a)
 #     # fac <- qt(a, n-k)
 #     fac <- qnorm(a)
-#     pct <- format.perc(a, 3)
+#     pct <- format_perc(a, 3)
 #     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, 
 #                                                                pct))
 #     ses <- object$se[parm]
@@ -351,7 +351,7 @@ print.rlassoEffects <- function(x, digits = max(3L, getOption("digits") -
 #     }
 #     a <- (1 - level)/2
 #     ab <- c(a, 1 - a)
-#     pct <- format.perc(ab, 3)
+#     pct <- format_perc(ab, 3)
 #     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, 
 #                                                                pct))
 #     hatc <- quantile(sim, probs = 1 - a)
@@ -377,7 +377,7 @@ confint.rlassoEffects <- function(object, parm, level = 0.95, joint = FALSE,
     a <- c(a, 1 - a)
     # fac <- qt(a, n-k)
     fac <- qnorm(a)
-    pct <- format.perc(a, 3)
+    pct <- format_perc(a, 3)
     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, 
                                                                pct))
     ses <- object$se[parm]
@@ -404,7 +404,7 @@ confint.rlassoEffects <- function(object, parm, level = 0.95, joint = FALSE,
     }
     a <- (1 - level) #not dividing by 2!
     ab <- c(a/2, 1 - a/2)
-    pct <- format.perc(ab, 3)
+    pct <- format_perc(ab, 3)
     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm,
                                                                pct))
     hatc <- quantile(sim, probs = 1 - a)

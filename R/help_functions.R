@@ -1,4 +1,4 @@
-format.perc <- function(probs, digits) paste(format(100 * probs, trim = TRUE, 
+format_perc <- function(probs, digits) paste(format(100 * probs, trim = TRUE, 
                                                     scientific = FALSE, digits = digits), "%")
 
 # function for calculation of the errors after choosing the five

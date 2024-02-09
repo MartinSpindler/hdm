@@ -170,7 +170,7 @@ confint.rlassoIVselectX <- function(object, parm, level=0.95, ...) {
   a <- c(a, 1 - a)
   #fac <- qt(a, n-k)
   fac <- qnorm(a)
-  pct <- format.perc(a, 3)
+  pct <- format_perc(a, 3)
   ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm,
                                                              pct))
   #ses <- sqrt(diag(object$vcov))[parm]
