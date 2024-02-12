@@ -1,8 +1,7 @@
-## ----R_setup, include=FALSE----------------------------------------------
+## ----R_setup, include=FALSE---------------------------------------------------
 library(knitr)
 knitr::opts_chunk$set(warning = FALSE)
-
-opts_chunk$set(tidy=TRUE, tidy.opts=list(width.cutoff=80)) #{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+knitr::opts_chunk$set(tidy=TRUE, tidy.opts=list(width.cutoff=80)) #{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 
 # # source: https://github.com/yihui/knitr-examples/blob/master/077-wrap-output.Rmd
 # knitr::opts_chunk$set(linewidth = NULL)
@@ -18,13 +17,13 @@ opts_chunk$set(tidy=TRUE, tidy.opts=list(width.cutoff=80)) #{r, tidy=TRUE, tidy.
 #   hook_output(x, options)
 # })
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  install.packages("hdm")
 
-## ----eval=FALSE----------------------------------------------------------
-#  install.packages("hdm", repos="http://R-Forge.R-project.org")
+## ----eval=FALSE---------------------------------------------------------------
+#  remotes::install_github("MartinSpindler/hdm")
 
-## ----echo=TRUE-----------------------------------------------------------
+## ----echo=TRUE----------------------------------------------------------------
 library(hdm)
 
 ## ----echo=FALSE,results='hide'----------------------------
