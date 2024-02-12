@@ -187,18 +187,15 @@ dX = as.matrix(cbind(d,X))
 doublesel.effect = rlassoEffect(x=X, y=y, d=d, method="double selection")
 summary(doublesel.effect)
 
-## ----summary_results, results="hide"----------------------
-library(xtable)
+## ----summary_results--------------------------------------
+library(knitr)
 table= rbind(summary(ls.effect)$coef["gdpsh465",1:2],
   summary(lasso.effect)$coef[,1:2],
   summary(doublesel.effect)$coef[,1:2])
 colnames(table)= c("Estimate", "Std. Error") #names(summary(full.fit)$coef)[1:2]
 rownames(table)= c("full reg via ols",  "partial reg
 via post-lasso ", "partial reg via double selection")
-tab= xtable(table, digits=c(2, 2,5))
-
-## ----results="asis"---------------------------------------
-tab
+kable(table)
 
 ## ----AJR_processing---------------------------------------
 data(AJR); y = AJR$GDP; d = AJR$Exprop; z = AJR$logMort
@@ -260,7 +257,6 @@ summary(lasso.IV.XZ)
 confint(lasso.IV.XZ)
 
 ## ----summary_results_ED,  include=TRUE--------------------
-library(xtable)
 table= matrix(0, 4, 2)
 table[1,]= summary(ED.ols)$coef[2,1:2]
 table[2,]= cbind(ED.2sls$coef[1], ED.2sls$se[1])
@@ -268,10 +264,7 @@ table[3,]= summary(lasso.IV.Z)[,1:2]
 table[4,]= summary(lasso.IV.XZ)[,1:2]
 colnames(table)= c("Estimate", "Std. Error")
 rownames(table)= c("ols regression",  "IV estimation ", "selection on Z", "selection on X and Z")
-tab= xtable(table, digits=c(2, 2,7))
-
-## ----results="asis"---------------------------------------
-tab
+kable(table)
 
 ## ----401_processing---------------------------------------
 data(pension)
@@ -303,7 +296,6 @@ pension.latet = rlassoLATET(X,d,y,z, always_takers = FALSE)
 summary(pension.latet)
 
 ## ----summary_pension, include=TRUE------------------------
-library(xtable)
 table= matrix(0, 4, 2)
 table[1,]= summary(pension.ate)[,1:2]
 table[2,]= summary(pension.atet)[,1:2]
@@ -311,10 +303,7 @@ table[3,]= summary(pension.late)[,1:2]
 table[4,]= summary(pension.latet)[,1:2]
 colnames(table)= c("Estimate", "Std. Error")
 rownames(table)= c("ATE",  "ATET ", "LATE", "LATET")
-tab= xtable(table, digits=c(2, 2,2))
-
-## ----results="asis",echo=FALSE----------------------------
-tab
+kable(table)
 
 ## ----401_processing_interaction---------------------------
 

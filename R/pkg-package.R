@@ -67,7 +67,7 @@ NULL
 #' The number of complete observations is 90.
 #'
 #' @source The full data set and further details can be found at
-#' \url{http://www2.nber.org/pub/barro.lee/} and,
+#' \url{https://www2.nber.org/pub/barro.lee/} and,
 #' \url{https://www.bristol.ac.uk//Depts//Economics//Growth//barlee.htm}.
 #'
 #' @name Growth Data

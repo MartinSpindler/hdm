@@ -28,3 +28,5 @@ cran_comments.md
 bugs.md
 hdm.Rproj
 .Rproj.user
+/doc/
+/Meta/
