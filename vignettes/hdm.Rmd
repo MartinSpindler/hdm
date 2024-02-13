@@ -1,7 +1,6 @@
 ---
 title: "High-Dimensional Metrics in R"
-output:
-  output: rmarkdown::html_vignette
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{High-Dimensional Metrics in R}
   %\VignetteEngine{knitr::rmarkdown}

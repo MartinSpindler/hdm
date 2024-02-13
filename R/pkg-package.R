@@ -13,7 +13,7 @@
 #'
 #' @name hdm-package
 #' @aliases hdm-package hdm
-#' @docType package
+"_PACKAGE"
 #' @author Victor Chernozhukov, Christian Hansen, Martin Spindler\cr
 #'
 #' Maintainer: Martin Spindler <spindler@@mea.mpisoc.mpg.de>
@@ -141,7 +141,7 @@ NULL
 #'
 #' Dataset on settler mortality.
 #'
-#' Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{https://economics.mit.edu/faculty/acemoglu/data/ajr2001} 
+#' Data set was analysed in Acemoglu et al. (2001). A detailed description of the data can be found at \url{https://economics.mit.edu/people/faculty/daron-acemoglu/data-archive} 
 #'
 #' @name AJR
 #' @docType data

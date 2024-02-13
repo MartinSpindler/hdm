@@ -18,22 +18,18 @@ for instrumental variable (IV) and treatment effect estimation in a
 high-dimensional setting. Moreover, the methods enable valid post-selection
 inference. Moreover, a theoretically grounded, data-driven choice of the penalty level is provided.
 }
-\references{
-A. Belloni, D. Chen, V. Chernozhukov and C. Hansen (2012).
-Sparse models and methods for optimal instruments with an application to
-eminent domain. \emph{Econometrica} 80 (6), 2369-2429.
-
-A. Belloni, V. Chernozhukov and C. Hansen (2013). Inference for
-high-dimensional sparse econometric models. In Advances in Economics and
-Econometrics: 10th World Congress, Vol. 3: Econometrics, Cambirdge
-University Press: Cambridge, 245-295.
-
-A. Belloni, V. Chernozhukov, C. Hansen (2014). Inference on
-treatment effects after selection among high-dimensional controls. The
-Review of Economic Studies 81(2), 608-650.
-}
 \author{
-Victor Chernozhukov, Christian Hansen, Martin Spindler\cr
+\strong{Maintainer}: Martin Spindler \email{martin.spindler@gmx.de}
 
-Maintainer: Martin Spindler <spindler@mea.mpisoc.mpg.de>
+Authors:
+\itemize{
+  \item Victor Chernozhukov
+  \item Christian Hansen
+}
+
+Other contributors:
+\itemize{
+  \item Philipp Bach \email{philipp.bach@uni-hamburg.de} [contributor]
+}
+
 }
