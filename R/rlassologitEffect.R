@@ -163,7 +163,7 @@ rlassologitEffect <- function(x, y, d, I3 = NULL, post = TRUE) {
     colnames(x) <- paste("x", 1:kx, sep = "")
   # Step 1
   la1 <- 1.1/2 * sqrt(n) * qnorm(1 - 0.05/(max(n, (p + 1) * log(n))))
-  dx <- cbind(d, x)
+  dx <- data.matrix(cbind(d, x))
   l1 <- rlassologit(y ~ dx, post = post, intercept = TRUE, penalty = list(lambda.start = la1))
   xi <- l1$residuals
   t <- predict(l1, type = "link", newdata = dx)
@@ -192,7 +192,7 @@ rlassologitEffect <- function(x, y, d, I3 = NULL, post = TRUE) {
   #la3 <- 1.1/2 * sqrt(n) * qnorm(1 - 0.05/(max(n, (p3 + 1) * log(n))))
   #l3 <- rlassologit(cbind(d, xselect), y, post = TRUE, normalize = TRUE, 
   #                  intercept = TRUE, penalty = list(lambda.start = la3))
-  l3 <- glm(y ~ cbind(d, xselect),family=binomial(link='logit'))
+  l3 <- glm(y ~ data.matrix(cbind(d, xselect)),family=binomial(link='logit'))
   alpha <- l3$coef[2]
   names(alpha) <- colnames(d)
   t3 <- predict(l3, type = "link")
