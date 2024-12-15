@@ -23,6 +23,7 @@
 #' indicates if variables (TRUE) should be included in any case to the model and they are exempt from selection. These variables should not be included in the \code{index}; hence the intersection with \code{index} must be the empty set.
 #' In the case of partialling out it is ignored.
 #' @param post logical, if post Lasso is conducted with default \code{TRUE}.
+#' @param num.cores Positive integer, equal to the number of cores to use for multiprocessing. Higher is faster, but uses more memory.
 #' @param \dots parameters passed to the \code{rlasso} function.
 #' @return The function returns an object of class \code{rlassoEffects} with the following entries: \item{coefficients}{vector with estimated
 #' values of the coefficients for each selected variable} \item{se}{standard error (vector)}
@@ -69,10 +70,16 @@
 rlassoEffects <- function(x, ...)
   UseMethod("rlassoEffects") # definition generic function 
 
+#' @importFrom parallel clusterExport
+#' @importFrom parallel detectCores
+#' @importFrom parallel makeCluster
+#' @importFrom parallel parLapply
+#' @importFrom parallel stopCluster
+#' @importFrom memuse Sys.meminfo
 #' @export
 #' @rdname rlassoEffects
 rlassoEffects.default <- function(x, y, index = c(1:ncol(x)), method = "partialling out", 
-                                  I3 = NULL, post = TRUE, ...) {
+                                  I3 = NULL, post = TRUE, num.cores = parallel::detectCores(), ...) {
   
   checkmate::checkChoice(method, c("partialling out", "double selection"))
   
@@ -122,31 +129,66 @@ rlassoEffects.default <- function(x, y, index = c(1:ncol(x)), method = "partiall
   selection.matrix <- matrix(NA, ncol = k, nrow = dim(x)[2])
   names(coefficients) <- names(se) <- names(t) <- names(pval) <- names(lasso.regs) <- colnames(reside) <- colnames(residv) <- colnames(selection.matrix) <- colnames(x)[index]
   rownames(selection.matrix) <- colnames(x)
-  for (i in 1:k) {
+  
+  process_lassoeffect <- function(i){
     d <- x[, index[i], drop = FALSE]
     Xt <- x[, -index[i], drop = FALSE]
     I3m <- I3[-index[i]]
-    lasso.regs[[i]] <- try(col <- rlassoEffect(Xt, y, d, method = method, 
-                                               I3 = I3m, post = post, ...), silent = TRUE)
-    if (class(lasso.regs[[i]]) == "try-error") {
-      next
-    } else {
-      coefficients[i] <- col$alpha
-      se[i] <- col$se
-      t[i] <- col$t
-      pval[i] <- col$pval
-      reside[, i] <- col$residuals$epsilon
-      residv[, i] <- col$residuals$v
-      coef.mat[[i]] <- col$coefficients.reg
-      selection.matrix[-index[i],i] <- col$selection.index
+    result <- rlassoEffect(Xt, y, d, method = method,
+                                      I3 = I3m, post = post, ...)
+    return(result)
+  }
+  
+  # We need to make 1 copy of the large X dataframe for each process.
+  # That may fill up memory.
+  # Use some imperfect heuristics to prevent that happening,
+  # based on current free memory usage
+  max.copies <- as.integer(memuse::Sys.meminfo()$freeram / object.size(x) * 0.8)
+  num.cores <- min(num.cores, max.copies)
+  
+  if (num.cores == 1) {
+    # Do not create a cluster,
+    # Because then we need to duplicate the large X dataframe
+    # For only 1 child.
+    results <- lapply(1:k, function(i) {
+      tryCatch(
+        process_lassoeffect(i),
+        error = function(e) NULL
+      )
+    })
+  } else {
+    # Run rlassoEffect with multiprocessing
+    cl <- makeCluster(num.cores,
+                      rscript_args = c("--no-save", "--no-restore", "--no-init-file"))
+    on.exit(stopCluster(cl))
+    clusterExport(cl,
+                  varlist = c("x", "index", "y", "I3", "method", "post"),
+                  envir = environment())
+    results <- parLapply(cl, 1:k, process_lassoeffect)
+  }
+  
+  # Collate list of results into each matrix/array
+  for (i in seq_along(results)) {
+    r <- results[[i]]
+    if (! is.null(r)) { # if not error
+      coefficients[i] <- r$alpha
+      se[i] <- r$se
+      t[i] <- r$t
+      pval[i] <- r$pval
+      reside[, i] <- r$residuals$epsilon
+      residv[, i] <- r$residuals$v
+      coef.mat[[i]] <- r$coefficients.reg
+      selection.matrix[-index[i], i] <- r$selection.index
     }
   }
+  
   #colnames(coef.mat) <- colnames(x)[index]
   residuals <- list(e = reside, v = residv)
   res <- list(coefficients = coefficients, se = se, t = t, pval = pval, 
               lasso.regs = lasso.regs, index = index, call = match.call(), samplesize = n, 
               residuals = residuals, coef.mat = coef.mat, selection.matrix = selection.matrix)
   class(res) <- "rlassoEffects"
+  
   return(res)
 }
 

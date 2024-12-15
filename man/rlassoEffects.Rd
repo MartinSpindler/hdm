@@ -16,6 +16,7 @@ rlassoEffects(x, ...)
   method = "partialling out",
   I3 = NULL,
   post = TRUE,
+  num.cores = parallel::detectCores(),
   ...
 )
 
@@ -49,6 +50,8 @@ indicates if variables (TRUE) should be included in any case to the model and th
 In the case of partialling out it is ignored.}
 
 \item{post}{logical, if post Lasso is conducted with default \code{TRUE}.}
+
+\item{num.cores}{Positive integer, equal to the number of cores to use for multiprocessing. Higher is faster, but uses more memory.}
 
 \item{formula}{An element of class \code{formula} specifying the linear model.}
 

@@ -27,6 +27,12 @@
 #' @references A. Belloni, V. Chernozhukov, C. Hansen (2014). Inference on
 #' treatment effects after selection among high-dimensional controls. The
 #' Review of Economic Studies 81(2), 608-650.
+#' @importFrom parallel clusterExport
+#' @importFrom parallel detectCores
+#' @importFrom parallel makeCluster
+#' @importFrom parallel parLapply
+#' @importFrom parallel stopCluster
+#' @importFrom memuse Sys.meminfo
 #' @importFrom stats binomial
 #' @importFrom stats coef
 #' @importFrom stats confint 
