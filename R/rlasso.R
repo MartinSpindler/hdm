@@ -118,8 +118,14 @@ rlasso.formula <- function(formula, data = NULL, post = TRUE, intercept = TRUE, 
       colnames(x) <- sub(re.escape(formula[[3]]), "", colnames(x))  
     }
   }
-  est <- rlasso(x, y, post = post, intercept = intercept, penalty=penalty, model=model, 
-               control = control)
+  if(missing(penalty)){
+    est <- rlasso(x, y, post = post, intercept = intercept, model=model,
+                  control = control)
+  }
+  else{
+    est <- rlasso(x, y, post = post, intercept = intercept, penalty=penalty, model=model,
+                 control = control)
+  }
   est$call <- cl
   return(est)
 }
@@ -183,8 +189,7 @@ rlasso.default <- function(x, y, post = TRUE, intercept = TRUE, model = TRUE,
     penalty$c = 0.5
   }
   
-  default_pen <-  list(homoscedastic = FALSE, X.dependent.lambda = FALSE, lambda.start = NULL, c = 1.1, gamma = .1/log(n))
-  if (post==FALSE &  isTRUE(all.equal(penalty, default_pen))) {  
+  if (post==FALSE &  missing(penalty)) {
     penalty$c = 0.5
   }
   
@@ -819,7 +824,6 @@ predict.rlasso <- function (object, newdata = NULL, ...)
   }
   return(yhat)
 }
-
 
 
 

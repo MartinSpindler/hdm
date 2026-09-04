@@ -4,13 +4,13 @@ library(hdm)
 
 
 DGP_rlasso <- function(n, p, px){
-  
+
   X <- matrix(rnorm(n*p), ncol=p)
   colnames(X) <- paste("x", 1:p, sep="")
   beta <- c(rep(2,px), rep(0,p-px))
   intercept <- 1
   y <- intercept + X %*% beta + rnorm(n)
-  
+
   list(X = X, y = y, beta = beta)
 }
 
@@ -85,4 +85,17 @@ test_that("rlasso - check methods",{
   #expect_that(predict(rlasso(y ~ ., data = frame), cbind(frame, rnorm(nrow(frame)))), not(throws_error()))
 })
 
-
+test_that("rlasso keeps an explicitly supplied c", {
+  explicit_penalty <- list(homoscedastic = FALSE,
+                           X.dependent.lambda = FALSE,
+                           lambda.start = NULL,
+                           c = 1.1,
+                           gamma = 0.1 / log(nrow(X)))
+  
+  fit <- rlasso(X,
+                y,
+                post = FALSE,
+                penalty = explicit_penalty)
+  
+  expect_equal(fit$options$penalty$c, 1.1)
+})
