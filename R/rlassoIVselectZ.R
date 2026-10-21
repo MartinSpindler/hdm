@@ -16,7 +16,8 @@
 #' @param z set of potential instruments for the endogenous variables.
 #' Exogenous variables serve as their own instruments.
 #' @param post logical. If \code{TRUE}, post-lasso estimation is conducted.
-#' @param intercept logical. If \code{TRUE}, intercept is included in the second stage equation.
+#' @param intercept logical. If \code{TRUE}, intercept is included in the first and second stage equations
+#' (in the second stage only if \code{x} does not already contain a constant column).
 #' @param \dots arguments passed to the function \code{rlasso}.
 #' @return An object of class \code{rlassoIVselectZ} containing at least the following
 #' components: \item{coefficients}{estimated parameter vector}
@@ -69,25 +70,41 @@ rlassoIVselectZ.default <- function(x, d, y, z, post = TRUE, intercept = TRUE, .
     Dhat <- cbind(Dhat, dihat)
   }
   colnames(select.mat) <- colnames(d)
-  #if (intercept) { #?
-  #  Dhat <- cbind(Dhat, 1, x) 
-  #  d <- cbind(d, 1, x)
-  #} else {
-  #  Dhat <- cbind(Dhat, x)
-  #  d <- cbind(d, x)
-  #}
-  
-  Dhat <- cbind(Dhat, x)
-  d <- cbind(d, x)
-  
+  # the first stage includes an intercept, so the second stage needs one too
+  # (not added if x already contains a constant column)
+  if (intercept && (is.null(x) || !any(apply(x, 2, function(v) all(v == v[1]))))) {
+    Dhat <- cbind(Dhat, x, "(Intercept)" = 1)
+    d <- cbind(d, x, "(Intercept)" = 1)
+  } else {
+    Dhat <- cbind(Dhat, x)
+    d <- cbind(d, x)
+  }
+
   # calculation coefficients
-  #alpha.hat <- solve(t(Dhat) %*% d) %*% (t(Dhat) %*% y)
-  alpha.hat <- MASS::ginv(t(Dhat)%*%d)%*%(t(Dhat)%*%y)
-  # calcualtion of the variance-covariance matrix
-  residuals <- y - d %*% alpha.hat
-  #Omega.hat <- t(Dhat) %*% diag(as.vector(residuals^2)) %*% Dhat  #  Dhat.e <- Dhat*as.vector(residuals);  Omega.hat <- t(Dhat.e)%*%Dhat.e
-  Omega.hat <- t(Dhat) %*% (Dhat*as.vector(residuals^2))
-  Q.hat.inv <- MASS::ginv(t(d) %*% Dhat)  #solve(t(d)%*%Dhat)
+  # t(Dhat) %*% d squares the condition number of the controls, and ginv
+  # then drops singular values that are not zero. With Dhat = QR (full
+  # column rank), t(Dhat) %*% d %*% a = t(Dhat) %*% y is equivalent to
+  # t(Q) %*% d %*% a = t(Q) %*% y, which is solved instead. ginv is kept
+  # for a rank-deficient Dhat.
+  qr.Dhat <- qr(Dhat, LAPACK = TRUE)
+  R.diag <- abs(diag(qr.R(qr.Dhat)))
+  if (min(R.diag) > max(dim(Dhat)) * .Machine$double.eps * max(R.diag)) {
+    k <- ncol(Dhat)
+    Qd <- qr.qty(qr.Dhat, d)[1:k, , drop = FALSE]
+    Qy <- qr.qty(qr.Dhat, as.matrix(y))[1:k, , drop = FALSE]
+    alpha.hat <- solve(Qd, Qy)
+    residuals <- y - d %*% alpha.hat
+    # A^-1 Omega t(A^-1) with A = t(Dhat) %*% d, written in terms of Q
+    Q <- qr.Q(qr.Dhat)
+    Omega.hat <- t(Q) %*% (Q*as.vector(residuals^2))
+    Q.hat.inv <- solve(Qd)
+  } else {
+    alpha.hat <- MASS::ginv(t(Dhat)%*%d)%*%(t(Dhat)%*%y)
+    # calcualtion of the variance-covariance matrix
+    residuals <- y - d %*% alpha.hat
+    Omega.hat <- t(Dhat) %*% (Dhat*as.vector(residuals^2))
+    Q.hat.inv <- MASS::ginv(t(Dhat) %*% d)  #solve(t(Dhat)%*%d)
+  }
   vcov <- Q.hat.inv %*% Omega.hat %*% t(Q.hat.inv)
   rownames(alpha.hat) <- c(colnames(d))
   colnames(vcov) <- rownames(vcov) <- rownames(alpha.hat)

@@ -26,7 +26,8 @@ Exogenous variables serve as their own instruments.}
 
 \item{post}{logical. If \code{TRUE}, post-lasso estimation is conducted.}
 
-\item{intercept}{logical. If \code{TRUE}, intercept is included in the second stage equation.}
+\item{intercept}{logical. If \code{TRUE}, intercept is included in the first and second stage equations
+(in the second stage only if \code{x} does not already contain a constant column).}
 
 \item{formula}{An object of class \code{Formula} of the form " y ~ x + d | x + z" with y the outcome variable,
 d endogenous variable, z instrumental variables, and x exogenous variables.}
